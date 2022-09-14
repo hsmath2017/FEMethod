@@ -1,5 +1,29 @@
 \documentclass[lang=cn,10pt,newtx]{elegantbook}
-
+\newcommand{\supp}{\text{supp}}
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\cp}{\cdot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+\newcommand{\DR}{\mathcal{D}_{\widetilde{LN}}^{n}}
+\newcommand{\add}[2]{\sum_{#1=1}^{#2}}
+\newcommand{\innerprod}[2]{\left<#1,#2\right>}
+\newcommand\tbbint{{-\mkern -16mu\int}}
+\newcommand\tbint{{\mathchar '26\mkern -14mu\int}}
+\newcommand\dbbint{{-\mkern -19mu\int}}
+\newcommand\dbint{{\mathchar '26\mkern -18mu\int}}
+\newcommand\bint{
+{\mathchoice{\dbint}{\tbint}{\tbint}{\tbint}}
+}
+\newcommand\bbint{
+{\mathchoice{\dbbint}{\tbbint}{\tbbint}{\tbbint}}
+}
 \title{Note For Finite Element Methods}
 \subtitle{Zhejiang University}
 
@@ -47,4 +71,29 @@
 
 为此，基于函数逼近论的\textbf{有限元方法}被提出。该算法能弥补有限差分法的一些明显缺陷，目前是最主流的数值算法之一。
 \section{从一维边值问题说起}
+考虑如下例子：
+\begin{equation}
+  \label{eq:ode1}
+  \left\{
+    \begin{aligned}
+    -u''+u&=f(x),x\in(0,1)\\
+    u(0)=u(1)&=0.
+    \end{aligned}
+  \right.
+\end{equation}
+类似于“偏微分方程”课程中对弱解的讨论方式，在\eqref{eq:ode1}两边同时乘某个函数$v$并在$[0,1]$上积分，得到如下形式：
+\begin{equation}
+  \label{eq:bianfen}
+  \int_{0}^{1}(-u''+u)v\dif x=\int_{0}^{1}fv\dif x.
+\end{equation}
+定义函数空间$V$如下:
+\begin{equation}
+  \label{eq:sobolev1-1}
+  V:=\left\{v\left.\right|v(0)=v(1)=0,\int_{0}^{1}((v')^{2}+v^{2})\dif x<\infty\right\}.
+\end{equation}
+如果函数$v\in V$, 利用分部积分法，\eqref{eq:ode1}可以转化为以下问题：
+\begin{example}
+  记$a(u,v)=\int_{0}^{1}(u'v'+uv)\dif x$, $h(v)=\int_{0}^{1}fv\dif x$ $\forall v\in V$.求$u\in V$，使得$a(u,v)=h(v)$ $\forall v\in V$.
+\end{example}
+下面的定理说明了该问题可以转化为一个优化问题：
 \end{document}
