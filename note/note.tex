@@ -1,0 +1,50 @@
+\documentclass[lang=cn,10pt,newtx]{elegantbook}
+
+\title{Note For Finite Element Methods}
+\subtitle{Zhejiang University}
+
+\author{Shuang Hu}
+\institute{Zhejiang University}
+\date{Sept 14, 2022}
+\version{1.0}
+\bioinfo{简介}{2022秋冬学季“有限元方法”课程笔记}
+
+\setcounter{tocdepth}{3}
+
+\logo{logo-blue.png}
+\cover{cover.jpg}
+
+% 本文档命令
+\usepackage{array}
+\newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
+
+% 修改标题页的橙色带
+\definecolor{customcolor}{RGB}{32,178,170}
+\colorlet{coverlinecolor}{customcolor}
+\usepackage{cprotect}
+
+\addbibresource[location=local]{reference.bib} % 参考文献，不要删除
+
+\begin{document}
+
+\maketitle
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+
+\chapter{引入}
+\section{为什么需要有限元方法？}
+此前在《微分方程数值解》课程中，我们已经学习了有限差分法和有限体积法。这两种方法有不少优点：首先，比较直观，只要知道如何利用差分近似导数即可得到对应的差分公式；其次，在一些情形下，有限差分和有限体积方法可以实现较高的计算精度。
+
+但是，这两种算法有一些明显的缺陷。
+\begin{itemize}
+  \item 算法稳定性的分析比较复杂。
+  \item 处理不规则区域的问题时较为麻烦，需要多次利用插值近似。
+  \item 只是求解离散格点的近似点值/离散网格的近似积分平均值，未能给出函数整体的近似。
+\end{itemize}
+
+为此，基于函数逼近论的\textbf{有限元方法}被提出。该算法能弥补有限差分法的一些明显缺陷，目前是最主流的数值算法之一。
+\section{从一维边值问题说起}
+\end{document}

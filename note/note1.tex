@@ -1,0 +1,53 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{geometry}
+% useful packages.
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\newtheorem{Definition}{\hspace{2em}定义}[section]
+\newtheorem{Example}{\hspace{2em}例}[section]
+\newtheorem{Thm}{\hspace{2em}定理}[section]
+\newtheorem{Lem}{\hspace{2em}Lemma}[section]
+\newtheorem{cor}{\hspace{2em}推论}[section]
+\newtheorem{rem}{\hspace{2em}注记}[section]
+% some common command
+\newcommand{\supp}{\text{supp}}
+\newcommand{\Rn}{\mathbb{R}^{n}}
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\cp}{\cdot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+\newcommand{\DR}{\mathcal{D}_{\widetilde{LN}}^{n}}
+\newcommand{\add}[2]{\sum_{#1=1}^{#2}}
+\newcommand{\innerprod}[2]{\left<#1,#2\right>}
+\newcommand\tbbint{{-\mkern -16mu\int}}
+\newcommand\tbint{{\mathchar '26\mkern -14mu\int}}
+\newcommand\dbbint{{-\mkern -19mu\int}}
+\newcommand\dbint{{\mathchar '26\mkern -18mu\int}}
+\newcommand\bint{
+{\mathchoice{\dbint}{\tbint}{\tbint}{\tbint}}
+}
+\newcommand\bbint{
+{\mathchoice{\dbbint}{\tbbint}{\tbbint}{\tbbint}}
+}
+\title{Lecture Note\#1}
+\author{Shuang Hu}
+\begin{document}
+\maketitle
+\section{Why do we need FEM?}
+In previous course <Numerical Method of Differential Equation>, we tried two essential numerical methods for equation solving: finite-difference method and finite-volume method. These two methods have some advantages. First, they are intuitive. We just use difference estimation to derivatives. Second, they are useful and efficient in some special cases. For example, we can design a fourth-order algorithm for advection-diffusion equation in rectangle domain. 
+\end{document}
