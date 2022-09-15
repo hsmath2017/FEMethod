@@ -1,4 +1,5 @@
 \documentclass[lang=cn,10pt,newtx]{elegantbook}
+\newtheorem{Thm}{\hspace{2em}定理}[section]
 \newcommand{\supp}{\text{supp}}
 \newcommand{\dif}{\mathrm{d}}
 \newcommand{\avg}[1]{\left\langle #1 \right\rangle}
@@ -93,7 +94,54 @@
 \end{equation}
 如果函数$v\in V$, 利用分部积分法，\eqref{eq:ode1}可以转化为以下问题：
 \begin{example}
-  记$a(u,v)=\int_{0}^{1}(u'v'+uv)\dif x$, $h(v)=\int_{0}^{1}fv\dif x$ $\forall v\in V$.求$u\in V$，使得$a(u,v)=h(v)$ $\forall v\in V$.
+  \label{ex:equiv1}
+  记$a(u,v)=\int_{0}^{1}(u'v'+uv)\dif x$, $h(v)=\int_{0}^{1}fv\dif x$, $v\in V$.求$u\in V$，使得$a(u,v)=h(v)$ $\forall v\in V$.
 \end{example}
 下面的定理说明了该问题可以转化为一个优化问题：
+\begin{theorem}{}{}
+  \label{thm:bianfen}
+  记泛函$J(v):=\frac{1}{2}a(v,v)-h(v)$,问题\ref{ex:equiv1}与最小化$J(v)$的优化问题等价。即：如果$a(u,v)=h(v)\forall v\in V$, 那么$J(u)\le J(v)\forall v\in V$。
+\end{theorem}
+\begin{proof}
+  $\Rightarrow$:
+  \begin{equation}
+    \label{eq:dif}
+    \begin{aligned}
+      J(v)-J(u)&=\frac{1}{2}a(v,v)-h(v)-\frac{1}{2}a(u,u)+h(u)\\
+      &=\frac{1}{2}(a(v,v)-a(u,u)-2h(v-u))\\
+      &=\frac{1}{2}(a(v,v)-a(u,u)-2a(u,v-u))\\
+      &=\frac{1}{2}(a(v,v)+a(u,u)-2a(v,u))\\
+      &=\frac{1}{2}(a(v-u,v-u))\ge0.
+    \end{aligned}
+  \end{equation}
+  由\eqref{eq:dif}可得，如果$a(u,v)=h(v)$，那么$J(u)\le J(v)$.
+
+  $\Leftarrow$: $\forall v\in V$, $t\in\mathbb{R}$,有$J(u+tv)\ge J(u)$。我们定义函数$g(t):=J(u+tv)$，根据上面的讨论可知:$g'(0)=0$。另一方面，计算$g(t)$的表达式，有:
+  \begin{equation}
+    \begin{aligned}
+      \label{eq:gt}
+      g(t)&=J(u+tv)\\
+      &=\frac{1}{2}\int_{0}^{1}((u'+tv'
+      )^{2}+(u+tv)^{2})\dif x-\int_{0}^{1}f(u+tv)\dif x\\
+    \end{aligned}
+  \end{equation}
+  对\eqref{eq:gt}求一阶导数，可得：
+  \begin{equation}
+    \label{eq:dirg0}
+    g'(0)=\int_{0}^{1}(u'v'+uv)\dif x-\int_{0}^{1}fv\dif x.
+  \end{equation}
+  根据$g$的一阶条件，可得$a(u,v)=h(v)$。又由于$v$的任意性，结论得证。
+\end{proof}
+
+如此，我们把一个解微分方程的问题，利用\ref{ex:equiv1}和\ref{thm:bianfen}转化为了一个变分问题。由于$V$是一个无穷维空间，我们不能期望利用算法给出这个变分问题的精确解，但我们可以考虑对空间$V$进行有限维近似，并在有限维空间上近似求解这个变分问题。
+
+\section{有限元思想的导出}
+接下来，根据上一节的思路，我们继续问题\eqref{eq:ode1}的近似求解。根据上面的分析，我们的数值算法需要解决两个问题：
+\begin{itemize}
+  \item 如何对函数空间$V$进行有限维近似？
+  \item 在进行有限维近似之后，如何在有限维空间中对变分问题进行求解？
+\end{itemize}
+首先，我们考虑第二个问题。根据上面的讨论，近似求解变分问题有两种不同的思路，分别对应的是\textbf{Galerkin近似方法}和\textbf{Ritz近似方法}。
+\subsection{Galerkin近似}
+
 \end{document}
