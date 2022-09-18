@@ -1,4 +1,6 @@
 \documentclass[lang=cn,10pt,newtx]{elegantbook}
+\usepackage{tikz}
+\usepackage{float}
 \newtheorem{Thm}{\hspace{2em}定理}[section]
 \newcommand{\supp}{\text{supp}}
 \newcommand{\dif}{\mathrm{d}}
@@ -143,5 +145,88 @@
 \end{itemize}
 首先，我们考虑第二个问题。根据上面的讨论，近似求解变分问题有两种不同的思路，分别对应的是\textbf{Galerkin近似方法}和\textbf{Ritz近似方法}。
 \subsection{Galerkin近似}
+\textbf{假设已经给出有限维子空间}$V_{N}\le V$，Galerkin近似的目的是求解$u_{N}\in V_{N}$使得
+\begin{equation}
+  \label{eq:Galerkin}
+  a(u_{N},v_{N})=h(v_{N})
+\end{equation}
+对所有$v_{N}\in V_{N}$都成立。
 
+由于$V_{N}$是有限维的空间，我们可以找到这个空间中的一组基函数$\{\phi_{1},\cdots,\phi_{N}\}$，注意到$a(u,v)$是对称双线性函数，设$u_{N}=\alpha_{1}\phi_{1}(x)+\cdots+\alpha_{N}\phi_{N}(x)$，$v_{N}(x)=\phi_{i}(x)$，代入\eqref{eq:Galerkin}，可得一个线性方程组：
+\begin{equation}
+  \label{eq:LinearSystem}
+  \begin{bmatrix}
+    a(\phi_{1},\phi_{1})&a(\phi_{1},\phi_{2})&\cdots&a(\phi_{1},\phi_{N})\\
+    a(\phi_{2},\phi_{1})&a(\phi_{2},\phi_{2})&\cdots&a(\phi_{2},\phi_{N})\\
+    \vdots&\vdots&\ddots&\vdots\\
+    a(\phi_{N},\phi_{1})&a(\phi_{N},\phi_{2})&\cdots&a(\phi_{N},\phi_{N})\\
+  \end{bmatrix}
+  \begin{bmatrix}
+    \alpha_{1}\\
+    \alpha_{2}\\
+    \vdots\\
+    \alpha_{N}\\
+  \end{bmatrix}
+  =\begin{bmatrix}
+    h(\phi_{1})\\
+    h(\phi_{2})\\
+    \vdots\\
+    h(\phi_{N})\\
+  \end{bmatrix}
+\end{equation}
+解这个线性方程组，得到系数向量，即可给出该方程的近似解。
+
+\subsection{Ritz方法}
+同样，假设有限维子空间$V_{N}\le V$已经给出，\textbf{Ritz方法}的思路是求解有关$J(u)$的优化问题，即：求$u_{N}\in V_{N}$，使得
+\begin{equation}
+J(u_{N})\le J(v)\forall v\in V_{N}.
+\end{equation}
+这里$J(v):=\frac{1}{2}a(v,v)-h(v)$。
+
+给出这个问题之后，我们在有限维空间中，利用最优化算法求解该问题。
+
+这两个思路都是建立在有限维子空间$V_{N}$已经给出的前提下的。但这个有限维空间如何构造？
+
+一个很容易想到的思路是利用$v(0)=v(1)$这一性质，构造三角函数系作为基底。这种选取思路对于问题\eqref{eq:ode1}而言当然是极好的，三角函数系的正交性也使得\eqref{eq:LinearSystem}中的系数矩阵变得相当简单易求解。但这个方案的可扩展性并不强，如果扩展到二维平面上，乃至更高维度的椭圆偏微分方程，就很难找到像这样全局定义的基函数。如果问题区域非规则或是存在不同方程的耦合，则更是如此。
+
+\textbf{有限元方法}由此引出。
+\section{有限元方法}
+在上面两种思路的基础上，我们需要一个方便推广的构建有限维子空间的方法。
+
+多项式函数空间是最容易表示的函数空间，因此这是我们的首选。但全局定义的多项式很难保证其符合边界条件。于是，借助样条插值的思想，我们转为考虑分段多项式空间。
+
+\subsection{线性有限元空间}
+我们先针对问题\eqref{eq:ode1}，考虑最简单的近似形式--分段线性近似。在这种情形下，有限维子空间$V_{h}$由$(0,1)$上的分段线性函数表示。
+\begin{definition}{线性有限元空间}
+  \label{LinearFE}
+  线性有限元空间的定义为：
+  \begin{equation}
+    \label{eq:linearFE}
+    V_{h}:=\{v_{h}\in C(0,1):v_{h}(0)=v_{h}(1)=0,v_{h}|_{[x_{i},x_{i+1}]}\in\mathbb{P}_{1}\}.
+  \end{equation}
+  其中$\{x_{i}\}_{i=0}^{n}$为$[0,1]$上给定的互异节点,$x_{0}=0$，$x_{n}=1$。
+\end{definition}
+首先需要讨论的是，空间$V_{h}$的维数和基底。空间\eqref{eq:linearFE}的形式很容易联想到数值分析课程中学习过的\textbf{B-样条空间}。特别地，一维B-样条基函数为所谓的“hat-function”，定义如下：
+\begin{equation}
+  \label{eq:hatfunc}
+  \phi_{i}(x)=\left\{
+    \begin{aligned}
+      &\frac{x-x_{i-1}}{x_{i}-x_{i-1}},x_{i-1}\le x\le x_{i}\\
+      &\frac{x_{i+1}-x}{x_{i+1}-x_{i}},x_{i}\le x\le x_{i+1}\\
+      & 0,otherwise\\
+    \end{aligned}
+  \right.
+\end{equation}
+\begin{figure}[H]
+  \centering
+  \caption{hat函数的示意图}
+\begin{tikzpicture}
+  \draw[step=.25cm,gray,very thin] (0,0) grid (3,1); 
+  \draw [->](0,0) -- (3.5,0); 
+  \draw [->](0,0) -- (0,1.5); 
+  \draw (1,0) -- (1.5,1);
+  \draw (1.5,1) -- (2,0);
+\end{tikzpicture}
+\end{figure}
+容易验证，如此定义的$(\phi_{1},\cdots,\phi_{n-1})$构成了空间$V_{h}$的一组基。从而可得$\dim(V_{h})=n-1$。
 \end{document}
