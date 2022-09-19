@@ -229,4 +229,47 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
 \end{tikzpicture}
 \end{figure}
 容易验证，如此定义的$(\phi_{1},\cdots,\phi_{n-1})$构成了空间$V_{h}$的一组基。从而可得$\dim(V_{h})=n-1$。
+\subsection{刚度矩阵与负载}
+此处我们采用Galerkin近似的思路，下面我们需要讨论的是方程组\eqref{eq:LinearSystem}的导出与求解。
+
+\begin{definition}{刚度矩阵}
+  线性有限元空间\ref{LinearFE}的刚度矩阵定义为:
+  \begin{equation}
+    \label{eq:stablemat}
+    A=(a(\phi_{i},\phi_{j}))_{i,j=1}^{n-1}.
+  \end{equation}
+  其中$\phi_{i}$为\eqref{eq:hatfunc}中定义的基函数。
+\end{definition}
+
+\begin{definition}{负载}
+  方程\eqref{eq:ode1}关于线性有限元空间\ref{LinearFE}的负载向量定义为：
+  \begin{equation}
+    \label{eq:overload}
+    \mathbf{b}:=\left(\int_{0}^{1}f(x)\phi_{i}(x)\dif x\right)_{i=1}^{n-1}.
+  \end{equation}
+\end{definition}
+
+下面讨论\eqref{eq:ode1}负载的计算。由于我们是用一次样条多项式近似真实解的，在选取数值积分公式的时候只需要使用一阶代数精度的公式即可不损失计算精度。因此此处采用复化梯形公式进行负载的近似计算。
+
+记$h_{i}=x_{i}-x_{i-1}$，负载的近似计算公式如下：
+\begin{equation}
+  b_{i}=\int_{0}^{1}f(x)\phi_{i}(x)\dif x=\int_{x_{i-1}}^{x_{i+1}}f(x)\phi_{i}(x)\approx \frac{1}{2}(h_{i}+h_{i+1})f(x_{i}).
+\end{equation}
+
+对于刚度矩阵的计算，虽然基函数$\phi_{i}$在整个区间$(0,1)$上并不可导，但不可导点为零测集，不会对积分的计算产生影响。将基函数$\phi_{i}$的表达式代入刚度矩阵，计算得：
+\begin{equation}
+  \label{eq:stablematval}
+  \left\{
+    \begin{aligned}
+      a_{ij}&=0,|i-j|>1\\
+      a_{ii}&=\frac{1}{h_{i}}+\frac{1}{h_{i+1}}+\frac{1}{3}(h_{i}+h_{i+1})\\
+      a_{i-1,i}&=-\frac{1}{h_{i}}+\frac{1}{6}h_{i}\\
+      a_{i,i+1}&=-\frac{1}{h_{i+1}}+\frac{1}{6}h_{i+1}\\
+    \end{aligned}
+  \right.
+\end{equation}
+由\eqref{eq:stablematval}可知，刚度矩阵是一个三对角矩阵，因此如果采用传统的矩阵存储方式和求解方式可能会造成计算资源的浪费。下面给出一种采用“局部矩阵”的形式存储\eqref{eq:stablematval}的技巧。
+
+记负载矩阵$A=\sum_{k=1}^{n}A^{(k)}$，其中$A^{(k)}:=(a_{ij}^{(k)})$，$a_{ij}^{(k)}:=\int_{x_{k-1}}^{x_{k}}[\phi_{i}'(x)\phi_{j}'(x)+\phi_{i}(x)\phi_{j}(x)]\dif x$，由定义可得，$a_{ij}^{(k)}$只在$i,j\in\{k-1,k\}$时取非零值。所以每个$A^{(k)}$都可以存储为一个$2\times 2$的矩阵，而整体的负载矩阵$A$可以视为把所有的$A^{(k)}$“装配”起来的结果。在求解最终的线性方程组的时候，由于矩阵$A$是一个三对角对称正定矩阵，我们可以采用一系列数值代数算法加速方程组的求解。
+\section{误差分析}
 \end{document}
