@@ -12,6 +12,9 @@ private:
     std::vector<PiecewiseLinear> BasisFunc;
 public:
     using Mesh1D::meshgrid;
+    using Mesh1D::LeftSide;
+    using Mesh1D::RightSide;
+    using Mesh1D::size;
     FuncBasis(int nsize,double Left,double Right,bool isuniform=true,const std::vector<double>& mesh={}):Mesh1D(nsize,Left,Right,isuniform,mesh){
         for(int i=0;i<mesh.size();i++){
             std::vector<double> nodes;
