@@ -17,6 +17,7 @@
 \newcommand{\DR}{\mathcal{D}_{\widetilde{LN}}^{n}}
 \newcommand{\add}[2]{\sum_{#1=1}^{#2}}
 \newcommand{\innerprod}[2]{\left<#1,#2\right>}
+\newcommand{\norm}[1]{\|#1\|}
 \newcommand\tbbint{{-\mkern -16mu\int}}
 \newcommand\tbint{{\mathchar '26\mkern -14mu\int}}
 \newcommand\dbbint{{-\mkern -19mu\int}}
@@ -272,4 +273,60 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
 
 记负载矩阵$A=\sum_{k=1}^{n}A^{(k)}$，其中$A^{(k)}:=(a_{ij}^{(k)})$，$a_{ij}^{(k)}:=\int_{x_{k-1}}^{x_{k}}[\phi_{i}'(x)\phi_{j}'(x)+\phi_{i}(x)\phi_{j}(x)]\dif x$，由定义可得，$a_{ij}^{(k)}$只在$i,j\in\{k-1,k\}$时取非零值。所以每个$A^{(k)}$都可以存储为一个$2\times 2$的矩阵，而整体的负载矩阵$A$可以视为把所有的$A^{(k)}$“装配”起来的结果。在求解最终的线性方程组的时候，由于矩阵$A$是一个三对角对称正定矩阵，我们可以采用一系列数值代数算法加速方程组的求解。
 \section{误差分析}
+在本节中我们针对求解\eqref{eq:ode1}的线性有限元近似算法进行误差分析。在叙述之前，为方便起见，先给出两个记号。
+
+\begin{remark}
+  $\norm{f}_{0}$:表示$L^{2}$范数, $\norm{f}_{0}:=\sqrt{\int_{0}^{1}f^{2}\dif x}$。$\norm{f}_{1}$:表示$W^{1,2}$范数，$\norm{f}_{1}:=\sqrt{\int_{0}^{1}((f')^{2}+f^{2})\dif x}$。
+\end{remark}
+
+回顾一下有限元逼近问题的提法：
+\begin{example}
+  \label{prob:FE problem}
+记泛函$a(u,v)=\int_{0}^{1}(uv+u'v')\dif x$, $h(v)=\int_{0}^{1}fv\dif x$, $V=\{v(x):v(0)=v(1)=0,\int_{0}^{1}((v')^{2}+v^2)\dif x<\infty\}$, 原问题是求解$u\in V$使得$a(u,v)=h(v)\forall v\in V$, 而在线性有限元空间上的逼近问题则是，在线性有限元空间$V_{h}\le V$上求解$u_{h}\in V$使得$a(u_{h},v_{h})=h(v_{h})\forall v_{h}\in V_{h}$。
+\end{example}
+
+在进行讨论前，首先给出一个重要的引理。该引理保证了在$W^{1,2}$范数的意义下，$u_{h}\in V_{h}$是$u\in V$在子空间$V_{h}$下的最优逼近。
+\begin{lemma}{Cea引理}
+  \label{lem:cea}
+  设$u$和$u_{h}$是\ref{prob:FE problem}的解，则有：
+  \begin{equation}
+    \label{eq:cea}
+    \norm{u-u_{h}}_{1}\le\inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{1}.
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  由于$u$满足：$\forall v\in V, a(u,v)=h(v)\Rightarrow\forall v_{h}\in V_{h},a(u,v_{h})=h(v_{h})$。又有：$u_{h}$满足$a(u_{h},v_{h})=h(v_{h})\forall v_{h}\in V_{h}$，两式相减，得：
+  \begin{equation}
+    \label{eq:orthogonal}
+    a(u-u_{h},v_{h})=0\,\forall v\in V_{h}.
+  \end{equation}
+  \eqref{eq:orthogonal}表示了向量$u-u_{h}$和空间$V_{h}$的正交性。下面讨论$\norm{u-u_{h}}_{1}^{2}$的估计。
+  \begin{equation}
+    \label{eq:estimateError}
+    \begin{aligned}
+    \norm{u-u_{h}}_{1}^{2}&=a(u-u_{h},u-u_{h})\\
+    &=a(u-u_{h},u-v_{h})\\
+    &=\int_{0}^{1}((u'-u_{h}')(u'-v_{h}')+(u-u_{h})(u-v_{h}))\dif x\\
+    &\le\left(\int_{0}^{1}(u'-u_{h}')^{2}\dif x\right)^{\frac{1}{2}}\left(\int_{0}^{1}(u'-v_{h}')^{2}\right)^{\frac{1}{2}}+\left(\int_{0}^{1}(u-u_{h})^{2}\right)^{\frac{1}{2}}\left(\int_{0}^{1}(u-v_{h})^2\right)^{\frac{1}{2}}\\
+    &\le\left\{\int_{0}^{1}\left((u'-u_{h}')^{2}+(u-u_{h})^{2}\right)\dif x\right\}^{\frac{1}{2}}\left\{\int_{0}^{1}\left((u'-v_{h}')^2+(u-v_{h})^{2}\right)\dif x\right\}^{\frac{1}{2}}\\
+    &=\norm{u-u_{h}}_{1}\norm{u-v_{h}}_{1}\Rightarrow\norm{u-u_{h}}_{1}\le\norm{u-v_{h}}_{1}.\\
+    \end{aligned}
+  \end{equation}
+\end{proof}
+该引理在$\norm{\cdot}$的意义下，把有限元解的误差转化为计算解函数的插值误差(这个插值误差可以作为一个上界)。目前解函数用$u$表示，假设$u$在节点$\{x_{i}\}_{i=0}^{n}$上的分段线性插值多项式记为$u_{I}$，考虑$\norm{u-u_{I}}_{1}$的估计。关于分段线性插值，我们有下面的误差估计公式：
+\begin{theorem}
+  \label{thm:interperror}
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        \max_{[0,1]}|u(x)-u_{I}(x)|&\le\frac{1}{8}h^2\max_{[0,1]}|u''(x)|\\
+        \max_{[0,1]}|u'(x)-u_{I}'(x)|&\le h\max_{[0,1]}|u''(x)|\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  其中$h=\max_{1\le i\le n}|x_{i}-x_{i-1}|$。
+\end{theorem}
+\begin{proof}
+  见任何一本数值分析教材。
+\end{proof}
 \end{document}
