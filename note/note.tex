@@ -377,4 +377,45 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
     \end{aligned}
   \end{equation}
 \end{proof}
+\begin{remark}
+  该结论的证明思路正是偏微分方程理论中非常常见的“能量模估计”。
+\end{remark}
+\begin{remark}
+  此处需要补充一些证明
+\end{remark}
+利用定理\ref{thm:estimatebyL2},对于$\norm{u-u_{h}}_{0}$，我们可以给出更精细的估计：
+\begin{proposition}{Aubin-Nitsche技巧}
+  \begin{equation}
+    \label{eq:AubinNitsche}
+    \norm{u-u_{h}}_{0}\le Ch^{2}\norm{u''}_{0}.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  考虑辅助问题:
+  \begin{equation}
+    \label{eq:auxiliaryProb}
+    \left\{
+    \begin{aligned}
+        -z''+z&=u-u_{h},\\
+        z(0)=z(1)&=0.\\
+    \end{aligned}
+    \right.
+  \end{equation}
+  其变分形式为：
+  \begin{equation}
+    a(z,v)=(u-u_{h},v)_{L^{2}},\,\forall v\in V.
+  \end{equation}
+  从而：
+  \begin{equation}
+    \begin{aligned}
+      \norm{u-u_{h}}_{0}&=a(z,u-u_{h})\\
+      &=a(z-\omega_{h},u-u_{h})\,\forall\omega_{h}\in V_{h}\\
+    \end{aligned}
+  \end{equation}
+  取$\omega_{h}$为函数$z$的分段线性插值$z_{I}$，那么:
+  \begin{equation}
+    a(z-z_{I},u-u_{h})\le C\norm{z-z_{I}}_{1}\norm{u-u_{h}}_{1}\le Ch^{2}\norm{z''}_{0}\norm{f}_{0}.
+  \end{equation}
+  由 \eqref{eq:enermy-norm}，$\norm{z''}_{0}\le C\norm{u-u_{h}}_{0}$，结论得证。
+\end{proof}
 \end{document}
