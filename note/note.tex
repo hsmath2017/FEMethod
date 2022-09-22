@@ -62,7 +62,7 @@
 
 \mainmatter
 
-\chapter{引入}
+\chapter{一维有限元方法}
 \section{为什么需要有限元方法？}
 此前在《微分方程数值解》课程中，我们已经学习了有限差分法和有限体积法。这两种方法有不少优点：首先，比较直观，只要知道如何利用差分近似导数即可得到对应的差分公式；其次，在一些情形下，有限差分和有限体积方法可以实现较高的计算精度。
 
@@ -328,5 +328,53 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
 \end{theorem}
 \begin{proof}
   见任何一本数值分析教材。
+\end{proof}
+根据\ref{thm:interperror}和\ref{lem:cea},可以针对$\norm{u-u_{h}}_{1}$进行估计。
+\begin{equation}
+  \label{eq:ceaestimate}
+  \norm{u-u_{h}}_{1}^{2}\le\norm{u-u_{I}}_{1}^{2}=\int_{0}^{1}((u-u_{I})^{2}+(u'-u_{I}')^{2})\dif x\le(\frac{1}{64}h^{4}+h^{2})\max_{[0,1]}|u''(x)|^{2}.
+\end{equation}
+从而，我们导出了下面的估计定理:
+\begin{theorem}
+  \label{thm:estimatebyinftynorm}
+  \begin{equation}
+    \norm{u-u_{h}}_{1}\le 2h\max_{[0,1]}|u''|.
+  \end{equation}
+\end{theorem}
+\ref{thm:estimatebyinftynorm}给出了利用无穷范数控制$\norm{\cdot}_{1}$的方法。但由于二阶求导可能会大幅度提升$u$的振幅，$\max_{[0,1]}|u''|$可能会大的令人难以接受，所以我们最好能找到更合理的范数估计。事实上，如果右端项取$u''$的$L^{2}-norm$，我们可以有下面的估计:
+\begin{theorem}
+  \label{thm:estimatebyL2}
+  \begin{equation}
+    \norm{u-u_{h}}_{1}\le Ch\norm{u''}_{0}\le Ch\norm{f}_{0}.
+  \end{equation}
+\end{theorem}
+在介绍\ref{thm:estimatebyL2}的证明前，我们需要先给出一些命题。当这些命题得到证明后，\ref{thm:estimatebyL2}可自然得到。
+\begin{proposition}
+  如果$w\in C^{2}$是下面的微分方程的解：
+  \begin{equation}
+    \label{eq:odeforw}
+    \left\{
+      \begin{aligned}
+        &-w''+w=g(x),x\in(0,1),\\
+        &w(0)=w(1)=0.\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  则有
+  \begin{equation}
+    \label{eq:enermy-norm}
+  \int_{0}^{1}(w'')^{2}\dif x\le\int_{0}^{1}g^{2}\dif x.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  在\eqref{eq:odeforw}的第$(1)$式左右两边同乘$w''$，并同时在区间$[0,1]$上积分: 
+  \begin{equation}
+    \begin{aligned}
+      &\int_{0}^{1}(-w''+w)w''\dif x=\int_{0}^{1}g(x)w''(x)\dif x\\
+      \Rightarrow&\int_{0}^{1}(w'')^{2}\dif x+\int_{0}^{1}(w')^{2}\dif x=-\int_{0}^{1}g(x)w''(x)\dif x\\
+      \Rightarrow&\int_{0}^{1}(w'')^{2}\dif x\le\int_{0}^{1}g(-w'')\dif x\le \norm{g}_{0}\norm{w''}_{0}\\
+      \Rightarrow&\norm{w''}_{0}\le\norm{g}_{0}\\
+    \end{aligned}
+  \end{equation}
 \end{proof}
 \end{document}
