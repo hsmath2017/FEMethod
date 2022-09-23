@@ -489,4 +489,107 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
   \end{equation}
   由 \eqref{eq:enermy-norm}，$\norm{z''}_{0}\le C\norm{u-u_{h}}_{0}$，结论得证。
 \end{proof}
+\section{一阶非齐次BVP}
+接下来我们把研究对象改为一般的非齐次两点边值问题。事实上，虽然方程看似复杂了些，但处理方法和之前基本一致。
+
+考虑下面的例子:
+\begin{equation}
+  \label{eq:unhomobvp}
+  \left\{
+    \begin{aligned}
+      &-(k(x)u')'+q(x)u=f(x),\;x\in(0,1),\\
+      &u(0)=\alpha,\; u(1)=\beta.
+    \end{aligned}
+  \right.
+\end{equation}
+其中$k(x)\in C^{1}$, $k(x)\ge k_{0}>0$, $q(x)\ge 0$.
+
+和齐次问题同样的道理，先考虑该问题的变分形式。在\eqref{eq:unhomobvp}两端同乘函数$v$并在$[0,1]$上积分，有：
+\begin{equation}
+  \label{eq:bianfen2}
+  \begin{aligned}
+  &\int_{0}^{1}[-(k(x)u')'v(x)+q(x)u(x)v(x)]\dif x=\int_{0}^{1}f(x)v(x)\dif x\\
+  \Rightarrow &\int_{0}^{1}quv\dif x-\int_{0}^{1}v(x)\dif(k(x)u')=\int_{0}^{1}f(x)v(x)\dif x\\
+  \Rightarrow &\int_{0}^{1}(quv+ku'v')\dif x+v(0)k(0)u'(0)-v(1)k(1)u'(1)=\int_{0}^{1}f(x)v(x)\dif x.\\
+  \end{aligned}
+\end{equation}
+要保证\eqref{eq:bianfen2}有意义，同样需要确保$u,v\in V:=W^{1,2}$。在此基础上，如果$v(0)=v(1)=1$，令
+$a(u,v):=\int_{0}^{1}(ku'v'+quv)\dif x$，$h(v):=\int_{0}^{1}fv\dif x$，则有:
+\begin{equation}
+  \label{eq:unhomobianfen}
+  a(u,v)=h(v)\;\forall v\in V,\; v(0)=v(1)=0.
+\end{equation}
+其中$u\in W:=\{v:\int_{0}^{1}((v')^{2}+v^2)\dif x<\infty, v(0)=\alpha, v(1)=\beta\}.$
+
+同样地，该问题也有与之相对应的极小化问题：
+\begin{example}
+  \label{ex:optimal2}
+  求$u\in W$ s.t. $J(u)\le J(v)\forall v\in W$, 此处$J(v):=\frac{1}{2}a(v,v)-f(v)$。
+\end{example}
+
+下一步则是构造对应的线性有限元空间。注意到，对于非齐次边值问题，函数集合$W$并不构成线性空间，所以我们构建的“线性有限元空间”实际上是一个由分段线性函数构成的子集。但与此同时，这个子集可以写成陪集(coset)的形式，所以我们依旧可以利用基底的线性组合来表示这个函数集合。
+
+取$[0,1]$区间的分划$0=x_{0}<x_{1}<\cdots<x_{n-1}<x_{n}=1$，由于$u(0)=\alpha,u(1)=\beta$，记函数集合$W_{h}:=\{w\in C(0,1):w|_{[x_{i},x_{i+1}]}\in\mathbb{P}_{1},w(0)=\alpha,w(1)=\beta\}$，那么我们必定有$u\in W_{h}$。$V_{h}$的定义同\ref{eq:linearFE}，设分段线性函数$g(x)$满足：
+\begin{equation}
+  \label{eq:segmentlinearcondition}
+  g(0)=\alpha,g(1)=\beta,\forall i\in[1,n-1],g(x_{i})=0.
+\end{equation}
+那么我们有$W_{h}=g+V_{h}$。
+
+最后考虑有限元近似求解。此处$\phi_{i}$的定义沿用\eqref{eq:hatfunc}的表达式，记$u_{h}(x):=g(x)+\sum_{i=1}^{n-1}\alpha_{i}\phi_{i}(x)$，$v_{i}(x):=\phi_{i}(x)$，代入\eqref{eq:unhomobianfen}，得:
+\begin{equation}
+  \label{eq:FEfenliang}
+  a(g,\phi_{i})+\sum_{j=1}^{n-1}\alpha_{j}a(\phi_{j},\phi_{i})=h(\phi_{i}).
+\end{equation}
+由$a(\cdot,\cdot)$的对称性，我们把\eqref{eq:FEfenliang}转化为矩阵形式$(Ax=b)$。其中刚度矩阵$A:=a(\phi_{i},\phi_{j})_{i,j=1}^{n-1}$，负载$b:=(h(\phi_{i})-a(g,\phi_{i}))^{t}$。可以证明，刚度矩阵仍旧为对称正定三对角矩阵。但刚度矩阵和负载向量的计算则需要通过数值积分完成。当然，在编程计算刚度矩阵时，利用装配技巧同样能节省存储空间并增加程序的可读性。
+
+与齐次方程同样，非齐次方程变分问题的有限元解也有与之相对应的Cea引理和各种范数估计，且证明方法近乎雷同，故此处省略不表，留作习题。
+
+\begin{remark}
+  \eqref{eq:unhomobvp}中$q(x)\ge 0$的条件似乎应当改为$q(x)\ge q_{0}>0$，否则Cea引理的证明会出问题。举个例子，如果$q(x)\equiv 0$，引出的就不再是对$\norm{u-u_{h}}_{1}$的估计，而是$\norm{u'-u_{h}'}_{0}$的估计。
+\end{remark}
+\section{其他边值问题}
+\subsection{Neumann边值问题}
+问题描述：
+\begin{equation}
+  \label{eq:Neumann}
+  \left\{
+    \begin{aligned}
+    &-(ku')'+qu=f\\
+    &-k(0)u'(0)=\gamma_{1},k(1)u'(1)=\gamma_{2}\\
+    \end{aligned}
+  \right.
+\end{equation}
+
+变分形式：
+\begin{equation}
+  \int_{0}^{1}(ku'v'+quv)\dif x=\int_{0}^{1}fv\dif x+\gamma_{2}v(1)+\gamma_{1}v(0).
+\end{equation}
+\subsection{Robin边值问题}
+问题描述：
+\begin{equation}
+  \label{eq:Robin}
+  \left\{
+    \begin{aligned}
+    &-(ku')'+qu=f\\
+    &-k(0)u'(0)=-\beta_{1}u(0)+\gamma_{1},k(1)u'(1)=-\beta_{2}u(1)+\gamma_{2}\\
+    \end{aligned}
+  \right.
+\end{equation}
+
+变分形式:
+\begin{equation}
+  \int_{0}^{1}(ku'v'+quv)\dif x=\int_{0}^{1}fv\dif x+\gamma_{1}v(0)+\gamma_{2}v(1)-\beta_{1}u(0)v(0)-\beta_{2}u(1)v(1).
+\end{equation}
+
+\section{本章总结}
+有限元的基本逻辑：
+\begin{itemize}
+  \item 两边相乘试验函数，同时积分。
+  \item 给出变分形式。
+  \item 构造函数空间的有限维子空间。
+  \item 在有限维子空间上求解变分形式。
+  \item 误差估计。
+\end{itemize}
+由于有限元方法的输出并非解函数在某些点上的取值或者控制体上的积分平均值，而是整体函数，其误差范数定义和有限差/有限体方法有一些区别。本章中常用的范数是$L^{2}$范数和$W^{1,2}$范数。同样，由于有限元方法是在函数空间中求解优化问题或者线性方程，函数逼近论在有限元方法的研究中居于重要地位。
 \end{document}
