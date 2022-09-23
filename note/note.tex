@@ -1,6 +1,7 @@
 \documentclass[lang=cn,10pt,newtx]{elegantbook}
 \usepackage{tikz}
 \usepackage{float}
+\allowdisplaybreaks[4]
 \newtheorem{Thm}{\hspace{2em}定理}[section]
 \newcommand{\supp}{\text{supp}}
 \newcommand{\dif}{\mathrm{d}}
@@ -348,8 +349,11 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
     \norm{u-u_{h}}_{1}\le Ch\norm{u''}_{0}\le Ch\norm{f}_{0}.
   \end{equation}
 \end{theorem}
-在介绍\ref{thm:estimatebyL2}的证明前，我们需要先给出一些命题。当这些命题得到证明后，\ref{thm:estimatebyL2}可自然得到。
+\begin{proof}
+在介绍\ref{thm:estimatebyL2}的证明前，我们需要先给出一些命题。
+\newpage
 \begin{proposition}
+  \label{prop:enermy}
   如果$w\in C^{2}$是下面的微分方程的解：
   \begin{equation}
     \label{eq:odeforw}
@@ -380,16 +384,83 @@ J(u_{N})\le J(v)\forall v\in V_{N}.
 \begin{remark}
   该结论的证明思路正是偏微分方程理论中非常常见的“能量模估计”。
 \end{remark}
+\begin{proposition}
+  \label{prop:Gxt}
+  记
+  \begin{equation}
+    \label{eq:Gxt}
+    G_{i}(x,t)=\left\{
+      \begin{aligned}
+        &(t-x_i)(x-x_{i+1}),x>t ,\\
+        &(x-x_{i})(t-x_{i+1}),x\le t.\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  那么在$[x_{i},x_{i+1}]$上，有下面这一等式成立：
+  \begin{equation}
+    (u(x)-u_{I}(x))(x_{i+1}-x_{i})=\int_{x_{i}}^{x_{i+1}}G_{i}(x,t)u''(t)\dif t.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  记符号$h_{i}:=x_{i+1}-x_{i}$，计算右端项的积分，有：
+  \begin{equation}
+    \begin{aligned}
+      &\int_{x_{i}}^{x_{i+1}}G_{i}(x,t)u''(t)\dif t\\
+      =&(x-x_{i+1})\int_{x_{i}}^{x}(t-x_{i})u''(t)\dif t+(x-x_{i})\int_{x}^{x_{i+1}}u''(t)(t-x_{i+1})\dif t\\
+      =&(x-x_{i+1})\left[\int_{x_{i}}^{x}(t-x_{i})\dif u'(t)\right]+(x-x_{i})\left[\int_{x}^{x_{i+1}}(t-x_{i})\dif u'(t)\right]\\
+      =&(x-x_{i+1})\left[(x-x_{i})u'(x)-\int_{x_{i}}^{x}u'(t)\dif t\right]+(x-x_{i})\left[(x_{i+1}-x)u'(x)-\int_{x}^{x_{i+1}}u'(t)\dif t\right]\\
+      =&h_{i}u(x)+(x-x_{i+1})u(x_{i})-(x-x_{i})u(x_{i+1})\\
+      =&h_{i}(u(x)-u_{I}(x)).\\
+    \end{aligned}
+  \end{equation}
+  \end{proof}
+  下面利用\ref{prop:enermy}和\ref{prop:Gxt}证明定理\ref{thm:estimatebyL2}。首先讨论$\norm{u-u_{1}}_{0}$的估计。由\ref{prop:Gxt}，我们有:
+  \begin{equation}
+    \label{eq:norm0-estimate}
+    \begin{aligned}
+      \int_{0}^{1}[u(x)-u_{I}(x)]^{2}\dif x&=\sum_{i=0}^{n-1}\int_{x_{i}}^{x_{i+1}}[u(x)-u_{I}(x)]^{2}\dif x\\
+      &=\sum_{i=0}^{n-1}\int_{x_{i}}^{x_{i+1}}\left[\frac{1}{x_{i+1}-x_{i}}\int_{x_{i}}^{x_{i+1}}G_{i}(x,t)u''(t)\dif t\right]^{2}\dif x.\\
+      &\le\sum_{i=0}^{n-1}(x_{i+1}-x_{i})\left[\frac{1}{x_{i+1}-x_{i}}\int_{x_{i}}^{x_{i+1}}(t-x_{i})(x_{i+1}-t)|u''(t)|\dif t\right]^{2}\\
+      &\le\sum_{i=0}^{n-1}(x_{i+1}-x_{i})\left[\frac{x_{i+1}-x_{i}}{4}\int_{x_{i}}^{x_{i+1}}|u''(t)|\dif t\right]^{2}\\
+      &\le\sum_{i=0}^{n-1}\frac{(x_{i+1}-x_{i})^{3}}{16}\left[\int_{x_{i}}^{x_{i+1}}|u''(t)|\dif t\right]^{2}\allowdisplaybreaks[4]\\
+      &\le\sum_{i=0}^{n-1}\frac{(x_{i+1}-x_{i})^{4}}{16}\int_{x_{i}}^{x_{i+1}}|u''(t)|^{2}\dif t\\
+      &\le\frac{h^4}{16}\int_{0}^{1}|u''(t)|^{2}\dif t.
+    \end{aligned}
+  \end{equation}
+  \eqref{eq:norm0-estimate}中，第三行和第四行的不等式都源于对函数$G_{i}(x,t)$的估计，第六行的不等式则源于柯西不等式。
+  
+  由\ref{prop:Gxt}可知，在$[x_{i},x_{i+1}]$上，我们有：
+  \begin{equation}
+    \label{eq:dir}
+    \begin{aligned}
+    |u'(x)-u_{I}'(x)|&=\left|\frac{1}{x_{i+1}-x_{i}}\left[\int_{x_{i}}^{x}\frac{(t-x_{i})u''(t)}{x_{i+1}-x_{i}}\dif t+\int_{x}^{x_{i+1}}\frac{(t-x_{i+1})u''(t)}{x_{i+1}-x_{i}}\dif t\right]\right|\\
+    &\le C(x_{i+1}-x_{i})^{\frac{1}{2}}\left(\int_{x_{i}}^{x_{i+1}}|u''(t)|^{2}\dif t\right)^{\frac{1}{2}}.
+    \end{aligned}
+  \end{equation}
+  \eqref{eq:dir}中，$C$为常数，该不等式由柯西不等式导出。借助该式，我们有：
+  \begin{equation}
+    \label{eq:direstimate}
+    \begin{aligned}
+      \int_{0}^{1}|u'(x)-u_{I}'(x)|^{2}\dif x&=\sum_{i=0}^{n-1}\int_{x_{i}}^{x_{i+1}}[u'(x)-u_{I}'(x)]^{2}\dif x\\
+      &\le\sum_{i=0}^{n-1}C^{2}(x_{i+1}-x_{i})^{2}\int_{x_{i}}^{x_{i+1}}|u''(t)|^{2}\dif t\\
+      &\le C^{2}h^{2}\int_{0}^{1}|u''(t)|^{2}\dif t.
+    \end{aligned}
+  \end{equation}
+  联立\eqref{eq:norm0-estimate}和\eqref{eq:direstimate}，结合引理\ref{lem:cea}和命题\ref{prop:enermy}，定理\ref{thm:estimatebyL2}得证。
+\end{proof}
 \begin{remark}
-  此处需要补充一些证明
+  对\ref{thm:estimatebyL2}，可以用Fourier分析给出一个更优的估计。
 \end{remark}
+\begin{exercise}
+  补充\eqref{eq:direstimate}的证明细节，并给出常数$C$的值。
+\end{exercise}
 利用定理\ref{thm:estimatebyL2},对于$\norm{u-u_{h}}_{0}$，我们可以给出更精细的估计：
-\begin{proposition}{Aubin-Nitsche技巧}
+\begin{theorem}{Aubin-Nitsche技巧}
   \begin{equation}
     \label{eq:AubinNitsche}
     \norm{u-u_{h}}_{0}\le Ch^{2}\norm{u''}_{0}.
   \end{equation}
-\end{proposition}
+\end{theorem}
 \begin{proof}
   考虑辅助问题:
   \begin{equation}
