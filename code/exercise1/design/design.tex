@@ -1,0 +1,265 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{appendix}
+\usepackage{enumitem}
+\usepackage{abstract}
+\usepackage{multirow}
+\pagestyle{fancy}
+\lfoot{}%这条语句可以让页码出现在下方
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem{eg}{Example}[section]
+\newcommand{\supp}{\text{supp}}
+\newcommand{\Rn}{\mathbb{R}^{n}}
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\cp}{\cdot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+\newcommand{\DR}{\mathcal{D}_{\widetilde{LN}}^{n}}
+\newcommand{\add}[2]{\sum_{#1=1}^{#2}}
+\newcommand{\innerprod}[2]{\left<#1,#2\right>}
+\newcommand\tbbint{{-\mkern -16mu\int}}
+\newcommand\tbint{{\mathchar '26\mkern -14mu\int}}
+\newcommand\dbbint{{-\mkern -19mu\int}}
+\newcommand\dbint{{\mathchar '26\mkern -18mu\int}}
+\newcommand\bint{
+{\mathchoice{\dbint}{\tbint}{\tbint}{\tbint}}
+}
+\newcommand\bbint{
+{\mathchoice{\dbbint}{\tbbint}{\tbbint}{\tbbint}}
+}
+\title{1D Linear Finite Element Method Design}
+\author{Shuang Hu}
+\begin{document}
+\maketitle
+\section{问题描述}
+设计并实现一维线性有限元方法，求解下面的边值问题:
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        &-(k(x)u')'+q(x)u=f(x),\\
+        &u(0)=\alpha, u(1)=\beta.\\
+    \end{aligned}
+    \right.
+\end{equation}
+其中$k(x)\in C^{1}$, $k(x)\ge k_{0}>0$, $q(x)\ge 0$。
+
+边界条件可以修改为下面的Neumann条件
+\begin{equation}
+    -k(0)u'(0)=\gamma_{1},k(1)u'(1)=\gamma_{2}.
+\end{equation}
+或者Robin条件
+\begin{equation}
+    -k(0)u'(0)=-\beta_{1}u(0)+\gamma_{1},k(1)u'(1)=-\beta_{2}u(1)+\gamma_{2}.
+\end{equation}
+\section{class RealFunc}
+\begin{itemize}
+    \item 表示标量函数$f:\mathbb{R}\rightarrow\mathbb{R}$。
+    \item \textbf{成员函数:}
+    \begin{enumerate}
+        \item \texttt{virtual const double operator(double x) const = 0;}
+        
+        \textbf{public成员函数}
+
+        \textbf{输入:}自变量$x\in\mathbb{R}$。
+
+        \textbf{输出:}函数值$f(x)\in\mathbb{R}$。
+
+        \textbf{作用:}存放方程中需要存放的具体函数，在该问题中为$k(x),q(x),f(x)$。具体函数表达式由派生类实现。
+    \end{enumerate}
+\end{itemize}
+
+\section{class MeshGrid}
+\begin{itemize}
+    \item 表示有限元离散网格。
+    \item \textbf{成员变量:}
+    \begin{enumerate}
+        \item \texttt{bool uniform:}\textbf{private成员变量}，表示当前离散网格是否为规则网格。
+        \item \texttt{int size:}\textbf{private成员变量}，表示当前离散小区间的数量。
+        \item \texttt{double LeftSide:}\textbf{private成员变量}，表示区间左端点。
+        \item \texttt{double RightSide:}\textbf{private成员变量}，表示区间右端点。
+        \item \texttt{std::vector<double> meshgrid:}\textbf{private成员变量}，表示网格节点$\{x_{i}\}$。
+    \end{enumerate}
+    \item \textbf{成员函数:}
+    \begin{enumerate}
+        \item \texttt{MeshGrid() = default;}
+        
+        \textbf{默认构造函数。}
+
+        \item \texttt{MeshGrid(int \_size, double Left, double Right, bool isuniform=true,\\ const std::vector<double>\& meshgrid=\{\});}
+        
+        \textbf{构造函数}
+
+        \textbf{输入:}\texttt{MeshGrid}需要的所有参数。
+
+        \textbf{作用:}用具体参数初始化离散网格对象，包括规则网格情形和不规则网格情形。
+    \end{enumerate}
+\end{itemize}
+
+\section{class PiecewiseLinear}
+\begin{itemize}
+    \item 表示分段线性函数。
+    \item \textbf{成员变量:}
+    \begin{enumerate}
+        \item \texttt{std::vector<double> nodes:}\textbf{private成员变量}，表示分段线性函数的每个分段点。
+        \item \texttt{std::vector<double> value:}
+        \textbf{private成员变量}，表示分段函数每个分段点上的取值。
+    \end{enumerate}
+    \item \textbf{成员函数:}
+    \begin{enumerate}
+        \item \texttt{PiecewiseLinear(const std::vector<double>\& \_nodes, const std::vector<double>\& \_value);}
+        
+        \textbf{构造函数}
+
+        \item \texttt{PiecewiseLinear operator*(double r);}
+        
+        \textbf{public成员函数}
+
+        \textbf{输入:}数乘系数$r$。
+
+        \textbf{输出:}数乘后得到的分段线性函数$rf$。
+
+        \textbf{作用:}实现实数和分段线性函数的数乘。
+        
+        \item \texttt{friend PiecewiseLinear operator+(const PiecewiseLinear\& p1, const PiecewiseLinear\& p2);}
+        
+        \textbf{友元函数}
+
+        \textbf{输入:}分段线性函数$p_{1}$, $p_{2}$。
+
+        \textbf{输出:}两个分段线性函数的和$p_{1}+p_{2}$。
+
+        \textbf{作用:}实现分段线性函数的加法。
+        
+        \item \texttt{double operator()(double x):}
+        
+        \textbf{public成员函数}
+
+        \textbf{输入:}自变量取值$x$。
+
+        \textbf{输出:}该自变量代入分段线性函数$p$求得的函数值$p(x)$。
+
+        \textbf{作用:}用于刻画分段线性函数的解析式。
+    \end{enumerate}
+\end{itemize}
+\section{class FuncBasis}
+\begin{itemize}
+    \item 表示分段线性函数基底。
+    \item \textbf{成员变量:}
+    \begin{enumerate}
+        \item \texttt{std::vector<double> nodes:}\textbf{private成员变量,}表示插值基函数节点。
+        
+        \item \texttt{std::vector<PiecewisePolynomial>:}\textbf{private成员变量,}存储区间上所有的hat-function。
+    \end{enumerate}
+    \item \textbf{成员函数:}
+    \begin{enumerate}
+        \item \texttt{FuncBasis() = default;}
+        
+        \textbf{默认构造函数}
+
+        \item \texttt{FuncBasis(const std::vector<double>\& \_nodes;)}
+        
+        \textbf{构造函数}
+
+        \textbf{输入:}构造B-样条插值基底的所有插值节点。
+
+        \textbf{作用:}利用给定的节点构造一维B-样条插值基函数。
+    \end{enumerate}
+\end{itemize}
+\section{class BVP}
+\texttt{enum BdryType\{Dirichlet = 0, Neumann = 1, Robin = 2\};}
+\begin{itemize}
+    \item 存储边值问题的相关信息，并求解之。
+    \item \textbf{模板:}\texttt{template<BdryType BCType>:}\texttt{BCType}表示边界条件类型。
+    \item \texttt{friend class MeshGrid;}
+    \item \texttt{friend class FuncBasis;}
+    \item \textbf{成员变量:}
+    \begin{enumerate}
+        \item \texttt{RealFunc* k,q,f:}\textbf{private成员变量}，表示当前BVP的函数参量。
+        \item \texttt{double LeftBC:}
+        \textbf{private成员变量}，表示当前BVP的左侧边值。
+        \item \texttt{double RightBC:}
+        \textbf{private成员变量}，表示当前BVP的右侧边值。
+        \item \texttt{MeshGrid mesh:}\textbf{private成员变量}，表示当前离散网格。
+        \item \texttt{FuncBasis basis:}\textbf{private成员变量}，表示当前离散网格下的插值基函数。
+    \end{enumerate}
+    \item \textbf{成员函数:}
+    \begin{enumerate}
+        \item \texttt{BVP(std::string jsonfile);}
+        
+        \textbf{构造函数}
+
+        \textbf{输入：}包含方程所有信息的json文件
+
+        \textbf{作用：}记录方程的所有参数。
+        
+        \item 
+        \texttt{template<class Func>}
+
+        \texttt{double Numerical\_Integral(double Left, double Right, Func f) const;}
+
+        \textbf{private成员函数}
+
+        \textbf{输入:}积分的左右端点，被积函数$f$。
+
+        \textbf{输出:}积分的近似值。
+
+        \textbf{作用:}近似计算$\int_{Left}^{Right}f(x)\dif x$。
+
+        \item \texttt{Eigen::VectorXd overload() const;}
+
+        \textbf{private成员函数}
+
+        \textbf{输出:}负载向量。
+
+        \textbf{作用:}近似计算负载向量。
+
+        \item \texttt{void Equip(Eigen::MatrixXd\& mat, int pos) const;}
+        
+        \textbf{private成员函数}
+        
+        \textbf{输入:}刚度矩阵mat,需要装配矩阵块的位置pos。
+
+        \textbf{作用:}对刚度矩阵进行计算与装配。
+
+        \item \texttt{PiecewisePolynomial solve() const;}
+        
+        \textbf{public成员函数}
+        
+        \textbf{输出:}求解得到的分段线性函数。
+
+        \textbf{作用:}对离散后的有限元问题进行数值求解。
+    \end{enumerate}
+\end{itemize}
+\end{document}
