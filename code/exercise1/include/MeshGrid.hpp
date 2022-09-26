@@ -5,8 +5,11 @@
  * @version 0.1
  * @date 2022-09-20
  */
+#ifndef _MeshGrid
+#define _MeshGrid
 #include<vector>
 #include<assert.h>
+#include "BVP.hpp"
 /**
  * @brief Mesh grids in 1-dimensional space.
  * 
@@ -19,6 +22,7 @@ protected:
     double LeftSide;
     double RightSide;
     std::vector<double> meshgrid;//\{x_{i}\},except for the Left-side and Right-side.
+    friend class BVP1D;
 public:
     /**
      * @brief Construct a new Mesh 1 D object
@@ -57,3 +61,5 @@ public:
         }
     }
 };
+#else
+#endif

@@ -5,7 +5,14 @@
  * @version 0.1
  * @date 2022-09-20
  */
+#ifndef _PiecewisePoly
+#define _PiecewisePoly
 #include "MeshGrid.hpp"
+#include <iostream>
+#include <ostream>
+#include <sstream>
+#include <fstream>
+
 /**
  * @brief Find the position of node nearest to x (when smaller than x)
  * @param [in] x input pos
@@ -40,18 +47,21 @@ private:
     std::vector<double> nodes;
     std::vector<double> value;
 public:
-    PiecewiseLinear();
+    PiecewiseLinear() = default;
     PiecewiseLinear(const std::vector<double>& anodes,const std::vector<double> avalue):nodes(anodes),value(avalue){};
-    PiecewiseLinear operator*(double r){
-        for(auto& v:value){
-            v=v*r;
+    PiecewiseLinear& operator=(const PiecewiseLinear& p)=default;
+    friend PiecewiseLinear operator*(double r,const PiecewiseLinear& p){
+        std::vector<double> newval;
+        std::vector<double> newnds=p.nodes;
+        for(auto v:p.value){
+            newval.push_back(v*r);
         }
-        return *this;
+        return PiecewiseLinear(newnds,newval);
     }
     friend PiecewiseLinear operator+(const PiecewiseLinear& P1,const PiecewiseLinear& P2){
         std::vector<double> newnds;
         std::vector<double> newval;
-        int i,j=0;
+        int i=0,j=0;
         auto nd1=P1.nodes;
         auto nd2=P2.nodes;
         auto val1=P1.value;
@@ -85,23 +95,48 @@ public:
         PiecewiseLinear PL(newnds,newval);
         return PL;
     }
-    double operator()(double x){
+    double operator()(double x) const{
         int n=nodes.size();
         if(x<=nodes[0]||x>=nodes[n-1]){
             return 0;
         }
-        int index=binary_find(x,nodes,0,n-1);
+        int index=0;
+        for(index;nodes[index]<=x;index++){
+        }
+        index--;
+        //int index=binary_find(x,nodes,0,n-1);
         double k=(value[index+1]-value[index])/(nodes[index+1]-nodes[index]);
         double ans=value[index]+k*(x-nodes[index]);
         return ans;
     }
-    double dir(double x){
+    double dir(double x) const{
         int n=nodes.size();
         if(x<=nodes[0]||x>=nodes[n-1]){
             return 0;
         }
-        int index=binary_find(x,nodes,0,n-1);
+        int index=0;
+        for(index;nodes[index]<=x;index++){
+        }
+        index--;
         double k=(value[index+1]-value[index])/(nodes[index+1]-nodes[index]);
         return k;        
     }
+    void draw() const{
+        std::ofstream fout("output.m");
+        fout<<"x = [ 0 ";
+        for(int i=1;i<=100;i++){
+            fout<<", "<<0.01*i;
+        }
+        fout<<"];"<<std::endl;
+        fout<<"y = [";
+        fout<<this->operator()(0);
+        for(int i=1;i<=100;i++){
+            fout<<", "<<this->operator()(0.01*i);
+        }
+        fout<<"];"<<std::endl;
+        fout<<"plot (x,y)"<<std::endl;
+        fout.close();
+    }
 };
+#else
+#endif

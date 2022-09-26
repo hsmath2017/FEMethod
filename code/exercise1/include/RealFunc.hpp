@@ -5,6 +5,8 @@
  * @version 0.1
  * @date 2022-09-20
  */
+#ifndef _RealFunc
+#define _RealFunc
 #include<math.h>
 #include<map>
 class Func{
@@ -19,7 +21,18 @@ public:
 
 class testhomogenious:public Func{
 public:
-    double operator()(double x){return 2*sin(x);}
+    double operator()(double x){return (1+M_PI*M_PI)*sin(M_PI*x);}
 };
 
-std::map<int,Func*> mp={{1,new constFunc()},{2,new testhomogenious()}};
+class simpletest:public Func{
+public:
+    double operator()(double x){return 2+x-x*x;}
+};
+
+class lineartest:public Func{
+public:
+    double operator()(double x){return x;}
+};
+std::map<int,Func*> mp={{1,new constFunc()},{2,new testhomogenious()},{3,new simpletest()},{4,new lineartest()}};
+#else
+#endif

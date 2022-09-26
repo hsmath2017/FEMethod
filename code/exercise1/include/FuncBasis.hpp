@@ -5,12 +5,15 @@
  * @version 0.1
  * @date 2022-09-20
  */
+#ifndef _FuncBasis
+#define _FuncBasis
 #include "MeshGrid.hpp"
 #include "PiecewiseLinear.hpp"
 class FuncBasis{
 private:
     std::vector<double> nodes;
     std::vector<PiecewiseLinear> BasisFunc;
+    friend class BVP1D;
 public:
     FuncBasis() = default;
     FuncBasis(const std::vector<double>& _nodes){
@@ -27,3 +30,5 @@ public:
         }
     }
 };
+#else
+#endif
