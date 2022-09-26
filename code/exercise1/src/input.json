@@ -1,0 +1,15 @@
+{
+    "mesh": {
+        "uniform": true,
+        "leftside": 0,
+        "rightside": 1,
+        "size": 16,
+        "meshgrid": []
+    },
+    "Functionk": 1,
+    "Functionq": 1,
+    "Functionf": 2,
+    "BdryType": "Dirichlet",
+    "RobinBeta1": 0.0,
+    "RobinBeta2": 0.0
+}

@@ -40,6 +40,7 @@ private:
     std::vector<double> nodes;
     std::vector<double> value;
 public:
+    PiecewiseLinear();
     PiecewiseLinear(const std::vector<double>& anodes,const std::vector<double> avalue):nodes(anodes),value(avalue){};
     PiecewiseLinear operator*(double r){
         for(auto& v:value){
@@ -93,5 +94,14 @@ public:
         double k=(value[index+1]-value[index])/(nodes[index+1]-nodes[index]);
         double ans=value[index]+k*(x-nodes[index]);
         return ans;
+    }
+    double dir(double x){
+        int n=nodes.size();
+        if(x<=nodes[0]||x>=nodes[n-1]){
+            return 0;
+        }
+        int index=binary_find(x,nodes,0,n-1);
+        double k=(value[index+1]-value[index])/(nodes[index+1]-nodes[index]);
+        return k;        
     }
 };

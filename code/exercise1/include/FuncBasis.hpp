@@ -7,27 +7,23 @@
  */
 #include "MeshGrid.hpp"
 #include "PiecewiseLinear.hpp"
-class FuncBasis:public Mesh1D{
+class FuncBasis{
 private:
+    std::vector<double> nodes;
     std::vector<PiecewiseLinear> BasisFunc;
 public:
-    using Mesh1D::meshgrid;
-    using Mesh1D::LeftSide;
-    using Mesh1D::RightSide;
-    using Mesh1D::size;
-    FuncBasis(int nsize,double Left,double Right,bool isuniform=true,const std::vector<double>& mesh={}):Mesh1D(nsize,Left,Right,isuniform,mesh){
-        for(int i=0;i<mesh.size();i++){
-            std::vector<double> nodes;
-            std::vector<double> val={0,1,0};
-            if(i==0){
-                nodes={Left,mesh[i],mesh[i+1]};
-            }else if(i==mesh.size()-1){
-                nodes={mesh[i-1],mesh[i],Right};
-            }else{
-                nodes={mesh[i-1],mesh[i],mesh[i+1]};
-            }
-            PiecewiseLinear P(nodes,val);
-            BasisFunc.push_back(P);
+    FuncBasis() = default;
+    FuncBasis(const std::vector<double>& _nodes){
+        for(auto v:_nodes){
+            nodes.push_back(v);
+        }
+        int n=_nodes.size();
+        for(int i=0;i<=n-1;i++){
+            std::vector<double> vals;
+            vals.resize(n);
+            vals[i]=1;
+            PiecewiseLinear PL(nodes,vals);
+            BasisFunc.push_back(PL);
         }
     }
 };
