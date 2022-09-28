@@ -11,7 +11,7 @@
 #include "PiecewiseLinear.hpp"
 #include "RealFunc.hpp"
 int main(){
-    std::string filename="input.json";
+    std::string filename="../src/Robininput.json";
     BVP1D Problem(filename);
     auto PL=Problem.solve();
     PL.draw();

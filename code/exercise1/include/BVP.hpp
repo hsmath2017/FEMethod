@@ -93,7 +93,7 @@ private:
             }
             else if (i == mesh.size)
             {
-                res = Numerical_Integral(mesh.meshgrid[i-i], mesh.meshgrid[i], func);
+                res = Numerical_Integral(mesh.meshgrid[i-1], mesh.meshgrid[i], func);
             }
             else
             {
@@ -137,9 +137,10 @@ private:
             {
                 for (int j = std::max(i - 1, 0); j <= std::min(size - 1, i + 1); j++)
                 {
-                    mat.coeffRef(i, j) += inner_prod(i, j);
+                    mat.coeffRef(i, j) = inner_prod(i, j);
                 }
             }
+            inner_prod(size-1,size-1);
             break;
         case Robin:
             for (int i = 0; i < size; i++)
@@ -149,8 +150,8 @@ private:
                     mat.coeffRef(i, j) = inner_prod(i, j);
                 }
             }
-            mat.coeffRef(0, 0) -= RobinBeta1 * LeftBC;
-            mat.coeffRef(size - 1, size - 1) -= RobinBeta2 * RightBC;
+            mat.coeffRef(0, 0) += RobinBeta1 ;
+            mat.coeffRef(size - 1, size - 1) += RobinBeta2 ;
             break;
         }
     }
@@ -216,8 +217,11 @@ public:
         coef_matrix(mat);
         Eigen::VectorXd load_vec;
         overload(load_vec);
+        //std::cout<<mat<<std::endl;
+        //std::cout<<load_vec<<std::endl;
         Eigen::SimplicialCholesky<SpMat> chol(mat);
         Eigen::VectorXd coefs = chol.solve(load_vec);
+        //std::cout<<coefs<<std::endl;
         PiecewiseLinear P;
         for (int i = 0; i < mesh.size + 1; i++)
         {
@@ -244,7 +248,7 @@ void BVP1D::overload(Eigen::VectorXd &ans) const
             {
                 return f->operator()(x) * funcbase[i](x);
             };
-            ans(i) = ans(i) + Numerical_Integral(nowgrid[i - 1], nowgrid[i], func);
+            ans(i) = Numerical_Integral(nowgrid[i - 1], nowgrid[i], func);
             ans(i) = ans(i) + Numerical_Integral(nowgrid[i], nowgrid[i + 1], func);
         }
         ans(1) = ans(1) - LeftBC*inner_prod(0, 1);
@@ -255,6 +259,9 @@ void BVP1D::overload(Eigen::VectorXd &ans) const
         ans(size - 1) = RightBC;
         for (int i = 0; i < size; i++)
         {
+            if(i!=0&&i!=(size-1)){
+                ans(i)=0;
+            }
             auto func = [i, this, funcbase](double x)
             {
                 return f->operator()(x) * funcbase[i](x);

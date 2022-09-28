@@ -33,6 +33,11 @@ class lineartest:public Func{
 public:
     double operator()(double x){return x;}
 };
-std::map<int,Func*> mp={{1,new constFunc()},{2,new testhomogenious()},{3,new simpletest()},{4,new lineartest()}};
+
+class func5:public Func{
+public:
+    double operator()(double x){return x*x-1;}
+};
+std::map<int,Func*> mp={{1,new constFunc()},{2,new testhomogenious()},{3,new simpletest()},{4,new lineartest()}, {5, new func5()}};
 #else
 #endif

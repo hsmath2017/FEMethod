@@ -1,0 +1,17 @@
+{
+    "mesh": {
+        "uniform": true,
+        "leftside": 0,
+        "rightside": 1,
+        "size": 256,
+        "meshgrid": []
+    },
+    "LeftBC": 0.0,
+    "RightBC": 0.0,
+    "Functionk": 4,
+    "Functionq": 4,
+    "Functionf": 5,
+    "BdryType": "Robin",
+    "RobinBeta1": 0.0,
+    "RobinBeta2": -1.0
+}

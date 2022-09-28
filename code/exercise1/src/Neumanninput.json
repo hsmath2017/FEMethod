@@ -3,15 +3,15 @@
         "uniform": true,
         "leftside": 0,
         "rightside": 1,
-        "size": 128,
+        "size": 256,
         "meshgrid": []
     },
     "LeftBC": 0.0,
     "RightBC": 1.0,
-    "Functionk": 1,
-    "Functionq": 1,
-    "Functionf": 4,
-    "BdryType": "Dirichlet",
+    "Functionk": 4,
+    "Functionq": 4,
+    "Functionf": 5,
+    "BdryType": "Neumann",
     "RobinBeta1": 0.0,
     "RobinBeta2": 0.0
 }

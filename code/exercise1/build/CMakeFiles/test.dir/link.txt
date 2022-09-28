@@ -1,0 +1,1 @@
+/usr/bin/g++  -std=c++14 -rdynamic CMakeFiles/test.dir/src/uniformtest.cpp.o -o ../bin/test   -L/usr/local/lib  -L/usr/include  -Wl,-rpath,/usr/local/lib:/usr/include -ljsoncpp 

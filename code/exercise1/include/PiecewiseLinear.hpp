@@ -97,7 +97,13 @@ public:
     }
     double operator()(double x) const{
         int n=nodes.size();
-        if(x<=nodes[0]||x>=nodes[n-1]){
+        if(x==nodes[n-1]){
+            return value[n-1];
+        }
+        if(x==nodes[0]){
+            return value[0];
+        }
+        if(x<nodes[0]||x>nodes[n-1]){
             return 0;
         }
         int index=0;
