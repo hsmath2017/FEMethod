@@ -1,5 +1,0 @@
-/home/shuang/FEMethod/code/exercise1/build/CMakeFiles/testDirichlet.dir
-/home/shuang/FEMethod/code/exercise1/build/CMakeFiles/testNeumann.dir
-/home/shuang/FEMethod/code/exercise1/build/CMakeFiles/testRobin.dir
-/home/shuang/FEMethod/code/exercise1/build/CMakeFiles/edit_cache.dir
-/home/shuang/FEMethod/code/exercise1/build/CMakeFiles/rebuild_cache.dir

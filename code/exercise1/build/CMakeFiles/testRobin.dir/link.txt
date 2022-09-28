@@ -1,1 +1,0 @@
-/usr/bin/g++  -std=c++14 -rdynamic CMakeFiles/testRobin.dir/src/Robintest.cpp.o -o ../bin/testRobin   -L/usr/local/lib  -L/usr/include  -Wl,-rpath,/usr/local/lib:/usr/include -ljsoncpp 
