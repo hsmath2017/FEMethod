@@ -720,4 +720,128 @@ $a(u,v):=\int_{0}^{1}(ku'v'+quv)\dif x$，$h(v):=\int_{0}^{1}fv\dif x$，则有:
   \end{itemize}
   那么优化问题\ref{prob:optimization}存在唯一解。
 \end{theorem}
+\begin{proof}
+  由于$a(u,v)$是连续对称椭圆双线性型，可知$a(u,v)$构成空间$V$上的一个内积，导出的范数记作$\norm{\cdot}$。由Riesz表示定理，可以把$f$用$a$表示，即:
+  \begin{equation}
+    \label{eq:getbyriesz}
+    \forall v\in V, f(v)=a(\sigma_{f},v).
+  \end{equation}
+  由\eqref{eq:getbyriesz}，代入\eqref{eq:optimization}可得：
+  \begin{equation}
+    \label{eq:simplifyJ}
+    \begin{aligned}
+      J(v)&=\frac{1}{2}a(v,v)-a(\sigma_{f},v)\\
+      &=\frac{1}{2}a(v-\sigma_{f},v-\sigma_{f})-\frac{1}{2}a(\sigma_{f},\sigma_{f}).
+    \end{aligned}
+  \end{equation}
+  由此，该极小化问题转化为在$U$上最小化$\norm{v-\sigma_{f}}$。由于$\sigma_{f}\in V$，而$U$是$V$的闭凸子集，借助闭凸子集投影的存在唯一性，当且仅当$v$是$\sigma_{f}$在$U$上的投影时，优化问题\ref{prob:optimization}取极小值。由此便证明了该问题解的存在唯一性。
+\end{proof}
+\subsection{变分问题的等价形式}
+在第一章中，我们说最小化$J(v)$的问题等价于求解泛函方程$a(u,v)=f(v)$。本节中，我们将进一步探究这两个问题之间的关系。
+\begin{theorem}
+  \begin{enumerate}
+    \item 如果$u$是问题\ref{prob:optimization}的解，当且仅当
+    \begin{equation}
+      \label{eq:equivalence1}
+      \forall v\in U,a(u,v-u)\ge f(v-u).
+    \end{equation}
+    \item 特别地，如果$U$是以0为顶点的凸锥，那么:
+    \begin{equation}
+      \label{eq:equivalence2}
+      \left\{
+        \begin{aligned}
+        \forall v\in U,&a(u,v-u)\ge f(v-u),\\
+        &a(u,u)=f(u).
+        \end{aligned}
+      \right.
+    \end{equation}
+    \item 特别地，如果$U$是$V$的闭子空间，那么：
+    \begin{equation}
+      \forall v\in U,a(u,v)=f(v).
+    \end{equation}
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  由Riesz表示定理，$f(v-u)=a(\sigma_{f},v-u)$。
+
+  先证明问题1的充分性部分。任取$v\in U$，可得：
+  \begin{equation}
+    \begin{aligned}
+      a(v-\sigma_{f},v-\sigma_{f})&=a(v-u+u-\sigma_{f},v-u+u-\sigma_{f})\\
+      &=a(v-u,v-u)+2a(v-u,u-\sigma_{f})+a(u-\sigma_{f},u-\sigma_{f})\\
+      &\ge a(u-\sigma_{f},u-\sigma_{f}).\\
+    \end{aligned}
+  \end{equation}
+  即，在\eqref{eq:equivalence1}成立时，$u$是\ref{prob:optimization}的解。
+
+  再证明其必要性部分。由于$U$是凸集，$\forall t\in(0,1)$，$tv+(1-t)u\in U$。如果$u$是\ref{prob:optimization}的解，那么：
+  \begin{equation}
+    a(\sigma_{f}-tv-(1-t)u,\sigma_{f}-tv-(1-t)u)\ge a(\sigma_{f}-u,\sigma_{f}-u).
+  \end{equation}
+  化简，有：
+  \begin{equation}
+    -2ta(\sigma_{f}-u,v-u)+t^2a(v-u,v-u)\ge 0.
+  \end{equation}
+  取$t\rightarrow 0$即可证\eqref{eq:equivalence1}成立。
+
+  对于问题2,由凸锥的性质，$u+v\in U$，在\eqref{eq:equivalence1}中取$v_{1}:=u+v$，可得$a(u,v)\ge f(v)$。又$0$在凸锥顶点，取$v=0$，可得$a(u,u)\le f(u)$。由此，$a(u,u)=f(u)$。
+
+  对于问题3，根据刚刚对于凸锥的推理，$a(u,v)\ge f(v)$。根据闭子空间的性质，$-v\in U$，将$\tilde{v}:=-v$可得$a(u,-v)\ge f(-v)$，即$a(u,v)\le f(v)$。由此，$a(u,v)=f(v)$。
+\end{proof}
+\section{Lax-Milgram引理}
+\begin{theorem}{Lax-Milgram引理}
+  设$V$是一个Hilbert空间，$a(\cdot,\cdot):V\times V\rightarrow\mathbb{R}$是一个连续V-椭圆双线性型，$f:V\rightarrow\mathbb{R}$是连续线性泛函，那么，存在唯一$u\in V$，使得：
+  \begin{equation}
+    \label{eq:targeteq}
+    a(u,v)=f(v)
+  \end{equation}
+  对任意$v\in V$成立。
+\end{theorem}
+\begin{remark}
+  此处$a(u,v)$并没有对称性条件，故不能诱导$V$上的内积。
+\end{remark}
+\begin{proof}
+  第一步：将双线性型$a(u,v)$转化为$V\rightarrow V'$的映射。
+
+  定义$Au(v):=a(u,v)$，则$Au\in V'$，且
+  \begin{equation}
+    \norm{Au}=\sup_{v\in V}\frac{|Au(v)|}{\norm{v}}\le M\norm{u}.
+  \end{equation}
+  由$a$的有界性，即可直接推出$Au$的有界性。由此:映射$A:V\rightarrow V',u\mapsto Au$为连续线性映射。\eqref{eq:targeteq}转换为$Au(v)=f(v)$。但直接比较$V'$上的两个元素并不容易。
+
+  第二步:将$V'$中两元素的比较转化为$V$中两元素的比较。
+
+  设$\tau$为$V'\rightarrow V$的Riesz表示映射，那么$Au=f\Leftrightarrow\tau Au=\tau f$。下面需要证明满足该等式的$u$存在唯一。关于存在唯一性的问题，我们可以通过构造压缩映射求解。
+
+  第三步:构造压缩映射。
+
+  记$T:V\rightarrow V$，其定义为:
+  \begin{equation}
+    T(v)=v-\rho(\tau Av-\tau f).
+  \end{equation}
+  $\rho$为一个可以自行选定的参数。$T$的不动点即$v=v-\rho(\tau Av-\tau f)$，可得$\tau Av=\tau f$。下证$T$在$\rho$取适当值的时候是压缩映射。
+
+  记$\varphi=v-w$，$v\in V,w\in V$，那么
+  \begin{equation}
+    \begin{aligned}
+      &\norm{Tv-Tw}^{2}\\
+      =&\norm{T\varphi}^{2}\\
+      =&\norm{\varphi-\rho(\tau A\varphi)}^{2}\\
+      =&\norm{\varphi}^{2}-2\rho\innerprod{\tau A\varphi}{\varphi}+\rho^{2}\innerprod{\tau A\varphi}{\tau A\varphi}\\
+      \le& \norm{\varphi}^2-2\rho\alpha\norm{\varphi}^{2}+\rho^{2}M^{2}\norm{\varphi}^{2}.
+    \end{aligned}
+  \end{equation}
+  最后一个不等号的依据是：1.$\tau$是等距同构。2.$A$是有界线性算子。3.$a(\varphi,\varphi)$的椭圆性。事实上：
+  \begin{equation}
+    \innerprod{\tau A\varphi}{\varphi}=(A\varphi)(\varphi)=a(\varphi,\varphi)\ge \alpha\norm{\varphi}^{2}.
+  \end{equation}
+  \begin{equation}
+    \innerprod{\tau A\varphi}{\tau A\varphi}=(A\varphi)(\tau A\varphi)=a(\varphi,\tau A\varphi)\le M\norm{\varphi}\norm{\tau A\varphi}\le M^{2}\norm{\varphi}^{2}.
+  \end{equation}
+  由此，只要$\rho<\frac{2\alpha}{M^{2}}$，$T$即为压缩映射，这意味着$\tau Au=\tau f$存在唯一解。
+\end{proof}
+\section{具体实例}
+\begin{remark}
+  此处内容可能用到一些Sobolev空间的相关知识，由于之后会专题讨论该内容，此处不过多赘述相关知识点。请读者翻阅后续的笔记内容，或参考任何一本泛函分析教材。
+\end{remark}
 \end{document}
