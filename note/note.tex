@@ -592,4 +592,132 @@ $a(u,v):=\int_{0}^{1}(ku'v'+quv)\dif x$，$h(v):=\int_{0}^{1}fv\dif x$，则有:
   \item 误差估计。
 \end{itemize}
 由于有限元方法的输出并非解函数在某些点上的取值或者控制体上的积分平均值，而是整体函数，其误差范数定义和有限差/有限体方法有一些区别。本章中常用的范数是$L^{2}$范数和$W^{1,2}$范数。同样，由于有限元方法是在函数空间中求解优化问题或者线性方程，函数逼近论在有限元方法的研究中居于重要地位。
+\chapter{变分原理}
+上一章中，我们用一个具体的例子说明了有限元的大体思路和操作步骤。本章则会着眼于变分问题的提法，给出一般情形下的变分问题(以及其等价形式)，并证明其解的存在唯一性。最后则是给出几个具体的算例以及它们各自的变分形式。
+\section{变分问题以及等价形式}
+在上一章定理\ref{thm:bianfen}中，我们针对一个特殊问题，提出了两种变分问题，并证明了这两种问题的等价性。本节中，我们将着眼于更一般的问题，并对一般的问题尝试说明两者的等价性，以及其解的存在唯一性。在此之前，先要做一些概念和定理上的准备。
+\subsection{预备知识}
+首先，我们讨论双线性函数。
+\begin{definition}{双线性函数}
+  一个\textbf{双线性函数}$a(\cdot,\cdot):V\times V\rightarrow\mathbb{R}$需要满足下面的条件：
+  \begin{itemize}
+    \item $a(k_{1}u+k_{2}v,w)=k_{1}a(u,w)+k_{2}a(v,w)$.
+    \item $a(u,k_{1}v+k_{2}w)=k_{1}a(u,v)+k_{2}a(u,w)$.
+  \end{itemize}
+  对任意$u,v\in V$, $k_{1},k_{2}\in F$均成立。特别地，假设$V$是以$\norm{\cdot}$为范数的赋范线性空间，如果对任意$u,v\in V$，存在$M>0$使得：
+  \begin{equation}
+    \label{eq:bddbilinear}
+    |a(u,v)|\le M\norm{u}\norm{v}
+  \end{equation}
+  总成立，那么我们称双线性型$a$为\textbf{有界的}或\textbf{连续的}。如果$\forall u,v\in V$，均有：
+  \begin{equation}
+    \label{eq:symmetrybilinear}
+    a(u,v)=a(v,u),
+  \end{equation}
+  那么双线性型$a$为\textbf{对称的}。如果满足下面的性质:
+  \begin{equation}
+    \label{eq:Vellipticbilinear}
+    \exists\alpha>0,\forall v\in V, \alpha\norm{v}^{2}\le a(v,v),
+  \end{equation}
+  则称双线性型$a$是\textbf{V-椭圆}的。
+\end{definition}
+特别地，第一章所述
+\begin{equation}
+  \label{eq:specialbilinear}
+  a(u,v)=\int_{0}^{1}(uv+u'v')\dif x,
+\end{equation}
+是一个有界且V-椭圆的双线性函数。双线性函数的性质在后续对变分问题的讨论中相当重要。
+
+为方便后续内容的展开，本节中将给出一些泛函分析中的重要结论。
+\begin{proposition}{Riesz表示定理}
+  \label{thm:Riesz}
+  设$H$是Hilbert空间，则任意$f\in H^{*}$，存在唯一$x_{f}\in H$，使得：
+  \begin{equation}
+    \label{eq:Riesz}
+    f(y)=(x_{f},y)\;\forall y\in H,\norm{f}_{H^{*}}=\norm{x_{f}}_{H}.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  存在性：考查闭子空间$\ker f\le H$。
+
+  如果$\ker f=H$，这意味着$f(x)=0\forall x\in H$，取$x_{f}=0$则有$f(y)=0=(x_{f},y)$, $\forall y\in H$，且$\norm{f}_{H^{*}}=\norm{x_{f}}_{H}=0$。
+
+  如果$\ker f\neq H$，由于$f\in H^{*}$， 由第一同构定理可知$\text{codim}\ker f=1$。记$(\ker f)^{\perp}$的一组基为$\{y_{0}\}$，则由正交分解定理，$\forall y\in H$， $y=ky_{0}+\tilde{y}$， 其中$\tilde{y}\in \ker f$。
+  
+  此时，$f(y)=kf(y_{0})$，记$x_{f}=\lambda y_{0}$，$(x_{f},y)=\lambda k\norm{y_{0}}_{H}^{2}$。从而：取$x_{f}=\frac{f(y_{0})}{\norm{y_{0}}_{H}^{2}}y_{0}$，等式\eqref{eq:Riesz}成立。且有：
+  \begin{equation}
+    \label{eq:normeq}
+    \norm{x_{f}}_{H}=\frac{|f(y_{0})|}{\norm{y_{0}}_{H}}=\norm{f}_{H^{*}}.
+  \end{equation}
+
+  唯一性:如果存在$w_{f}$ s.t. $f(y)=(w_{f},y)$，那么$\forall y\in H$，我们有
+  \begin{equation}
+    (x_{f}-w_{f},y)=0,\forall y\in H.
+  \end{equation} 
+  取$y=x_{f}-w_{f}$，由内积的定义即得$x_{f}-w_{f}=0$，即$x_{f}=w_{f}$。
+\end{proof}
+\begin{proposition}{闭凸子集投影的存在唯一性}
+  \label{thm:projection}
+  设$V$是一个Hilbert空间，如果$U$是$V$的闭凸子集，对于$v\in V$，存在唯一$u_{0}\in U$使得:
+  \begin{equation}
+    \label{eq:uniqueproj}
+    \innerprod{v-u_{0}}{v-u_{0}}=\min_{u\in U}\innerprod{v-u}{v-u}.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  记范数$\norm{u}:=\innerprod{u}{u}^{\frac{1}{2}}$，$U$是闭凸子集，由F-Riesz定理，$\norm{v-u}_{U}$在$u\in U$中存在下确界$d$。由此，存在序列$\{u_{n}\}\subset U$, $\forall\epsilon>0$, $\exists N$, 当$n>N$时有：
+  \begin{equation}
+    \label{eq:cauchyseq}
+    d^2\le d_{n}^{2}:=\norm{v-u_{n}}^{2}<d^2+\epsilon
+  \end{equation}
+
+  往证序列$\{u_{n}\}$存在极限，且极限在集合$U$内部。由平行四边形公式，$\forall n,m>N$，有:
+  \begin{equation}
+    \label{eq:parallelogram}
+    \norm{u_{m}+u_{n}-2v}^{2}+\norm{u_{m}-u_{n}}^{2}=2(d_{m}^{2}+d_{n}^{2}).
+  \end{equation}
+  根据等式\eqref{eq:parallelogram}，我们有：
+  \begin{equation}
+    \label{eq:cauchy}
+    \begin{aligned}
+      \norm{u_{m}-u_{n}}^{2}&=2(d_{m}^2+d_{n}^2)-\norm{u_{m}+u_{n}-2v}^2\\
+      &< 4d^2+4\epsilon -4(\norm{\frac{u_{m}+u_{n}}{2}-v}^2)\\
+      &\le 4\epsilon.
+    \end{aligned}
+  \end{equation}
+  最后一个不等号源于$U$为凸集，从而$\frac{u_{m}+u_{n}}{2}\in U$，这意味着$\norm{\frac{u_{m}+u_{n}}{2}-v}\ge d^2$。
+
+  \eqref{eq:cauchy}保证了$\{u_{n}\}$是Cauchy列，即该序列收敛。又$U$是闭的，该序列收敛于$u_{0}\in U$。存在性得证。
+
+  唯一性证明完全同理，留作习题。
+\end{proof}
+\begin{proposition}{压缩映射原理}
+  设$V$是Banach空间，连续映射$T$满足：
+  \begin{equation}
+    \norm{Tv_{1}-Tv_{2}}\le L\norm{v_{1}-v_{2}},\forall v_{1},v_{2}\in V,
+  \end{equation}
+  其中$0<L<1$为常数，则存在唯一的$u\in V$使得$u=Tu$。
+\end{proposition}
+该定理证明从略，留作习题。
+\subsection{存在唯一性}
+本节中讨论抽象意义下的优化问题。
+
+\begin{definition}{优化问题}
+  \label{prob:optimization}
+  给定赋范线性空间$V$以及其上的有界双线性函数$a$，$f\in V^{*}$，对于$U\subset V$，寻找$u\in U$，使得：
+  \begin{equation}
+    \label{eq:optimization}
+    J(u)=\inf_{v\in U}J(v),\; J(v):=\frac{1}{2}a(v,v)-f(v)
+  \end{equation}
+\end{definition}
+\ref{prob:optimization}中叙述的优化问题和第一章对应的问题相比，极大放宽了对$U$的要求，这也使得第一章对该问题的讨论不一定适用于此。为此，我们需要给出问题\ref{prob:optimization}解存在唯一的条件。
+\begin{theorem}
+  如果\ref{prob:optimization}满足下列额外条件:
+  \begin{itemize}
+    \item $V$完备，
+    \item $U$是$V$的闭凸子集，
+    \item 双线性函数$a(u,v)$是对称且V-椭圆的，
+  \end{itemize}
+  那么优化问题\ref{prob:optimization}存在唯一解。
+\end{theorem}
 \end{document}
