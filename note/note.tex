@@ -739,6 +739,7 @@ $a(u,v):=\int_{0}^{1}(ku'v'+quv)\dif x$，$h(v):=\int_{0}^{1}fv\dif x$，则有:
 \subsection{变分问题的等价形式}
 在第一章中，我们说最小化$J(v)$的问题等价于求解泛函方程$a(u,v)=f(v)$。本节中，我们将进一步探究这两个问题之间的关系。
 \begin{theorem}
+  \label{thm:equiv}
   \begin{enumerate}
     \item 如果$u$是问题\ref{prob:optimization}的解，当且仅当
     \begin{equation}
@@ -844,4 +845,105 @@ $a(u,v):=\int_{0}^{1}(ku'v'+quv)\dif x$，$h(v):=\int_{0}^{1}fv\dif x$，则有:
 \begin{remark}
   此处内容可能用到一些Sobolev空间的相关知识，由于之后会专题讨论该内容，此处不过多赘述相关知识点。请读者翻阅后续的笔记内容，或参考任何一本泛函分析教材。
 \end{remark}
+\subsection{二阶椭圆方程}
+\begin{definition}{齐次边界二阶椭圆问题}
+  设$\Omega\subset\mathbb{R}^{2}$是一个有界单连通区域，其边界为$\partial\Omega$，考虑下面的Poisson方程:
+  \begin{equation}
+    \label{eq:poisson2D}
+    \left\{
+      \begin{aligned}
+        -\Delta u&=f,x\in\Omega,\\
+        u&=0,x\in\partial\Omega.\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  其中$f\in C(\Omega)$。
+\end{definition}
+在\eqref{eq:poisson2D}的第1式两边同乘测试函数$v$并在区域$\Omega$上积分，得：
+\begin{equation}
+  \label{eq:2dtest}
+  \begin{aligned}
+    -\int_{\Omega}\Delta uv\dif x=\int_{\Omega}fv\dif x\Rightarrow
+    \int_{\Omega}\nabla u\cdot\nabla v\dif x-\int_{\partial\Omega}\pdfFrac{u}{n}v\dif x=\int_{\Omega}fv\dif x
+  \end{aligned}
+\end{equation}
+取测试函数空间为:
+\begin{equation}
+  v\in H_{0}^{1}(\Omega):=\{v|v,\nabla v\in L^{2}(\Omega),v|_{\partial\Omega}=0\}.
+\end{equation}
+那么\eqref{eq:2dtest}转化为
+\begin{equation}
+  \label{eq:weakform}
+  \int_{\Omega}\nabla u\cdot\nabla v\dif x=\int_{\Omega}fv\dif x,\forall v\in H_{0}^{1}(\Omega).
+\end{equation}
+\eqref{eq:weakform}称为问题\eqref{eq:poisson2D}的\textbf{弱形式}。根据本章定理\ref{thm:equiv}，该问题等价于如下泛函极小化问题：
+\begin{equation}
+  J(v):=\frac{1}{2}\int_{\Omega}\nabla v\cdot\nabla v\dif x-\int_{\Omega}fv\dif x,J(u):=\inf_{v\in V}J(v).
+\end{equation}
+\begin{theorem}
+  \eqref{eq:poisson2D}的弱解存在唯一。
+\end{theorem}
+\begin{proof}
+  取$a(u,v):=\int_{\Omega}\nabla u\cdot\nabla v$, $f(v):=\int_{\Omega}fv\dif x$，只需验证Lax-Milgram引理的两个条件。
+
+  $a(u,v)$的双线性由积分的线性性质即可导出，其连续性则是Cauchy-Schwarz不等式的直接推论，下证其$H_{0}^{1}(\Omega)$-椭圆性。证明该结论前，先不加证明地给出Friedrichs不等式的叙述，该不等式的证明可以参考Evans的偏微分方程教材。
+  \begin{proposition}{Friedriches不等式}
+    \label{thm:friedriches}
+    如果$\Omega$是$\mathbb{R}^{n}$的有界单连通子区域，其直径为$d$，设$u\in H_{0}^{1}(\Omega)$，我们有：
+    \begin{equation}
+      \norm{u}_{L^{2}(\Omega)}\le d\norm{\nabla u}_{L^{2}(\Omega)}.
+    \end{equation}
+  \end{proposition}
+  由\ref{thm:friedriches},我们有:$\exists$ $C_{1}>0$ s.t. 
+  \begin{equation}
+    a(v,v)=\int_{\Omega}\nabla v\cdot\nabla v\ge C_{1}\norm{v}_{L^{2}(\Omega)}^{2}.
+  \end{equation}
+  又由Sobolev空间范数的定义，
+  \begin{equation}
+    \norm{v}_{H_{0}^{1}(\Omega)}^{2}=\int_{\Omega}(v^{2}+\nabla v\cdot\nabla v)\dif x.
+  \end{equation}
+
+  联立上面两等式可得：
+  \begin{equation}
+    (1+C_{1})a(v,v)\ge C_{1}\norm{v}_{H_{0}^{1}(\Omega)}^{2}.
+  \end{equation}
+  $a$的椭圆性即得证。
+
+  关于泛函$f$的有界性，证明如下：
+  \begin{equation}
+    \frac{|f(v)|}{\norm{v}_{H_{0}^{1}}}=\frac{\int_{\Omega}fv}{\norm{v}_{H_{0}^{1}}}\le\frac{\norm{f}_{L^{2}}\norm{v}_{L^{2}}}{\norm{v}_{H_{0}^{1}}}\le\norm{f}_{L^{2}}<\infty.
+  \end{equation}
+  由Lax-Milgram引理，可知问题\eqref{eq:poisson2D}的弱解存在唯一。
+\end{proof}
+\begin{exercise}
+  用同样的方法讨论Poisson方程非齐次Dirichlet边界问题的弱解。
+\end{exercise}
+\begin{definition}{Neumann边界二阶椭圆方程}
+  设$\Omega\subset\mathbb{R}^{2}$是一个有界单连通区域，其边界为$\Gamma$，$b,f,g\in C(\Omega)$，考虑下面的方程:
+  \begin{equation}
+    \label{eq:ellipticNeumann}
+    \left\{
+      \begin{aligned}
+      &-\Delta u+bu=f,\; x\in\Omega\\
+      &\pdfFrac{u}{\nu}=g.\; x\in\Gamma\\
+      \end{aligned}
+    \right.
+  \end{equation}
+\end{definition}
+取测试函数空间$V=H^{1}(\Omega)$，定义双线性型
+\begin{equation}
+  a(u,v):=\int_{\Omega}(\nabla u\cdot\nabla v+b(x)uv)\dif x.
+\end{equation}
+右端的线性泛函
+\begin{equation}
+  f(v):=\int_{\Omega}fv\dif x+\int_{\Gamma}gv\dif s.
+\end{equation}
+这里$b(x)\ge b_{0}>0,f\in L^{2}(\Omega),g\in L^{2}(\Omega)$。则问题\eqref{eq:ellipticNeumann}的弱形式为:
+\begin{equation}
+  a(u,v)=f(v),\forall v\in V.
+\end{equation}
+对应的极小化问题同\eqref{eq:optimization}。事实上，该弱形式同样存在唯一解，直接验证Lax-Milgram引理即可。
+\begin{exercise}
+  如果我们把问题\eqref{eq:ellipticNeumann}左端项中$b(x)$取为$b(x)\equiv 0$，该问题弱形式的适定性是否还满足？如果不满足适定性，是Lax-Milgram引理的哪个部分出了问题？
+\end{exercise}
 \end{document}
