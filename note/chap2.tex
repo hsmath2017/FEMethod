@@ -1,0 +1,432 @@
+
+\chapter{变分原理}
+上一章中，我们用一个具体的例子说明了有限元的大体思路和操作步骤。本章则会着眼于变分问题的提法，给出一般情形下的变分问题(以及其等价形式)，并证明其解的存在唯一性。最后则是给出几个具体的算例以及它们各自的变分形式。
+\section{变分问题以及等价形式}
+在上一章定理\ref{thm:bianfen}中，我们针对一个特殊问题，提出了两种变分问题，并证明了这两种问题的等价性。本节中，我们将着眼于更一般的问题，并对一般的问题尝试说明两者的等价性，以及其解的存在唯一性。在此之前，先要做一些概念和定理上的准备。
+\subsection{预备知识}
+首先，我们讨论双线性函数。
+\begin{definition}{双线性函数}
+  一个\textbf{双线性函数}$a(\cdot,\cdot):V\times V\rightarrow\mathbb{R}$需要满足下面的条件：
+  \begin{itemize}
+    \item $a(k_{1}u+k_{2}v,w)=k_{1}a(u,w)+k_{2}a(v,w)$.
+    \item $a(u,k_{1}v+k_{2}w)=k_{1}a(u,v)+k_{2}a(u,w)$.
+  \end{itemize}
+  对任意$u,v\in V$, $k_{1},k_{2}\in F$均成立。特别地，假设$V$是以$\norm{\cdot}$为范数的赋范线性空间，如果对任意$u,v\in V$，存在$M>0$使得：
+  \begin{equation}
+    \label{eq:bddbilinear}
+    |a(u,v)|\le M\norm{u}\norm{v}
+  \end{equation}
+  总成立，那么我们称双线性型$a$为\textbf{有界的}或\textbf{连续的}。如果$\forall u,v\in V$，均有：
+  \begin{equation}
+    \label{eq:symmetrybilinear}
+    a(u,v)=a(v,u),
+  \end{equation}
+  那么双线性型$a$为\textbf{对称的}。如果满足下面的性质:
+  \begin{equation}
+    \label{eq:Vellipticbilinear}
+    \exists\alpha>0,\forall v\in V, \alpha\norm{v}^{2}\le a(v,v),
+  \end{equation}
+  则称双线性型$a$是\textbf{V-椭圆}的。
+\end{definition}
+特别地，第一章所述
+\begin{equation}
+  \label{eq:specialbilinear}
+  a(u,v)=\int_{0}^{1}(uv+u'v')\dif x,
+\end{equation}
+是一个有界且V-椭圆的双线性函数。双线性函数的性质在后续对变分问题的讨论中相当重要。
+
+为方便后续内容的展开，本节中将给出一些泛函分析中的重要结论。
+\begin{proposition}{Riesz表示定理}
+  \label{thm:Riesz}
+  设$H$是Hilbert空间，则任意$f\in H^{*}$，存在唯一$x_{f}\in H$，使得：
+  \begin{equation}
+    \label{eq:Riesz}
+    f(y)=(x_{f},y)\;\forall y\in H,\norm{f}_{H^{*}}=\norm{x_{f}}_{H}.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  存在性：考查闭子空间$\ker f\le H$。
+
+  如果$\ker f=H$，这意味着$f(x)=0\forall x\in H$，取$x_{f}=0$则有$f(y)=0=(x_{f},y)$, $\forall y\in H$，且$\norm{f}_{H^{*}}=\norm{x_{f}}_{H}=0$。
+
+  如果$\ker f\neq H$，由于$f\in H^{*}$， 由第一同构定理可知$\text{codim}\ker f=1$。记$(\ker f)^{\perp}$的一组基为$\{y_{0}\}$，则由正交分解定理，$\forall y\in H$， $y=ky_{0}+\tilde{y}$， 其中$\tilde{y}\in \ker f$。
+  
+  此时，$f(y)=kf(y_{0})$，记$x_{f}=\lambda y_{0}$，$(x_{f},y)=\lambda k\norm{y_{0}}_{H}^{2}$。从而：取$x_{f}=\frac{f(y_{0})}{\norm{y_{0}}_{H}^{2}}y_{0}$，等式\eqref{eq:Riesz}成立。且有：
+  \begin{equation}
+    \label{eq:normeq}
+    \norm{x_{f}}_{H}=\frac{|f(y_{0})|}{\norm{y_{0}}_{H}}=\norm{f}_{H^{*}}.
+  \end{equation}
+
+  唯一性:如果存在$w_{f}$ s.t. $f(y)=(w_{f},y)$，那么$\forall y\in H$，我们有
+  \begin{equation}
+    (x_{f}-w_{f},y)=0,\forall y\in H.
+  \end{equation} 
+  取$y=x_{f}-w_{f}$，由内积的定义即得$x_{f}-w_{f}=0$，即$x_{f}=w_{f}$。
+\end{proof}
+\begin{proposition}{闭凸子集投影的存在唯一性}
+  \label{thm:projection}
+  设$V$是一个Hilbert空间，如果$U$是$V$的闭凸子集，对于$v\in V$，存在唯一$u_{0}\in U$使得:
+  \begin{equation}
+    \label{eq:uniqueproj}
+    \innerprod{v-u_{0}}{v-u_{0}}=\min_{u\in U}\innerprod{v-u}{v-u}.
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  记范数$\norm{u}:=\innerprod{u}{u}^{\frac{1}{2}}$，$U$是闭凸子集，由F-Riesz定理，$\norm{v-u}_{U}$在$u\in U$中存在下确界$d$。由此，存在序列$\{u_{n}\}\subset U$, $\forall\epsilon>0$, $\exists N$, 当$n>N$时有：
+  \begin{equation}
+    \label{eq:cauchyseq}
+    d^2\le d_{n}^{2}:=\norm{v-u_{n}}^{2}<d^2+\epsilon
+  \end{equation}
+
+  往证序列$\{u_{n}\}$存在极限，且极限在集合$U$内部。由平行四边形公式，$\forall n,m>N$，有:
+  \begin{equation}
+    \label{eq:parallelogram}
+    \norm{u_{m}+u_{n}-2v}^{2}+\norm{u_{m}-u_{n}}^{2}=2(d_{m}^{2}+d_{n}^{2}).
+  \end{equation}
+  根据等式\eqref{eq:parallelogram}，我们有：
+  \begin{equation}
+    \label{eq:cauchy}
+    \begin{aligned}
+      \norm{u_{m}-u_{n}}^{2}&=2(d_{m}^2+d_{n}^2)-\norm{u_{m}+u_{n}-2v}^2\\
+      &< 4d^2+4\epsilon -4(\norm{\frac{u_{m}+u_{n}}{2}-v}^2)\\
+      &\le 4\epsilon.
+    \end{aligned}
+  \end{equation}
+  最后一个不等号源于$U$为凸集，从而$\frac{u_{m}+u_{n}}{2}\in U$，这意味着$\norm{\frac{u_{m}+u_{n}}{2}-v}\ge d^2$。
+
+  \eqref{eq:cauchy}保证了$\{u_{n}\}$是Cauchy列，即该序列收敛。又$U$是闭的，该序列收敛于$u_{0}\in U$。存在性得证。
+
+  唯一性证明完全同理，留作习题。
+\end{proof}
+\begin{proposition}{压缩映射原理}
+  设$V$是Banach空间，连续映射$T$满足：
+  \begin{equation}
+    \norm{Tv_{1}-Tv_{2}}\le L\norm{v_{1}-v_{2}},\forall v_{1},v_{2}\in V,
+  \end{equation}
+  其中$0<L<1$为常数，则存在唯一的$u\in V$使得$u=Tu$。
+\end{proposition}
+该定理证明从略，留作习题。
+\subsection{存在唯一性}
+本节中讨论抽象意义下的优化问题。
+
+\begin{definition}{优化问题}
+  \label{prob:optimization}
+  给定赋范线性空间$V$以及其上的有界双线性函数$a$，$f\in V^{*}$，对于$U\subset V$，寻找$u\in U$，使得：
+  \begin{equation}
+    \label{eq:optimization}
+    J(u)=\inf_{v\in U}J(v),\; J(v):=\frac{1}{2}a(v,v)-f(v)
+  \end{equation}
+\end{definition}
+\ref{prob:optimization}中叙述的优化问题和第一章对应的问题相比，极大放宽了对$U$的要求，这也使得第一章对该问题的讨论不一定适用于此。为此，我们需要给出问题\ref{prob:optimization}解存在唯一的条件。
+\begin{theorem}
+  如果\ref{prob:optimization}满足下列额外条件:
+  \begin{itemize}
+    \item $V$完备，
+    \item $U$是$V$的闭凸子集，
+    \item 双线性函数$a(u,v)$是对称且V-椭圆的，
+  \end{itemize}
+  那么优化问题\ref{prob:optimization}存在唯一解。
+\end{theorem}
+\begin{proof}
+  由于$a(u,v)$是连续对称椭圆双线性型，可知$a(u,v)$构成空间$V$上的一个内积，导出的范数记作$\norm{\cdot}$。由Riesz表示定理，可以把$f$用$a$表示，即:
+  \begin{equation}
+    \label{eq:getbyriesz}
+    \forall v\in V, f(v)=a(\sigma_{f},v).
+  \end{equation}
+  由\eqref{eq:getbyriesz}，代入\eqref{eq:optimization}可得：
+  \begin{equation}
+    \label{eq:simplifyJ}
+    \begin{aligned}
+      J(v)&=\frac{1}{2}a(v,v)-a(\sigma_{f},v)\\
+      &=\frac{1}{2}a(v-\sigma_{f},v-\sigma_{f})-\frac{1}{2}a(\sigma_{f},\sigma_{f}).
+    \end{aligned}
+  \end{equation}
+  由此，该极小化问题转化为在$U$上最小化$\norm{v-\sigma_{f}}$。由于$\sigma_{f}\in V$，而$U$是$V$的闭凸子集，借助闭凸子集投影的存在唯一性，当且仅当$v$是$\sigma_{f}$在$U$上的投影时，优化问题\ref{prob:optimization}取极小值。由此便证明了该问题解的存在唯一性。
+\end{proof}
+\subsection{变分问题的等价形式}
+在第一章中，我们说最小化$J(v)$的问题等价于求解泛函方程$a(u,v)=f(v)$。本节中，我们将进一步探究这两个问题之间的关系。
+\begin{theorem}
+  \label{thm:equiv}
+  \begin{enumerate}
+    \item 如果$u$是问题\ref{prob:optimization}的解，当且仅当
+    \begin{equation}
+      \label{eq:equivalence1}
+      \forall v\in U,a(u,v-u)\ge f(v-u).
+    \end{equation}
+    \item 特别地，如果$U$是以0为顶点的凸锥，那么:
+    \begin{equation}
+      \label{eq:equivalence2}
+      \left\{
+        \begin{aligned}
+        \forall v\in U,&a(u,v-u)\ge f(v-u),\\
+        &a(u,u)=f(u).
+        \end{aligned}
+      \right.
+    \end{equation}
+    \item 特别地，如果$U$是$V$的闭子空间，那么：
+    \begin{equation}
+      \forall v\in U,a(u,v)=f(v).
+    \end{equation}
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  由Riesz表示定理，$f(v-u)=a(\sigma_{f},v-u)$。
+
+  先证明问题1的充分性部分。任取$v\in U$，可得：
+  \begin{equation}
+    \begin{aligned}
+      a(v-\sigma_{f},v-\sigma_{f})&=a(v-u+u-\sigma_{f},v-u+u-\sigma_{f})\\
+      &=a(v-u,v-u)+2a(v-u,u-\sigma_{f})+a(u-\sigma_{f},u-\sigma_{f})\\
+      &\ge a(u-\sigma_{f},u-\sigma_{f}).\\
+    \end{aligned}
+  \end{equation}
+  即，在\eqref{eq:equivalence1}成立时，$u$是\ref{prob:optimization}的解。
+
+  再证明其必要性部分。由于$U$是凸集，$\forall t\in(0,1)$，$tv+(1-t)u\in U$。如果$u$是\ref{prob:optimization}的解，那么：
+  \begin{equation}
+    a(\sigma_{f}-tv-(1-t)u,\sigma_{f}-tv-(1-t)u)\ge a(\sigma_{f}-u,\sigma_{f}-u).
+  \end{equation}
+  化简，有：
+  \begin{equation}
+    -2ta(\sigma_{f}-u,v-u)+t^2a(v-u,v-u)\ge 0.
+  \end{equation}
+  取$t\rightarrow 0$即可证\eqref{eq:equivalence1}成立。
+
+  对于问题2,由凸锥的性质，$u+v\in U$，在\eqref{eq:equivalence1}中取$v_{1}:=u+v$，可得$a(u,v)\ge f(v)$。又$0$在凸锥顶点，取$v=0$，可得$a(u,u)\le f(u)$。由此，$a(u,u)=f(u)$。
+
+  对于问题3，根据刚刚对于凸锥的推理，$a(u,v)\ge f(v)$。根据闭子空间的性质，$-v\in U$，将$\tilde{v}:=-v$可得$a(u,-v)\ge f(-v)$，即$a(u,v)\le f(v)$。由此，$a(u,v)=f(v)$。
+\end{proof}
+\section{Lax-Milgram引理}
+\begin{theorem}{Lax-Milgram引理}
+  设$V$是一个Hilbert空间，$a(\cdot,\cdot):V\times V\rightarrow\mathbb{R}$是一个连续V-椭圆双线性型，$f:V\rightarrow\mathbb{R}$是连续线性泛函，那么，存在唯一$u\in V$，使得：
+  \begin{equation}
+    \label{eq:targeteq}
+    a(u,v)=f(v)
+  \end{equation}
+  对任意$v\in V$成立。
+\end{theorem}
+\begin{remark}
+  此处$a(u,v)$并没有对称性条件，故不能诱导$V$上的内积。
+\end{remark}
+\begin{proof}
+  第一步：将双线性型$a(u,v)$转化为$V\rightarrow V'$的映射。
+
+  定义$Au(v):=a(u,v)$，则$Au\in V'$，且
+  \begin{equation}
+    \norm{Au}=\sup_{v\in V}\frac{|Au(v)|}{\norm{v}}\le M\norm{u}.
+  \end{equation}
+  由$a$的有界性，即可直接推出$Au$的有界性。由此:映射$A:V\rightarrow V',u\mapsto Au$为连续线性映射。\eqref{eq:targeteq}转换为$Au(v)=f(v)$。但直接比较$V'$上的两个元素并不容易。
+
+  第二步:将$V'$中两元素的比较转化为$V$中两元素的比较。
+
+  设$\tau$为$V'\rightarrow V$的Riesz表示映射，那么$Au=f\Leftrightarrow\tau Au=\tau f$。下面需要证明满足该等式的$u$存在唯一。关于存在唯一性的问题，我们可以通过构造压缩映射求解。
+
+  第三步:构造压缩映射。
+
+  记$T:V\rightarrow V$，其定义为:
+  \begin{equation}
+    T(v)=v-\rho(\tau Av-\tau f).
+  \end{equation}
+  $\rho$为一个可以自行选定的参数。$T$的不动点即$v=v-\rho(\tau Av-\tau f)$，可得$\tau Av=\tau f$。下证$T$在$\rho$取适当值的时候是压缩映射。
+
+  记$\varphi=v-w$，$v\in V,w\in V$，那么
+  \begin{equation}
+    \begin{aligned}
+      &\norm{Tv-Tw}^{2}\\
+      =&\norm{T\varphi}^{2}\\
+      =&\norm{\varphi-\rho(\tau A\varphi)}^{2}\\
+      =&\norm{\varphi}^{2}-2\rho\innerprod{\tau A\varphi}{\varphi}+\rho^{2}\innerprod{\tau A\varphi}{\tau A\varphi}\\
+      \le& \norm{\varphi}^2-2\rho\alpha\norm{\varphi}^{2}+\rho^{2}M^{2}\norm{\varphi}^{2}.
+    \end{aligned}
+  \end{equation}
+  最后一个不等号的依据是：1.$\tau$是等距同构。2.$A$是有界线性算子。3.$a(\varphi,\varphi)$的椭圆性。事实上：
+  \begin{equation}
+    \innerprod{\tau A\varphi}{\varphi}=(A\varphi)(\varphi)=a(\varphi,\varphi)\ge \alpha\norm{\varphi}^{2}.
+  \end{equation}
+  \begin{equation}
+    \innerprod{\tau A\varphi}{\tau A\varphi}=(A\varphi)(\tau A\varphi)=a(\varphi,\tau A\varphi)\le M\norm{\varphi}\norm{\tau A\varphi}\le M^{2}\norm{\varphi}^{2}.
+  \end{equation}
+  由此，只要$\rho<\frac{2\alpha}{M^{2}}$，$T$即为压缩映射，这意味着$\tau Au=\tau f$存在唯一解。
+\end{proof}
+\section{具体实例}
+\begin{remark}
+  此处内容可能用到一些Sobolev空间的相关知识，由于之后会专题讨论该内容，此处不过多赘述相关知识点。请读者翻阅后续的笔记内容，或参考任何一本泛函分析教材。
+\end{remark}
+\subsection{二阶椭圆方程}
+\begin{definition}{齐次边界二阶椭圆问题}
+  设$\Omega\subset\mathbb{R}^{2}$是一个有界单连通区域，其边界为$\partial\Omega$，考虑下面的Poisson方程:
+  \begin{equation}
+    \label{eq:poisson2D}
+    \left\{
+      \begin{aligned}
+        -\Delta u&=f,x\in\Omega,\\
+        u&=0,x\in\partial\Omega.\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  其中$f\in C(\Omega)$。
+\end{definition}
+在\eqref{eq:poisson2D}的第1式两边同乘测试函数$v$并在区域$\Omega$上积分，得：
+\begin{equation}
+  \label{eq:2dtest}
+  \begin{aligned}
+    -\int_{\Omega}\Delta uv\dif x=\int_{\Omega}fv\dif x\Rightarrow
+    \int_{\Omega}\nabla u\cdot\nabla v\dif x-\int_{\partial\Omega}\pdfFrac{u}{n}v\dif x=\int_{\Omega}fv\dif x
+  \end{aligned}
+\end{equation}
+取测试函数空间为:
+\begin{equation}
+  v\in H_{0}^{1}(\Omega):=\{v|v,\nabla v\in L^{2}(\Omega),v|_{\partial\Omega}=0\}.
+\end{equation}
+那么\eqref{eq:2dtest}转化为
+\begin{equation}
+  \label{eq:weakform}
+  \int_{\Omega}\nabla u\cdot\nabla v\dif x=\int_{\Omega}fv\dif x,\forall v\in H_{0}^{1}(\Omega).
+\end{equation}
+\eqref{eq:weakform}称为问题\eqref{eq:poisson2D}的\textbf{弱形式}。根据本章定理\ref{thm:equiv}，该问题等价于如下泛函极小化问题：
+\begin{equation}
+  J(v):=\frac{1}{2}\int_{\Omega}\nabla v\cdot\nabla v\dif x-\int_{\Omega}fv\dif x,J(u):=\inf_{v\in V}J(v).
+\end{equation}
+\begin{theorem}
+  \eqref{eq:poisson2D}的弱解存在唯一。
+\end{theorem}
+\begin{proof}
+  取$a(u,v):=\int_{\Omega}\nabla u\cdot\nabla v$, $f(v):=\int_{\Omega}fv\dif x$，只需验证Lax-Milgram引理的两个条件。
+
+  $a(u,v)$的双线性由积分的线性性质即可导出，其连续性则是Cauchy-Schwarz不等式的直接推论，下证其$H_{0}^{1}(\Omega)$-椭圆性。证明该结论前，先不加证明地给出Friedrichs不等式的叙述，该不等式的证明可以参考Evans的偏微分方程教材。
+  \begin{proposition}{Friedriches不等式}
+    \label{thm:friedriches}
+    如果$\Omega$是$\mathbb{R}^{n}$的有界单连通子区域，其直径为$d$，设$u\in H_{0}^{1}(\Omega)$，我们有：
+    \begin{equation}
+      \norm{u}_{L^{2}(\Omega)}\le d\norm{\nabla u}_{L^{2}(\Omega)}.
+    \end{equation}
+  \end{proposition}
+  由\ref{thm:friedriches},我们有:$\exists$ $C_{1}>0$ s.t. 
+  \begin{equation}
+    a(v,v)=\int_{\Omega}\nabla v\cdot\nabla v\ge C_{1}\norm{v}_{L^{2}(\Omega)}^{2}.
+  \end{equation}
+  又由Sobolev空间范数的定义，
+  \begin{equation}
+    \norm{v}_{H_{0}^{1}(\Omega)}^{2}=\int_{\Omega}(v^{2}+\nabla v\cdot\nabla v)\dif x.
+  \end{equation}
+
+  联立上面两等式可得：
+  \begin{equation}
+    (1+C_{1})a(v,v)\ge C_{1}\norm{v}_{H_{0}^{1}(\Omega)}^{2}.
+  \end{equation}
+  $a$的椭圆性即得证。
+
+  关于泛函$f$的有界性，证明如下：
+  \begin{equation}
+    \frac{|f(v)|}{\norm{v}_{H_{0}^{1}}}=\frac{\int_{\Omega}fv}{\norm{v}_{H_{0}^{1}}}\le\frac{\norm{f}_{L^{2}}\norm{v}_{L^{2}}}{\norm{v}_{H_{0}^{1}}}\le\norm{f}_{L^{2}}<\infty.
+  \end{equation}
+  由Lax-Milgram引理，可知问题\eqref{eq:poisson2D}的弱解存在唯一。
+\end{proof}
+\begin{exercise}
+  用同样的方法讨论Poisson方程非齐次Dirichlet边界问题的弱解。
+\end{exercise}
+\begin{definition}{Neumann边界二阶椭圆方程}
+  设$\Omega\subset\mathbb{R}^{2}$是一个有界单连通区域，其边界为$\Gamma$，$b,f,g\in C(\Omega)$，考虑下面的方程:
+  \begin{equation}
+    \label{eq:ellipticNeumann}
+    \left\{
+      \begin{aligned}
+      &-\Delta u+bu=f,\; x\in\Omega\\
+      &\pdfFrac{u}{\nu}=g.\; x\in\Gamma\\
+      \end{aligned}
+    \right.
+  \end{equation}
+\end{definition}
+取测试函数空间$V=H^{1}(\Omega)$，定义双线性型
+\begin{equation}
+  a(u,v):=\int_{\Omega}(\nabla u\cdot\nabla v+b(x)uv)\dif x.
+\end{equation}
+右端的线性泛函
+\begin{equation}
+  f(v):=\int_{\Omega}fv\dif x+\int_{\Gamma}gv\dif s.
+\end{equation}
+这里$b(x)\ge b_{0}>0,f\in L^{2}(\Omega),g\in L^{2}(\Omega)$。则问题\eqref{eq:ellipticNeumann}的弱形式为:
+\begin{equation}
+  a(u,v)=f(v),\forall v\in V.
+\end{equation}
+对应的极小化问题同\eqref{eq:optimization}。事实上，该弱形式同样存在唯一解，直接验证Lax-Milgram引理即可。
+\begin{exercise}
+  如果我们把问题\eqref{eq:ellipticNeumann}左端项中$b(x)$取为$b(x)\equiv 0$，该问题弱形式的适定性是否还满足？如果不满足适定性，是Lax-Milgram引理的哪个部分出了问题？
+\end{exercise}
+\subsection{四阶双调和方程}
+\begin{definition}{四阶双调和方程}
+  设$\Omega\in\mathbb{R}^{n}$是一个有界单连通区域，其边界为$\partial\Omega$，考虑下面的双调和方程:
+  \begin{equation}
+    \label{eq:doubleharm}
+    \left\{
+      \begin{aligned}
+        -\Delta^{2}u&=f,x\in\Omega\\
+        u=\pdfFrac{u}{n}&=0,x\in\partial\Omega\\
+      \end{aligned}
+    \right.
+  \end{equation}
+  该方程称为\textbf{四阶双调和方程}。
+\end{definition}
+对这个方程，首先我们需要给出其变分问题的具体形式。此处取测试函数空间$V=H_{0}^{2}(\Omega)$，即$v\in H_{0}^{2}(\Omega)$，在\eqref{eq:doubleharm}左右两边同乘函数$v$，并在$\Omega$上作积分，得:
+\begin{equation}
+    \label{eq:leftint}
+    \begin{aligned}
+        \int_{\Omega}-v\Delta^2 u\dif x&=-\int_{\Omega}\left[\nabla\cdot(v\nabla\Delta u)-\nabla v\cdot\nabla(\Delta u)\right]\dif x\\
+        &=\int_{\Omega}\nabla v\cdot\nabla(\Delta u)\dif x\\
+        &=\int_{\Omega}\Delta u\Delta v\dif x\\
+    \end{aligned}
+\end{equation}
+\begin{remark}
+    \eqref{eq:leftint}真的没有少一个负号？
+\end{remark}
+由\eqref{eq:leftint},设$B(u,v)=\int_{\Omega}\Delta u\Delta v\dif x$，$\innerprod{f}{v}=\int_{\Omega}fv\dif x$，变分问题的描述为：
+\begin{equation}
+    \label{eq:bianfenharm}
+    B(u,v)=\innerprod{f}{v}.
+\end{equation}
+由于此处$u,v\in H_{0}^{2}(\Omega)$，验证Lax-Milgram引理条件可得该弱形式具有适定性。下面给出$B(u,v)$满足$H_{0}^{2}(\Omega)$-椭圆性的证明。
+\begin{lemma}
+    \label{lem:normequiv}
+    设$u\in H_{0}^{2}(\Omega)$，$|\cdot|$为Sobolev半范数，$\|\cdot\|$为Sobolev范数，那么
+    \begin{equation}
+        \norm{\Delta u}_{0,\Omega}^{2}=|u|_{2,\Omega}^{2}.
+    \end{equation}
+\end{lemma}
+\begin{proof}
+    根据定义:
+    \begin{equation}
+        \label{eq:totalnorm}
+        \norm{\Delta v}_{0,\Omega}^{2}=\int_{\Omega}\left(\sum_{i=1}^{n}(\partial_{ii}v)^{2}+\sum_{i\neq j}\partial_{ii}v\partial_{jj}v\right)\dif x.
+    \end{equation}
+    \begin{equation}
+        |v|_{2,\Omega}^{2}=\int_{\Omega}\left(\sum_{i=1}^{n}(\partial_{ii}v)^{2}+\sum_{i\neq j}(\partial_{ij}v)^{2}\right)\dif x.
+    \end{equation}
+    由分部积分公式（该公式由Green公式导出），有：
+    \begin{equation}
+        \begin{aligned}
+            \int_{\Omega}(\partial_{ij}v)^{2}\dif x&=\int_{\Omega}\partial_{ij}v\partial_{j}(\partial_{i}v)\dif x\\
+            &=-\int_{\Omega}\partial_{i}v\partial_{ijj}v\dif x\\
+            &=\int_{\Omega}\partial_{ii}v\partial_{jj}v\dif x.
+        \end{aligned}
+    \end{equation}
+    由此即证明了引理\ref{lem:normequiv}。
+\end{proof}
+\begin{theorem}{Poincare-Friedrichs}
+    \label{thm:poincare}
+    设集合$\Omega$有界，$v\in H_{0}^{m}(\Omega)$，那么必定存在一个常数$C(\Omega)$，使得：
+    \begin{equation}
+        \norm{v}_{0,\Omega}\le C(\Omega)|v|_{m,\Omega}.
+    \end{equation}
+\end{theorem}
+由\ref{lem:normequiv}和\ref{thm:poincare}可知：
+\begin{equation}
+    B(u,u)=\norm{\Delta u}_{0,\Omega}^{2}=|u|_{2,\Omega}^{2}\ge C\norm{u}_{2,\Omega}^{2}.
+\end{equation}
+即：算子$B$是椭圆算子。
+\section{本章总结}
+本章主要讨论有限元方法的第一步：将微分方程转化为其弱形式。重点讨论了两个结论的成立条件:
+\begin{itemize}
+    \item 方程弱形式和它对应优化问题的等价性。
+    \item 方程弱形式的适定性。
+\end{itemize}
+Lax-Milgram引理是本章的核心内容，弱解的存在唯一性由该引理保证。后面我们同样讨论了一些具体方程的例子。时间所限，我没有把所有课本例子记录下来。并且，这一章用到了很多Sobolev空间的相关记号和定理，这部分将在第三章进行讲述。

@@ -1,0 +1,178 @@
+\chapter{Sobolev空间}
+本章的内容主要是在Lebesgue积分的框架下，简单介绍一下广义函数与Sobolev空间，为后续的讨论巩固基础，提供依据。
+
+为叙述方便，先给出一些符号的定义。
+\begin{definition} 
+    \begin{equation}
+        \supp(u):=\overline{\{\mathbf{x}:\mathbf{x}\in\Omega,u(\mathbf{x})\neq 0\}}.
+    \end{equation}
+    \begin{equation}
+        C_{0}^{\infty}(\Omega)=D(\Omega):=\{u:u\in C^{\infty}(\Omega),\supp(u)\subset\Omega\}.
+    \end{equation}
+    \begin{equation}
+        L_{loc}^{1}(\Omega):=\{f:f\in L^{1}(\Omega_{1})\forall\text{ compact set }\Omega_{1}\subset\Omega\}.
+    \end{equation}
+\end{definition}
+\section{$L^{p}$空间内容回顾}
+$L^{p}$空间的内容我们早在“实变函数”课程中已经学过，此处仅作简单回顾，不给出具体证明。如无特殊说明，本章中$\int_{\Omega}f(x)\dif x$均表示Lebesgue积分。
+\begin{definition}{$L^{p}$范数}
+    设区域$\Omega\in\mathbb{R}^{n}$为Lebesgue非空可测集，$f$是$\Omega$上的实值函数，$f$的$L^{p}$范数定义为：
+    \begin{equation}
+        \label{eq:Lp}
+        \norm{f}_{L^{p}(\Omega)}=\left(\int_{\Omega}|f(x)|^{p}\dif x\right)^{\frac{1}{p}},1\le p<\infty,
+    \end{equation}
+    \begin{equation}
+        \label{eq:Linf}
+        \norm{f}_{L^{\infty}(\Omega)}=ess\sup_{x\in\Omega}|f(x)|.
+    \end{equation}
+    定义空间:
+    \begin{equation}
+        L^{p}(\Omega)=\{f:\norm{f}_{L^{p}(\Omega)}<\infty\},1\le p\le\infty.
+    \end{equation}
+\end{definition}
+\begin{proposition}{$L^{p}$空间上的一些重要不等式}
+    \begin{enumerate}
+        \item (Young不等式)对于$a,b\ge 0$, $0\le p,q\le+\infty$, $\frac{1}{p}+\frac{1}{q}=1$, 我们有:
+        \begin{equation}
+            \label{eq:Young}
+            ab\le\frac{1}{p}a^{p}+\frac{1}{q}b^{q}.
+        \end{equation}
+        \item (Holder不等式)$1\le p,q\le \infty$, $f,g\in L^{p}(\Omega)$, 则:
+        \begin{equation}
+            \label{eq:Holder}
+            \norm{fg}_{L^{1}(\Omega)}\le\norm{f}_{L^{p}(\Omega)}\cdot\norm{g}_{L^{q}(\Omega)}.
+        \end{equation}
+        \item (Minkowski不等式)$1\le p\le\infty$, $f,g\in L^{p}(\Omega)$, 则：
+        \begin{equation}
+            \norm{f+g}_{L^{p}(\Omega)}\le\norm{f}_{L^{p}(\Omega)}+\norm{g}_{L^{p}(\Omega)}.
+        \end{equation}
+    \end{enumerate}
+\end{proposition}
+\begin{remark}
+    Minkowski不等式表明了$L^{p}$范数满足三角不等式，结合其正定性和正齐次性，可以说明由\eqref{eq:Lp}定义的表达式确实是一个范数。
+\end{remark}
+\begin{theorem}
+    对$1\le p\le\infty$, $L^{p}(\Omega)$是一个Banach空间。
+\end{theorem}
+\begin{theorem}
+    对于$1\le p<\infty$, $C_{0}^{\infty}(\Omega)$在$L^{p}(\Omega)$中稠密。其中$C_{0}^{\infty}(\Omega)$表示$\Omega$上所有紧支集光滑函数构成的集合。
+\end{theorem}
+上面两个定理的证明可以参考任何一本“实变函数”课程的教材。
+\section{广义导数}
+在数学分析课程中，我们给出的导数定义如下：
+\begin{equation}
+    \label{eq:traditionaldir}
+    f'(x)=\lim_{\Delta x\rightarrow 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}.
+\end{equation}
+但这个形式逐渐无法适应我们对方程广义解的研究，原因主要有两点:
+\begin{itemize}
+    \item 该定义式对函数$f$的光滑性要求较高。
+    \item 在广义解的研究中，我们更关注导数的整体的性质而非某点处的取值。但传统导数却是逐点定义的。
+\end{itemize}
+这是我们推广导数定义的动机。
+
+把局部定义的导数概念向全局定义推广，重要的突破口是分部积分公式。
+
+\begin{proposition}{分部积分}
+    设$\Omega\in\mathbb{R}^{n}$，$f(x)\in C^{n}(\Omega)$，$\alpha:=\{\alpha_{1},\cdots,\alpha_{n}\}$为多重指标且$|\alpha|\le n$，$\phi(x)\in D(\Omega)$，那么:
+    \begin{equation}
+        \label{eq:integralbyparts}
+        \int_{\Omega}\partial^{\alpha}f(x)\cdot\phi(x)\dif x=(-1)^{|\alpha|}\int_{\Omega}f(x)\partial^{\alpha}\phi(x)\dif x.
+    \end{equation}
+\end{proposition}
+可以看到，等式\eqref{eq:integralbyparts}右端仅仅要求$f(x)\in L^{1}(\Omega)$。相比\eqref{eq:traditionaldir}，\eqref{eq:integralbyparts}降低了对函数正则性的要求，并且也是一个$\Omega$上全局定义的函数。已知分部积分公式对$f\in C^{n}(\Omega)$成立，我们不妨利用该公式进行一些推广。设$g(x)$满足
+\begin{equation}
+    \label{eq:generalizeddir}
+    \int_{\Omega}g(x)\phi(x)\dif x=(-1)^{|\alpha|}\int_{\Omega}f(x)\partial^{\alpha}\phi(x)\dif x.
+\end{equation}
+对任意$\phi\in D(\Omega)$均成立，那么在允许相差一个零测集的情形下我们可以近似认为$g(x)=\partial^{\alpha}f(x)$。于是，我们由此给出了广义导数的定义。
+\begin{definition}{广义导数}
+    对于$f(x)\in L_{loc}^{1}(\Omega)$，如果存在$g(x)\in L_{loc}^{1}(\Omega)$，使得:
+    \begin{equation}
+        \int_{\Omega}g(x)\phi(x)\dif x=(-1)^{|\alpha|}\int_{\Omega}f(x)\partial^{\alpha}\phi(x)\dif x,\forall\phi\in C(\Omega),
+    \end{equation}
+    那么我们称$g(x)$为$f(x)$的$|\alpha|$阶\textbf{广义导数}，记作
+    \begin{equation}
+        \label{eq:generaldirmark}
+        D^{\alpha}f(x)=g(x).
+    \end{equation}
+\end{definition}
+\begin{example}
+    设区域$\Omega=(-1,1)$，求$f(x)=|x|^{t}$的广义导数。
+\end{example}
+按定义\eqref{eq:generalizeddir},计算下面的积分:
+\begin{equation}
+    \label{eq:ex1}
+    \begin{aligned}
+    \int_{-1}^{1}f(x)\phi'(x)\dif x&=\int_{-1}^{0}(-x)^{t}\phi'(x)\dif x+\int_{0}^{1}x^{t}\phi'(x)\dif x\\
+    &=(-x)^{t}\phi(x)|_{0-}+\int_{-1}^{0}t(-x)^{t-1}\phi(x)\dif x-x^{t}\phi(x)|_{0+}-\int_{0}^{1}tx^{t-1}\dif x.
+    \end{aligned}
+\end{equation}
+取
+\begin{equation}
+    \label{eq:distribution1}
+    g(x)=\left\{
+        \begin{aligned}
+        &t|x|^{t-1},0<x<1\\
+        &-t|x|^{t-1},-1<x<0\\
+        \end{aligned}
+    \right.
+\end{equation}
+当$t<0$时，
+\begin{equation}
+    \int_{-1}^{1}f(x)\phi'(x)\dif x=-\int_{-1}^{1}g(x)\phi(x)\dif x,
+\end{equation}
+且$g(x)\in L_{loc}^{1}(\Omega)$，于是$t>0$时我们有$Df=g$。而$t<0$时，$f$的广义导数不存在。
+
+关于广义导数，我们有下面这些结论：
+\begin{proposition}
+    如果$u\in C^{|\alpha|}(\Omega)$, 那么它的弱导数$D^{\alpha}$存在，且该弱导数恰好就是其常义导数。
+\end{proposition}
+\begin{proof}
+    由分部积分公式即可直接得到。
+\end{proof}
+\begin{proposition}
+    设$\Omega=\Omega_{1}\cup\Omega_{2}$，$m(\Omega_{1}\cap\Omega_{2})=0$，设函数$u$在$\bar{\Omega}$上连续，分别在$\Omega_{1},\Omega_{2}$上连续可微，那么$u$的一阶弱导数总是存在，并且在$\Omega_{1}$或是$\Omega_{2}$内部与常义的一阶导数相等。
+\end{proposition}
+\begin{proof}
+    设$v(x)=\pdfFrac{u}{x_{i}}$, 那么对于任何$\phi(x)\in C_{0}^{\infty}(\Omega)$，我们有：
+    \begin{equation}
+        \label{eq:intbypart2}
+        \begin{aligned}
+            \int_{\Omega}v(x)\phi(x)\dif x&=\int_{\Omega_{1}}\pdfFrac{u}{x_{i}}\phi(x)\dif x+\int_{\Omega_{2}}\pdfFrac{u}{x_{i}}\phi(x)\dif x\\
+            &=\int_{\Gamma}u\pdfFrac{\phi}{x_{i}}\dif s-\int_{\Omega_{1}}u\pdfFrac{\phi}{x_{i}}\dif x-\int_{\Omega_{2}}u\pdfFrac{\phi}{x_{i}}\dif s+\int_{\tilde{\Gamma}}u\pdfFrac{\phi}{x_{i}}\dif s.
+        \end{aligned}
+    \end{equation}
+    其中$\Gamma$和$\tilde{\Gamma}$位置相同，方向相反。由\eqref{eq:intbypart2}可知，
+    \begin{equation}
+        \int_{\Omega}v\phi\dif x=-\int_{\Omega}u\pdfFrac{\phi}{x_{i}}\dif x.
+    \end{equation}
+    从而,$v$是$\phi$关于$x_{i}$的弱导数。这就说明了弱导数的存在性，并且$v$分别限制在$\Omega_{1}$和$\Omega_{2}$上，就是常义导数的定义。
+\end{proof}
+    \begin{proposition}
+        $\Omega_{1}$，$\Omega_{2}$的定义同上面的命题，函数$u(x)$定义为：
+        \begin{equation}
+            u=\left\{
+                \begin{aligned}
+                    &1,x\in\Omega_{1},\\
+                    &2,x\in\Omega_{2}.
+                \end{aligned}
+            \right.
+        \end{equation}
+        那么$u$至少一个方向的弱偏导数不存在。
+    \end{proposition}
+\begin{proof}
+    如果所有方向上弱偏导数$v(x)=\pdfFrac{u}{x_{i}}$均存在，那么$v$在区域$\Omega_{1}$和$\Omega_{2}$上均等于其常义导数。由广义导数的定义：
+    \begin{equation}
+        -\int_{\Omega}u\pdfFrac{\phi}{x_{i}}\dif x=\int_{\Omega}v\phi\dif x=0.
+    \end{equation}
+    与此同时，由格林公式:
+    \begin{equation}
+        -\int_{\Omega}u\pdfFrac{\phi}{x_{i}}\dif x=\int_{\Gamma}u|_{\Omega_{1}}\phi n_{i}\dif s+\int_{\tilde{\Gamma}}u|_{\Omega_{2}}\phi n_{i}\dif s=\int_{\tilde{\Gamma}}\phi n_{i}\dif s.
+    \end{equation}
+    这意味着对任意$i\in [1,n]\cap\mathbb{N}$，均有
+    \begin{equation}
+        \int_{\tilde{\Gamma}}\phi n_{i}\dif s=0.
+    \end{equation}
+    这说明$n_{i}\equiv 0$，矛盾！
+\end{proof}
