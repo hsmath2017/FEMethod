@@ -176,3 +176,82 @@ $L^{p}$空间的内容我们早在“实变函数”课程中已经学过，此�
     \end{equation}
     这说明$n_{i}\equiv 0$，矛盾！
 \end{proof}
+\section{磨光算子以及相关应用}
+\begin{definition}{磨光算子}
+    \label{def:smoother}
+    设$j(x)$是$\mathbb{R}^{n}$上的实值函数，且：
+    \begin{itemize}
+        \item $j(x)\in C_{0}^{\infty}(\mathbb{R}^{n})$;
+        \item $j(x)\ge 0 $ 且当$|x|\ge 1$时，$j(x)\equiv 0$;
+        \item $\int_{\mathbb{R}^{n}}j(x)\dif x=1$。
+    \end{itemize}
+    对于$u(x)\in L^{1}(\Omega)$，作该函数的简单延拓
+    \begin{equation}
+        \tilde{u}(x)=\left\{
+            \begin{aligned}
+                &u(x),x\in\Omega,\\
+                &0,x\notin\Omega.\\
+            \end{aligned}
+        \right.
+    \end{equation}
+    那么$\tilde{u}\in L^{1}(\mathbb{R}^{n})$。我们定义\textbf{磨光算子}如下：
+    \begin{equation}
+        \label{eq:smoother}
+        J_{\epsilon}u(x):=\epsilon^{-n}\int_{\mathbb{R}^{n}}j(\frac{x-y}{\epsilon})\tilde{u}(y)\dif y=\epsilon^{-n}\int_{\Omega}j(\frac{x-y}{\epsilon})u(y)\dif y.
+    \end{equation}
+\end{definition}
+\begin{remark}
+    \begin{enumerate}
+        \item 将$j(x)$通过伸缩变换写为$j_{\epsilon}(x):=\epsilon^{-n}j(\frac{x}{\epsilon})$，变换后的函数依旧满足光滑性和区域积分为1的性质，但此时其支集可以进行收缩。
+        \item 对$u(x)$作用磨光算子是一个“光滑化”的过程，也就是说，在尽量少改变函数值的情况下，提升输入函数$u(x)$的光滑性。
+    \end{enumerate}
+\end{remark}
+下面考虑磨光算子对函数光滑性的影响，有下面的定理成立：
+\begin{theorem}
+    若$u(x)\in L^{1}(\Omega)$，则$u_{\epsilon}(x):=J_{\epsilon}u(x)\in C^{\infty}(\mathbb{R}^{n})$。又设$\bar{A}\subset \Omega$, $\text{dist}(\bar{A},\partial\Omega)>0$, 且$u$在$\Omega\setminus A$上等于0，而$\text{dist}(A,\partial\Omega)>\epsilon$，则$u_{\epsilon}(x)\in C_{0}^{\infty}(\Omega)$。
+\end{theorem}
+\begin{proof}
+    由于$h_{x}(y)=\tilde{u}(y)j_{\epsilon}(x,y)$关于$x$具有一致的紧支集，且$j_{\epsilon}(x,y)$关于$x$无穷次可微，我们有:
+    \begin{equation}
+        D_{x}^{\alpha}J_{\epsilon}u(x)=\int_{\mathbb{R}^{n}}\tilde{u}(y)D_{x}^{\alpha}j_{\epsilon}(x,y)\dif y.
+    \end{equation}
+    由此即得$u_{\epsilon}(x)\in C^{\infty}(\mathbb{R}^{n})$。
+    
+    下面证明第二个结论。首先对\eqref{eq:smoother}进行换元，记$t:=\frac{x-y}{\epsilon}$，我们有：
+    \begin{equation}
+        \label{eq:smoother2}
+        J_{\epsilon}u(x)=\epsilon^{-n}\int_{\mathbb{R}^{n}}j(t)\tilde{u}(x-\epsilon t)\dif (y+\epsilon t)=\int_{\mathbb{R}^{n}}\tilde{u}(x-\epsilon t)j(t)\dif t.
+    \end{equation}
+    作集合
+    \begin{equation}
+        A_{\epsilon}:=\{x:x\in\mathbb{R}^{n},\text{dist}(x,A)<\epsilon\},
+        B(x,\epsilon):=\{x-\epsilon y,\norm{y}\le 1\}.
+    \end{equation}
+    在$x\notin A_{\epsilon}$时，$B(x,\epsilon)\cap A=\phi$。由题目条件，当$x\notin A_{\epsilon}$时，$u_{\epsilon}(x)=0$。而$\text{dist}(A,\partial\Omega)>\epsilon$，此即$\Omega\setminus A_{\epsilon}\neq\phi$。由此，$u_{\epsilon}(x)\in C_{0}^{\infty}(\Omega)$。
+\end{proof}
+    下面讨论广义导数和磨光算子的交换性:
+    \begin{theorem}
+        设$f(x)\in L_{loc}^{1}(\Omega)$，且具有$|\alpha|$阶广义导数$D^{\alpha}f(x)$，那么
+        \begin{equation}
+            D^{\alpha}J_{\epsilon}f(x)=J_{\epsilon}D^{\alpha}f(x).
+        \end{equation}
+    \end{theorem}
+\begin{proof}
+    对$\delta>0$，作集合
+    \begin{equation}
+        \Omega_{\delta}:=\{x:x\in\Omega,\text{dist}(x,\partial\Omega)\ge\delta\}.
+    \end{equation}
+    对于$x\in\Omega_{\delta}(\delta>\epsilon)$，我们有：
+    \begin{equation}
+        J_{\epsilon}f(x)=\epsilon^{-n}\int_{\Omega}j(\frac{x-y}{\epsilon})f(y)\dif y.
+    \end{equation}
+    求导可得：
+    \begin{equation}
+        D^{\alpha}J_{\epsilon}f(x)=\epsilon^{-n}\int_{\Omega}(-1)^{|\alpha|}f(y)D_{y}^{\alpha}j(\frac{x-y}{\epsilon})\dif y.
+    \end{equation}
+    由于$j$的紧支集包含在$x$为球心，$\epsilon$为半径的闭球中，可得$j(\frac{x-y}{\epsilon})\in D(\Omega)$。由广义导数的定义可得：
+    \begin{equation}
+        \int_{\Omega}(-1)^{|\alpha|}f(y)D_{y}^{\alpha}j(\frac{x-y}{\epsilon})\dif y=\int_{\Omega}(-1)^{|\alpha|}(-1)^{|\alpha|}j(\frac{x-y}{\epsilon})D_{y}^{\alpha}f(y)\dif y=\int_{\Omega}j(\frac{x-y}{\epsilon})D_{y}^{\alpha}f(y)\dif y.
+    \end{equation}
+    综上所述，我们可以推知，在$\Omega_{\delta}$内，$D^{\alpha}J_{\epsilon}=J_{\epsilon}D^{\alpha}$。
+\end{proof}
