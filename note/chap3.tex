@@ -177,6 +177,7 @@ $L^{p}$空间的内容我们早在“实变函数”课程中已经学过，此�
     这说明$n_{i}\equiv 0$，矛盾！
 \end{proof}
 \section{磨光算子以及相关应用}
+\subsection{磨光算子}
 \begin{definition}{磨光算子}
     \label{def:smoother}
     设$j(x)$是$\mathbb{R}^{n}$上的实值函数，且：
@@ -255,3 +256,252 @@ $L^{p}$空间的内容我们早在“实变函数”课程中已经学过，此�
     \end{equation}
     综上所述，我们可以推知，在$\Omega_{\delta}$内，$D^{\alpha}J_{\epsilon}=J_{\epsilon}D^{\alpha}$。
 \end{proof}
+\subsection{均值逼近定理}
+根据上面的结论，磨光算子$J_{\epsilon}$可以把一个一般的函数$u$转化为一个光滑函数$J_{\epsilon}u$，由此导出了一个很自然的问题：作用后的$J_{\epsilon}u$和函数$u$之间具体有什么关系？这就是本节即将描述的\textbf{均值逼近定理}。作为重要推论，该定理说明了之前讨论的\textbf{变分原理}的合理性。
+
+在讨论均值逼近定理之前，先给出一个引理。
+\begin{theorem}
+    设$\Omega$是$\mathbb{R}^{n}$中的有界可测集，$u(x)\in L^{p}(\Omega)$是有界函数，$1\le p<+\infty$，如果在$\Omega$外补充定义$u(x)=0$，那么$u$一致连续。
+\end{theorem}
+\begin{remark}
+    这里的一致连续定义不同于数学分析中所叙述的一致连续，而是指在$L^{p}$范数的意义下一致连续。
+\end{remark}
+\begin{proof}
+    根据定义，要证一致连续，我们只需要证明对任何$\epsilon>0$，存在$\eta>0$使得对任何$|h|<\eta$有
+    \begin{equation}
+        \label{eq:uniformcont}
+        \norm{u(x+h)-u(x)}_{L^{p}(\Omega)}<\epsilon.
+    \end{equation}
+    无妨假设$\Omega$是闭长方体，否则可以将$\Omega$置于某个闭长方体内。由有界性，$|u(x)|\le M$，根据Borel定理，$\forall\epsilon_{1}>0,\delta_{1}>0$，存在连续函数$v(x)$使得$|v(x)|\le M$且:
+    \begin{equation}
+        \label{eq:smoothapprox}
+        |u(x)-v(x)|<\epsilon_{1},\forall x\in\Omega\setminus E,m(E)<\delta_{1}.
+    \end{equation}
+    其中$E=\{x:|u(x)-v(x)|\ge\epsilon_{1}\}$。根据三角不等式（在$L^{p}$空间中表现为Minkovsky不等式），我们有：
+    \begin{equation}
+        \label{eq:mink}
+        \norm{u(x+h)-u(x)}_{L^{p}}\le\norm{u(x+h)-v(x+h)}_{L^{p}}+\norm{v(x+h)-v(x)}_{L^{p}}+\norm{u(x)-v(x)}_{L^{p}}.
+    \end{equation}
+    对\eqref{eq:mink}右端的三项内容逐次进行分析。首先，由\eqref{eq:smoothapprox}，我们如下估计：
+    \begin{equation}
+        \begin{aligned}
+            \norm{u(x)-v(x)}_{L^{p}(\Omega)}^{p}&=\int_{\Omega\setminus E}|u(x)-v(x)|^{p}\dif x+\int_{E}|u(x)-v(x)|^{p}\dif x\\
+            &\le\epsilon_{1}^{p}m(\Omega\setminus E)+(2M)^{p}\delta_{1}.
+        \end{aligned}
+    \end{equation}
+    可以取充分小的$\epsilon_{1}$和$\delta_{1}$，使得\eqref{eq:mink}的右端项小于$\frac{\epsilon}{3}$。
+
+    如果对$v$在$\Omega$外做零延拓，我们可得：
+    \begin{equation}
+        \begin{aligned}
+            \norm{u(x+h)-v(x+h)}_{L^{p}(\Omega)}&=\left(\int_{\Omega}|u(x+h)-v(x+h)|^{p}\dif x\right)^{\frac{1}{p}}\\
+            &\le\left(\int_{\mathbb{R}^{n}}|u(x+h)-v(x+h)|^{p}\dif x\right)^{\frac{1}{p}}\\
+            &=\left(\int_{\Omega}|u(x)-v(x)|^{p}\dif x\right)^{\frac{1}{p}}\\
+            &=\norm{u-v}_{L^{p}(\Omega)}<\frac{\epsilon}{3}.
+        \end{aligned}
+    \end{equation}
+    最后，由$v(x)$在$\Omega$上的一致连续性(此处为微积分里定义的一致连续性，依据是Cantor定理)，可以取$|h|$充分小，使得
+    \begin{equation}
+        |v(x+h)-v(x)|<\frac{1}{6}(m(\Omega))^{-\frac{1}{p}}\epsilon.
+    \end{equation}
+    从而：
+    \begin{equation}
+        \label{eq:approx3}
+        \begin{aligned}
+        \norm{v(x+h)-v(x)}_{L^{p}(\Omega)}&=\left(\int_{\Omega}|v(x+h)-v(x)|^{p}\dif x\right)^{\frac{1}{p}}\\
+        &\le\left(\int_{\Omega_{i}}|v(x+h)-v(x)|^{p}\dif x\right)^{\frac{1}{p}}+\left(\int_{\Omega_{e}}|v(x+h)-v(x)|^{p}\dif x\right)^{\frac{1}{p}}\\
+        &<\frac{\epsilon}{6}+\left(\int_{\Omega_{e}}|v(x)|^{p}\dif x\right)^{\frac{1}{p}}\\
+        &<\frac{\epsilon}{6}+M(m(\Omega_{e}))^{\frac{1}{p}}.
+        \end{aligned}
+    \end{equation}
+    其中
+    \begin{equation}
+        \Omega_{i}:=\{x:x\in\Omega,x+h\in\Omega\},\Omega_{e}:=\{x:x\in\Omega,x+h\notin\Omega\}.
+    \end{equation}
+    取$\eta$足够小即可保证\eqref{eq:approx3}小于$\frac{\epsilon}{3}$，从而原定理得证。
+\end{proof}
+\begin{remark}
+    该定理的证明思路在一致连续的证明中非常常见，即先寻求一个光滑函数$v$来逼近已知的函数$u$，然后使用三段估计法来估计$\norm{u(x+h)-u(x)}$。
+\end{remark}
+下面介绍均值逼近定理，该定理表明用$J_{\epsilon}u$来估计$u$是合理的。
+\begin{theorem}{均值逼近定理}
+    设$u(x)\in L^{p}(\Omega) ,1\le p<+\infty$，则：
+    \begin{itemize}
+        \item $\norm{J_{\epsilon}u}_{0,p,\Omega}\le\norm{u}_{0,p,\Omega}$.
+        \item $\lim_{\epsilon\rightarrow 0}\norm{J_{\epsilon}u-u}_{0,p,\Omega}=0.$
+    \end{itemize}
+\end{theorem}
+\begin{proof}
+    对$1<p<+\infty$，由Holder不等式，有:
+    \begin{equation}
+        \label{eq:approxholder}
+        \begin{aligned}
+            |u_{\epsilon}(x)|^{p}&=\epsilon^{-np}\left|\int_{\Omega}u(y)[j(\frac{x-y}{\epsilon})^{\frac{1}{p}}][j(\frac{x-y}{\epsilon})^{\frac{1}{q}}]\dif y\right|^{p}\\
+            &\le\epsilon^{-np}\left[\int_{\Omega}|u(y)|^{p}\left|j(\frac{x-y}{\epsilon})\right|\dif y\right]\left[\int_{\Omega}\left|j(\frac{x-y}{\epsilon})\right|\dif y\right]^{\frac{p}{q}}\\
+            &\le\epsilon^{-np(1-\frac{1}{q})}\int_{\Omega}|u(y)|^{p}\left|j(\frac{x-y}{\epsilon})\right|\dif y\\
+            &=\epsilon^{-n}\int_{\Omega}|u(y)|^{p}j(\frac{x-y}{\epsilon})\dif y.
+        \end{aligned}
+    \end{equation}
+    对$p=1$，直接可得\eqref{eq:approxholder}依旧成立。从而，我们在\eqref{eq:approxholder}两端同时对$x$进行积分，有：
+    \begin{equation}
+        \int_{\Omega}|u_{\epsilon}(x)|^{p}\dif x\le\int_{\Omega}\left[\int_{\Omega}|u(y)|^{p}\epsilon^{-n}j(\frac{x-y}{\epsilon})\dif x\right]\dif y=\int_{\Omega}|u(y)|^{p}\dif y.
+    \end{equation}
+    从而:
+    \begin{equation}
+        \norm{J_{\epsilon}u}_{0,p,\Omega}\le\norm{u}_{0,p,\Omega}.
+    \end{equation}
+    此即第一个结论。
+
+    下面证明第二个结论，即$u_{\epsilon}(x)$在$L^{p}(\Omega)$中收敛于$u$。为此，首先对$u(x)$做零延拓，设延拓后的函数为$\tilde{u}$，则：
+    \begin{equation}
+        \norm{u-u_{\epsilon}}_{0,p,\Omega}^{p}\le\int_{\mathbb{R}^{n}}|\tilde{u}(x)-u_{\epsilon}(x)|^{p}\dif x.
+    \end{equation}
+    令$\xi=x-y$，则有：
+    \begin{equation}
+        \begin{aligned}
+            \norm{u-u_{\epsilon}}_{0,p,\Omega}^{p}&\le\int_{\mathbb{R}^{n}}\epsilon^{-n}\left|\int_{\mathbb{R}^{n}}\left(\tilde{u}(x)-\tilde{u}(y)\right)j\left(\frac{x-y}{\epsilon}\right)\dif y\right|^{p}\dif x\\
+            &\le\epsilon^{-n}\int_{\mathbb{R}^{n}}\left[\int_{\mathbb{R}^{n}}|\tilde{u}(x)-\tilde{u}(x-\xi)|j(\frac{\xi}{\epsilon})\dif\xi\right]^{p}\dif x\\
+            &\le\epsilon^{-n}\int_{\mathbb{R}^{n}}\left[\int_{|\xi|\le\epsilon}|\tilde{u}(x)-\tilde{u}(x-\xi)|^{p}\dif \xi\right]\left[\int_{|\xi|\le\epsilon}\left|j(\frac{\xi}{\epsilon})\right|^{q}\dif\xi\right]^{\frac{p}{q}}\dif x\\
+            &\le C\epsilon^{-n}\int_{\Omega}\left(\int_{|\xi|\le\epsilon}|u(x)-u(x-\xi)|^{p}\dif\xi\right)\dif x.
+        \end{aligned}
+    \end{equation}
+    由$u$的一致连续性，可得
+    \begin{equation}
+        \lim_{\epsilon\rightarrow 0}\norm{u_{\epsilon}-u}_{L^{p}(\Omega)}=0
+    \end{equation}
+\end{proof}
+\begin{remark}
+    这个定理事实上阐述了"用光滑函数来逼近$L^{p}(\Omega)$空间上的函数"的行为，在后面的讨论中，这个结论非常常用。下面两个非常有用的推论就是一些例子。
+\end{remark}
+\begin{corollary}
+    对$1\le p<+\infty$，$\Omega$有界，则$C_{0}^{\infty}(\Omega)$在$L^{p}(\Omega)$中稠密。
+\end{corollary}
+\begin{proof}
+    对$\delta>0$，基于有界区域$\Omega$，可以作子区域如下：
+    \begin{equation}
+        \label{eq:omegah}
+        \Omega_{\delta}:=\left\{x:x\in\Omega,\text{dist}(x,\partial\Omega)\ge\delta\right\}.
+    \end{equation}
+    $\forall u\in L^{p}(\Omega)$, $\exists\delta$使得$\forall\eta>0$, 
+    \begin{equation}
+        \int_{\Omega\setminus\Omega_{\delta}}|u(x)|^{p}\dif x<\eta^{p}.
+    \end{equation}
+    考虑函数
+    \begin{equation}
+        u_{\delta}(x)=\left\{
+            \begin{aligned}
+                &u(x),x\in\Omega_{\delta},\\
+                &0,x\notin\Omega_{\delta}.
+            \end{aligned}
+        \right.
+    \end{equation}
+    对于$0<\epsilon<\frac{\delta}{2}$, $J_{\epsilon}u_{\delta}\in C_{0}^{\infty}(\Omega)$, 并且：
+    \begin{equation}
+        \begin{aligned}
+            \norm{u-J_{\epsilon}u_{\delta}}_{0,p,\Omega}\le\norm{u-u_{\delta}}_{0,p,\Omega}+\norm{u_{\delta}-J_{\epsilon}u_{\delta}}_{0,p,\Omega}
+        \end{aligned}
+    \end{equation}
+    取$\eta,\delta\rightarrow 0$即得 $\norm{u-J_{\epsilon}u_{\delta}}_{0,p,\Omega}\rightarrow 0$。
+\end{proof}
+\begin{corollary}{变分法基本原理}
+    设$u(x)\in L^{p}(\Omega)$, $1\le p<+\infty$, $\Omega$有界，且
+    \begin{equation}
+        \int_{\Omega}u(x)\varphi(x)\dif x=0,\forall\varphi(x)\in C_{0}^{\infty}(\Omega),
+    \end{equation}
+    则在$\Omega$上有$u=0$ a.e.
+\end{corollary}
+\begin{proof}
+    $\forall\delta>0$，按\eqref{eq:omegah}式做区域$\Omega_{\delta}$，取$0<\epsilon<\delta$，当$x\in\Omega_{\delta}$时$j(\frac{x-y}{\epsilon})\in C_{0}^{\infty}(\Omega)$。由变分法条件：
+    \begin{equation}
+        J_{\epsilon}u(x)=0.
+    \end{equation}
+    由均值逼近定理：在$\Omega_{\delta}$上，$u(x)=0$a.e. 又由$\delta$的任意性，$u(x)=0$在$\Omega$上几乎处处成立。
+\end{proof}
+\begin{remark}
+    上面的推论保证了第二章阐述的弱形式和变分原理是处理原方程的合理方案。
+\end{remark}
+\subsection{单位分解定理}
+在前面几个小节，我们通过磨光算子研究了$L^{p}(\Omega)$上函数的\textbf{局部光滑逼近}。接下来我们需要着眼于局部性质与整体性质的联系，建立局部与整体的关系。\textbf{单位分解定理}正是在局部性质和整体性质之间，构建了一道桥梁。
+
+此处给出单位分解定理的叙述，具体证明详见微分几何的教材。
+\begin{theorem}{有穷单位分解定理}
+    设$O_{1},\cdots,O_{n}$是有限个开集，$F\in\mathbb{R}^{n}$是一个有界闭集，且$F\subset\cup_{i=1}^{m}O_{i}$，那么存在函数$\phi_{i}(x)$满足下面几条性质：
+    \begin{itemize}
+        \item $0\le \phi_{i}(x)\le 1,i=1,2,\cdots,m$。
+        \item $\phi_{i}(x)\in C_{0}^{\infty}(\mathbb{R}^{n})$，且$\text{supp}(\phi_{i})\subset O_{i}$。
+        \item $\sum_{i=1}^{m}\phi_{i}(x)=1,\forall x\in F$。
+    \end{itemize}
+\end{theorem}
+\begin{theorem}{无穷单位分解定理}
+    设$\Omega$是$\mathbb{R}^{n}$中的任何有界开集，开集族$\{O_{i}\}_{i=1}^{\infty}$是$\Omega$的一个开覆盖，则存在一族函数$\phi_{i}(x)$满足：
+    \begin{itemize}
+        \item $0\le\phi_{i}(x)\le 1$;
+        \item $\phi_{i}(x)\in C_{0}^{\infty}(\mathbb{R}^{n})$;
+        \item 对任何$\phi_{i}(x)$，存在$O_{n_{i}}$使得$\supp(\phi_{i})\subset O_{n_{i}}$;
+        \item $\sum_{i=1}^{\infty}\phi_{i}(x)=1$。
+    \end{itemize}
+\end{theorem}
+\section{Sobolev空间}
+\subsection{相关定义}
+\begin{remark}
+    本节中仅就之后可能用到的Sobolev空间相关结论做一简介，并不关注具体细节，如对具体细节感兴趣可以关注"偏微分方程"和"泛函分析"的相关著作。
+\end{remark}
+\begin{definition}{Sobolev空间}
+    对非负整数$m$，定义空间
+    \begin{equation}
+        \label{eq:SobolevDef}
+        H^{m,p}(\Omega):=\left\{u\in L^{p}(\Omega):D^{\alpha}u\in L^{p}(\Omega),\forall|\alpha|\le m\right\},
+    \end{equation}
+    并定义其上的范数为
+    \begin{equation}
+        \label{eq:SobolevNorm}
+        \norm{u}_{H^{m,p}(\Omega)}:=\left(\sum_{|\alpha|\le m}\norm{D^{\alpha}u}_{L^{p}(\Omega)}^{p}\right)^{\frac{1}{p}}.
+    \end{equation}
+    \begin{equation}
+        \label{eq:SobolevinfNorm}
+        \norm{u}_{H^{m,\infty}(\Omega)}:=\max_{|\alpha|\le m}\norm{D^{\alpha}u}_{L^{\infty}(\Omega)}.
+    \end{equation}
+    特别地，如果$p=2$，我们可以把$H^{m,2}(\Omega)$简写为$H^{m}(\Omega)$。
+\end{definition}
+\begin{lemma}
+    对于$1\le p\le\infty$，Sobolev空间$H^{m,p}(\Omega)$均为Banach空间。特别地，$H^{m}(\Omega)$是Hilbert空间，其上的内积定义为
+    \begin{equation}
+        \label{eq:innerprodsobolev}
+        \innerprod{u}{v}:=\sum_{|\alpha|\le m}\innerprod{D^{\alpha}u}{D^{\alpha}v}.
+    \end{equation}
+\end{lemma}
+\begin{proposition}
+    直接根据定义可以推知，
+    对于不同上标的Sobolev空间$H^{m,p}(\Omega)$，有下面的包含关系：
+    \begin{equation}
+        C^{\infty}(\bar{\Omega})\subset\cdots\subset H^{m+1,p}(\Omega)\subset H^{m,p}(\Omega)\subset\cdots\subset H^{0,p}(\Omega)=L^{p}(\Omega).
+    \end{equation}
+\end{proposition}
+Sobolev空间的指数$m$可以小于0,对于负指数的Sobolev空间我们如下定义：
+\begin{definition}
+    $H^{-m}(\Omega)$定义为$H_{0}^{m}(\Omega)$的对偶空间，并赋范数
+    \begin{equation}
+        \norm{f}_{-m,\Omega}:=\sup_{0\neq v\in H_{0}^{m}(\Omega)}\frac{|\innerprod{f}{v}|}{|v|_{m,\Omega}}.
+    \end{equation}
+\end{definition}
+在Sobolev空间$H^{m,p}(\Omega)$上可以定义\textbf{半范数}如下:
+\begin{equation}
+    |u|_{m,p,\Omega}:=\left(\sum_{|\alpha|=m}\norm{D^{\alpha}u}_{0,p,\Omega}^{p}\right)^{\frac{1}{p}},1\le p<+\infty,
+\end{equation}
+\begin{equation}
+    |u|_{m,\infty,\Omega}:=\sup_{|\alpha|=m}\norm{D^{\alpha}u}_{0,\infty,\Omega}.
+\end{equation}
+事实上，如果$\Omega$满足一定条件，Sobolev半范数和Sobolev范数是等价的。该结论由下面的Poincare-Friedriches不等式保证，为我们研究Sobolev范数提供了不小便利。
+\begin{theorem}{Poincare-Friedriches不等式}
+    如果$\Omega$单连通，且至少在一个方向上有界，那么对任何正整数$m$，存在常数$C(m)$使得：
+    \begin{equation}
+        \norm{v}_{m,\Omega}\le C(m)|v|_{m,\Omega},\forall v\in H_{0}^{m}(\Omega).
+    \end{equation}
+\end{theorem}
+\subsection{Sobolev嵌入定理}
+本节中讨论Sobolev嵌入定理，主要思路是将一些比较难以直接研究的Sobolev空间，转移到更大的Sobolev空间中进行处理。
+
+首先我们需要给出连续嵌入的定义。
+\begin{definition}
+    称空间$X$嵌入到Y，记作
+\end{definition}
