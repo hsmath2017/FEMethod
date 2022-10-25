@@ -503,5 +503,115 @@ Sobolev空间的指数$m$可以小于0,对于负指数的Sobolev空间我们如�
 
 首先我们需要给出连续嵌入的定义。
 \begin{definition}
-    称空间$X$嵌入到Y，记作
+    如果空间$X$，$Y$满足下面两个条件：
+    \begin{itemize}
+        \item $X\subset Y$.
+        \item $\exists C>0$s.t.
+        \begin{equation}
+            \norm{x}_{Y}\le C\norm{x}_{X},\forall x\in X.
+        \end{equation}
+    \end{itemize}
+    则称空间$X$嵌入到$Y$，记作$X\hookrightarrow Y$。特别地，如果$id:X\rightarrow Y,x\mapsto x$为紧算子，称$X$紧嵌入到$Y$，记作$X\hookrightarrow\hookrightarrow Y$。
 \end{definition}
+对于一个Sobolev空间，我们希望找到一个类似连续函数空间的Banach空间来方便研究其内部函数的解析性质。为此我们对$C^{(m)}(\Omega)$的定义做一些扩展，给出下面的$(m,\alpha)$阶Holder连续函数空间的定义。
+\begin{definition}
+    Holder连续函数空间$C^{(m,\alpha)}(\Omega)$由满足下面性质的函数组成:
+    \begin{itemize}
+        \item $f\in C^{m}(\Omega)$.
+        \item $\forall 0\le |\beta|\le m$, $f$满足下面的Holder条件:
+        \begin{equation}
+            |\partial^{\beta}f(x)-\partial^{\beta}f(y)|\le C|x-y|^{\alpha}.
+        \end{equation}
+    \end{itemize}
+    在该函数空间中赋予范数
+    \begin{equation}
+        \norm{v}_{C^{m,\alpha}(\bar{\Omega})}:=\norm{v}_{m,\infty,\Omega}+\max_{|\beta|\le m}\sup_{x,y\in\bar{\Omega},x\neq y}\frac{|\partial^{\beta}v(x)-\partial^{\beta}v(y)|}{\norm{x-y}^{\alpha}}, 
+    \end{equation}
+    可知此时$C^{m,\alpha}(\bar{\Omega})$为一个Banach空         间。                               
+\end{definition}
+讨论嵌入定理前，我们对区域$\Omega$的性质做一些限定，下面介绍两类特殊的区域形式。
+\begin{definition}{有限锥形区域}
+    称区域$\Omega$为\textbf{有限锥形区域}，如果它满足下面两个条件：
+    \begin{itemize}
+        \item $\Omega$是$\mathbb{R}^{n}$中的有界开集。
+        \item $\Omega$中任何一点都是有限锥$C_{x}(\subset\Omega)$的顶点，并且每一个有限锥$C_{x}$全同于过原点的一个有限锥$C_{0}$。
+    \end{itemize}
+\end{definition}
+\begin{definition}{L型区域}
+    称区域$\Omega$为\textbf{L型区域}，如果$\Omega$满足下面的条件：
+    \begin{itemize}
+        \item $\Omega$是$\mathbb{R}^{n}$中的有界开集，且$\Omega$在其边界$\partial\Omega$的固定一侧。
+        \item 存在有限个开集$O_{1},\cdots,O_{m}$使得$\Omega$的边界满足$\partial\Omega\subset\cup_{i=1}^{m}O_{i}$，且$\partial\Omega_{i}:=\partial\Omega\cap O_{i}$在某一局部坐标$(\xi_{i_1},\xi_{i_2},\cdots,\xi_{i_n})$中可用一个Lip函数
+        \begin{equation}
+            \xi_{i_n}=f_{i}(\xi_{i_1},\cdots,\xi_{i_{n-1}})
+        \end{equation}
+        表示。
+    \end{itemize}
+\end{definition}
+\begin{remark}
+    Lipschitz区域的几何意义：在区域$\Omega$边界上每一点$x$有一个邻域$U_{x}$使得$\partial\Omega\cap U_{x}$是一个Lipschitz连续函数的图形。
+\end{remark}
+\begin{remark}
+    Lipschitz区域是一个有限锥形区域，反之则不一定，但有限锥形区域是有限个Lipschitz区域的并。
+\end{remark}
+在做完上述准备后，给出一些常用的Sobolev嵌入定理的介绍。嵌入定理的目标大多是$L^{p}$空间和$C^{m,\alpha}$空间。具体的证明则略去不表。
+\begin{theorem}
+    设$\Omega\in\mathbb{R}^{d}$是一个Lipschitz区域，则下面的结论成立:
+    \begin{itemize}
+        \item 若$k<\frac{d}{p}$，则$W^{k,p}(\Omega)\hookrightarrow L^{q}(\Omega)$对任何$q\le p^{*}$成立，其中$\frac{1}{p^{*}}=\frac{1}{p}-\frac{k}{d}$。
+        \item 若$k=\frac{d}{p}$，则$W^{k,p}(\Omega)\hookrightarrow L^{q}(\Omega)$对任何$q<\infty$成立。
+        \item 若$k>\frac{d}{p}$，则：
+        \begin{equation}
+            W^{k,p}(\Omega)\hookrightarrow C^{k-[\frac{d}{p}]-1,\beta}(\Omega),
+        \end{equation}
+        如果$\frac{d}{p}$不为整数，那么$\beta=[\frac{d}{p}]+1-\frac{d}{p}$，否则$\beta$可取任何小于1的正数。事实上，把该定理中的"嵌入"改为"紧嵌入"，结论依然成立。
+    \end{itemize}
+\end{theorem}
+下面是几个常用的Sobolev嵌入结论：
+\begin{proposition}
+    \begin{itemize}
+        \item \begin{equation}
+            H^{1}(\Omega)\hookrightarrow\hookrightarrow L^{2}(\Omega)
+        \end{equation}
+        对任何维数的Lipschitz空间$\Omega\subset\mathbb{R}^{n}$成立。
+        \item \begin{equation}
+            W^{1,p}(\Omega)\hookrightarrow\hookrightarrow L^{p}(\Omega), W^{k+1,p}(\Omega)\hookrightarrow\hookrightarrow W^{k,p}(\Omega).
+        \end{equation}
+        \item 在$n=2$时，
+        \begin{equation}
+            H^{2}(\Omega)\hookrightarrow C^{0}(\Omega), H^{2}(\Omega)\hookrightarrow\hookrightarrow C^{0}(\bar{\Omega});
+        \end{equation}
+        但$H^{1}(\Omega)$并不嵌入到$C^{0}(\Omega)$。
+    \end{itemize}
+\end{proposition}   
+\subsection{迹算子}
+\begin{theorem}{迹定理}
+    设$\Omega\subset\mathbb{R}^{n}$为一个Lipschitz空间，则存在一个有界线性算子
+    \begin{equation}
+        \gamma:W^{1,p}(\Omega)\rightarrow L^{p}(\partial\Omega)
+    \end{equation}
+    满足:
+    \begin{equation}
+        \gamma u=u|_{\partial\Omega}.
+    \end{equation}
+    对$u\in W^{1,p}(\Omega)\cap C(\bar{\Omega})$成立。线性算子$\gamma$称为迹算子。
+\end{theorem}
+迹定理给出了$u$的内部信息和边界信息的关系。关于迹算子，有下面这些不等式成立：
+\begin{proposition}{迹不等式}
+    \begin{itemize}
+        \item 存在$C>0$使得
+        \begin{equation}
+            \norm{\gamma\phi}_{0,\partial\Omega}\le C\norm{\phi}_{1,\Omega}.
+        \end{equation}
+        \item 存在$C>0$使得
+        \begin{equation}
+            \norm{\gamma v}_{0,\partial\Omega}\le C\norm{v}_{0,\Omega}^{\frac{1}{2}}\cdot\norm{v}_{1,\Omega}^{\frac{1}{2}}.
+        \end{equation}
+        \item 对于$1\le p\le \infty$，存在$C>0$使得
+        \begin{equation}
+            \norm{\gamma v}_{0,p,\partial\Omega}\le C\norm{v}_{0,p,\Omega}^{1-\frac{1}{p}}\cdot\norm{v}_{1,p,\Omega}^{\frac{1}{p}}.
+        \end{equation}
+    \end{itemize}
+\end{proposition}
+\section{本章小结}
+本章中对有限元方法中可能用到的一系列Sobolev相关的知识内容做了简单的归纳。由于本课程的重点并不在于研究Sobolev空间，故很多结论都只是粗略介绍或是省去了证明过程。如果读者对Sobolev空间理论感兴趣，更建议去阅读相关的专著，或是与泛函分析/偏微分方程相关的著作。
