@@ -93,3 +93,103 @@
 \end{figure}
 有了空间划分$\mathscr{T}_{h}$后，定义在该划分空间上的分片多项式即可构成子空间$V_{h}\le V$。
 
+\subsection{离散线性方程组与求解}
+若$\dim(V_{h})=N$，设$\phi_{1},\phi_{2},\cdots,\phi_{N}$为$V_{h}$上的一组基函数，设
+\begin{equation}
+    u_{h}(x)=\sum_{i=1}^{N}u_{i}\phi_{i}(x),v_{h}(x)=\sum_{i=1}^{N}v_{i}\phi_{i}(x),
+\end{equation}
+代入\eqref{eq:GalerkinGeneral}, 我们有：
+\begin{equation}
+    \sum_{i=1}^{N}a(\phi_{i},\phi_{j})u_{i}=f(\phi_{j}),
+\end{equation}
+这是一个线性系统，求解该系统即可得到$u(x)$的近似值$u_{h}(x)$(事实上是一个分片多项式)。类似对ode边值问题的讨论，我们依旧可以称矩阵$K=(a(\phi_{i},\phi_{j}))_{ij}$为\textbf{刚度矩阵}，$F=(f_{j})_{j=1}^{N}$为\textbf{负载向量}。
+
+如果$a(\cdot,\cdot)$是对称的，Galerkin方法和Ritz方法等价。
+
+对于刚度矩阵$K$，我们有下面的结论:
+\begin{proposition}
+    设$a(\cdot,\cdot):V\times V\rightarrow \mathbb{R}^{n}$是对称且V-椭圆的双线性形式，那么对应Galerkin-Ritz变分问题近似解的刚度矩阵$K$是对称正定的。
+\end{proposition}
+\begin{proof}
+    对称性由$a(\cdot,\cdot)$的对称性可即刻得到。对于正定性，取$v\in\mathbb{R}^{n}$，记
+    \begin{equation}
+        v_{h}(x)=\sum_{i=1}^{N}v_{i}\phi_{i}(x),
+    \end{equation}
+    那么：
+    \begin{equation}
+        v^{t}Kv=a(v_{h},v_{h})\ge a\norm{v_{h}}^{2}\ge 0.
+    \end{equation}
+    该式取等号当且仅当$v_{h}=0$，即$v=0$。由此，矩阵$K$是正定的。
+\end{proof}
+\begin{remark}
+    上面的性质保证了在变分问题的左侧项$a(\cdot,\cdot)$满足一定条件的情况下，其对应的离散化线性方程组的解存在唯一，且可以通过针对正定矩阵的算法进行求解。
+\end{remark}
+以上推导均需要满足\textbf{Lax-Milgram引理}，因此需要$V_{h}$是$V$的子空间，这种有限元方法被称为\textbf{协调有限元方法}。
+
+对于一个具体的问题，$V=H^{1}(\Omega)$，那么$V_{h}$中的分段多项式也必须在$H^{1}(\Omega)$中。这就要求我们对分段多项式在单元交界处的行为给出一些额外的条件。下面两个定理说明了分片多项式成为$V_{h}$中元素的充要条件。
+
+\begin{theorem}
+    设$v\in H^{1}(T),\forall T\in\mathscr{T}_{h}$，且$v\in C^{0}(\bar{\Omega})$，则$v\in H^{1}(\Omega)$。
+\end{theorem}
+\begin{proof}
+    只需要证明$v$的广义导数$D_{i}v\in L^{2}(\Omega)$，即：
+    \begin{equation}
+        \label{eq:GeneralL2}
+        -\int_{\Omega}D_{i}v\cdot\phi\dif x=\int_{\Omega}v\cdot\partial_{i}\phi\dif x,\forall\phi\in D(\Omega).
+    \end{equation}
+由于$v\in C^{0}(\bar\Omega)$，且$v$在每个单元$T$上均为多元多项式，在每个单元$T$上运用Gauss-Green公式，有：
+\begin{equation}
+    \label{eq:GaussGreen4GL2}
+    \int_{\Omega}v\cdot\partial_{i}\phi\dif x=\sum_{T\in\mathscr{T}_{h}}\int_{T}v\cdot\partial_{i}\phi\dif x=-\sum_{T}\int_{T}D_{i}v\cdot\phi\dif x+\sum_{T}\int_{\partial T}v\phi\cdot n_{i}\dif s.
+\end{equation}
+$n_{i}$表示单位法向量在第$i$个维度下的投影。由\eqref{eq:GaussGreen4GL2}，要证\eqref{eq:GeneralL2}，即证
+\begin{equation}
+    \label{eq:BoundaryCond}
+    \sum_{T}\int_{\partial T}v\phi\cdot n_{i}\dif s=0.
+\end{equation}
+根据我们选取单元$T$的第五点要求，取$T_{0}\in\partial T$，有两种情况：
+\begin{itemize}
+    \item $T_{0}$是区域$\Omega$的边界：由$\phi\in D(\Omega)$，即$\phi|_{\partial\Omega}=0$，可知$\int_{T_{0}}v\phi\cdot n_{i}\dif s=0$。
+    \item $T_{0}$是两个单元$T_{a}$和$T_{b}$的交线。此时积分式\eqref{eq:BoundaryCond}中有关线段$T_{0}$的积分表达式为
+    \begin{equation}
+        \label{eq:EliminateEdge}
+        \int_{T_{0}\in T_{a}}v\phi\cdot n_{i}\dif s+\int_{T_{0}\in T_{b}}v\phi\cdot n_{i}\dif s.
+    \end{equation}
+\end{itemize}
+    由于在$T_{a}$和$T_{b}$上，线段$T_{0}$位置相同，法向量方向相反，从而\eqref{eq:EliminateEdge}的值为0。故\eqref{eq:BoundaryCond}得证，即\eqref{eq:GeneralL2}成立。
+\end{proof}
+\begin{theorem}
+    设$v|_{T}\in C^{0}(T),\forall T\in\mathscr{T}_{h}$，且$v\in H^{1}(\Omega)$，则$v\in C^{0}(\bar{\Omega})$。
+\end{theorem}
+\begin{proof}
+    如果$v$在两个相邻单元$e$和$e'$上不连续，即在其公共边$\gamma$上$v|_{e}-v|_{e'}$不恒为0。无妨其在$\gamma$上的某段处为正，作开集$U$使得$U\subset e\cap e'$，且$v|_{e}-v|_{e'}>0$在$U\cap\gamma$上成立，则作函数$\phi\in D(U)$使得在supp$(\phi)$上$\phi>0$。如果$v\in H^{1}(\Omega)$，根据$H^{1}(\Omega)$广义函数的定义，必定有：
+    \begin{equation}
+        \int_{U\cap\gamma}(v|_{e}-v|_{e'})\cdot\phi\cdot n_{i}^{e}\dif s=0.
+    \end{equation}
+    这与前面的假定相矛盾。
+\end{proof}
+\begin{remark}
+    上面两个定理要求：我们求得的有限元逼近解必须在整个区域内是连续的。
+\end{remark}
+\section{二维情形}
+在本节中，我们着眼于$\Omega\subset\mathbb{R}^{2}$，讨论区域$\Omega$的三角划分，以及定义在该划分上的分片多项式函数。
+
+首先，我们讨论\textbf{定义在三角形有界区域上的}多项式函数。
+\subsection{重心坐标}
+一个很容易想到的思路是，依据三角形上某些点(例如三个顶点)处的函数取值，插值得到一个多元多项式。但如果采用直角坐标，插值多项式的表达式不免会显得非常麻烦。如果能通过一些合理的坐标变换，将一般三角形区域转化为等腰直角三角形区域，则可以大大降低该区域上插值多项式形式的复杂性。这就是引入\textbf{重心坐标}的原因。
+\begin{figure}[H]
+    \caption{重心坐标变换}
+        \centering
+        \begin{tikzpicture}
+            \draw (0,0)--(1,3);
+            \draw (1,3)--(2,2);
+            \draw (2,2)--(0,0);
+            \draw [->] (3,1.5)--(8,1.5);
+            \draw (9,0)--(12,0);
+            \draw (12,0)--(9,3);
+            \draw (9,3)--(9,0);
+        \end{tikzpicture}
+\end{figure}
+\begin{definition}{重心坐标}
+    
+\end{definition}
