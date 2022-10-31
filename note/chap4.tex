@@ -58,4 +58,38 @@
         K_{n}:=\left\{\sum_{i=0}^{n}\theta_{i}x_{i}:\sum_{i=0}^{n}\theta_{i}=1,\theta_{j}\ge0\forall j\in[0,n]\cap\mathbb{Z}\right\}.
     \end{equation}
 \end{definition}
-对于$\mathbb{R}^{n}$空间的有界区域$\Omega$，我们使用$n-1$单形对其进行划分。
+对于$\mathbb{R}^{n}$空间的有界区域$\Omega$，我们使用$n$-单形对其进行划分。假设我们对区域$\Omega$的单形剖分为$\mathscr{T}_{h}$，$T$为$\mathscr{T}_{h}$的\textbf{单元}，那么我们对这样的单形剖分有下面这些要求:
+\begin{enumerate}
+    \item 对单元$T$的要求：
+    \begin{itemize}
+        \item $\forall T\in\mathscr{T}_{h}$，$T$为闭集，其内部$\mathring{T}$非空且连通。
+        \item $\partial T$是Lipschitz-连续的。
+        \item $\bar{\Omega}=\cup_{T\in\mathscr{T}_{h}} T$。
+        \item 对于任何两个不同的$T_{1},T_{2}\in\mathscr{T}_{h}$，均有$\mathring{T_{1}}\cap\mathring{T_{2}}=\phi$。
+        \item 对每个$T\in\mathscr{T}_{h}$，$\partial T$或者是$\partial\Omega$的一部分，或者是相邻单元$T'$的边。
+    \end{itemize}
+    \item 对于其上求解的多元分片多项式，$h\rightarrow 0$时，解收敛到原问题的解。
+    \item 基函数的支集尽量小，使得计算简单。所得的刚度矩阵应当是稀疏矩阵。
+\end{enumerate}
+\begin{figure}[H]
+    \begin{minipage}[t]{0.45\textwidth}
+    \centering
+    \caption{正确的单形剖分}
+    \begin{tikzpicture}
+        \draw (0,0) rectangle (3,3);
+        \draw (0,0)--(3,3);
+        \draw (0,3)--(3,0);
+    \end{tikzpicture}
+    \end{minipage}
+    \begin{minipage}[t]{0.45\textwidth}
+    \centering
+    \caption{错误的单形剖分}
+    \begin{tikzpicture}
+        \draw (0,0) rectangle (3,3);
+        \draw (0,3)--(3,0);
+        \draw (1.5,1.5)--(3,3);
+    \end{tikzpicture}
+    \end{minipage}
+\end{figure}
+有了空间划分$\mathscr{T}_{h}$后，定义在该划分空间上的分片多项式即可构成子空间$V_{h}\le V$。
+
