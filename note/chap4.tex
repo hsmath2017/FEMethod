@@ -191,5 +191,157 @@ $n_{i}$表示单位法向量在第$i$个维度下的投影。由\eqref{eq:GaussG
         \end{tikzpicture}
 \end{figure}
 \begin{definition}{重心坐标}
-    
+    考虑平面上的三角形$\triangle A_{1}A_{2}A_{3}$，顶点编号为逆时针，设点$P(x,y)$落在三角形内部，则定义点$P$的\textbf{重心坐标}$(\lambda_{1},\lambda_{2},\lambda_{3})$为:
+    \begin{equation}
+        \lambda_{1}=\frac{m(\triangle PA_{2}A_{3})}{m(\triangle A_{1}A_{2}A_{3})},\lambda_{2}=\frac{m(\triangle PA_{1}A_{3})}{m(\triangle A_{1}A_{2}A_{3})},\lambda_{3}=\frac{m(\triangle PA_{1}A_{2})}{m(\triangle A_{1}A_{2}A_{3})}.
+    \end{equation}
+    其中$m$表示区域的测度，在这里表示的是三角形的面积。
 \end{definition}
+根据定义，下面的表达式是显然的:
+\begin{equation}
+    \label{eq:burycenterCoordProp}
+    \lambda_{i}(A_{j})=\delta_{ij}.
+\end{equation}
+所以，定义在$\triangle A_{1}A_{2}A_{3}$的线性函数$u$可以表示为:
+\begin{equation}
+    u(x,y)=u(A_{1})\lambda_{1}(x,y)+u(A_{2})\lambda_{2}(x,y)+u(A_{3})\lambda_{3}(x,y).
+\end{equation}
+分别取$u(x,y)=x$,$u(x,y)=y$,$u(x,y)=1$,代入上式，可得下面的性质：
+\begin{proposition}{直角坐标与重心坐标的关系}
+   记$A_{i}$的坐标为$(x_{i},y_{i})$，$\triangle A_{1}A_{2}A_{3}$上直角坐标和重心坐标的关系式如下:
+   \begin{equation}
+    \left\{
+        \begin{aligned}
+            x&=x_{1}\lambda_{1}+x_{2}\lambda_{2}+x_{3}\lambda_{3}\\
+            y&=y_{1}\lambda_{1}+y_{2}\lambda_{2}+y_{3}\lambda_{3}\\
+            1&=\lambda_{1}+\lambda_{2}+\lambda_{3}.\\
+        \end{aligned}
+    \right.
+   \end{equation} 
+\end{proposition}
+重心坐标有许多非常棒的性质，可以大大简化三角形区域上的函数计算。
+\begin{proposition}{重心坐标的性质}
+    \begin{enumerate}
+        \item 三角形三顶点$A_{1},A_{2},A_{3}$，重心$G$的坐标分别为：
+        \begin{equation}
+            A_{1}(1,0,0), A_{2}(0,1,0), A_{3}(0,0,1), G(\frac{1}{3},\frac{1}{3},\frac{1}{3}).
+        \end{equation}
+        \item 三角形三边的方程:
+        \begin{equation}
+            A_{1}A_{2}:\lambda_{3}=0; A_{2}A_{3}:\lambda_{1}=0; A_{3}A_{1}:\lambda_{2}=0.
+        \end{equation}
+        \item 平行于三角形某一边(如$A_{1}A_{2}$)的方程:$\lambda_{3}=c$。
+        \item 任一$x,y$的$k$次多项式是$\lambda_{1},\lambda_{2},\lambda_{3}$的$k$次齐次多项式，反之亦然。
+        \item 由$\lambda_{1}+\lambda_{2}+\lambda_{3}=1$知这三个变量线性相关。如果取独立变量$\lambda_{1},\lambda_{2}$，则：
+        \begin{equation}
+            \left\{
+                \begin{aligned}
+                    \pdfFrac{}{\lambda_{1}}&=(x_{1}-x_3)\pdfFrac{}{x}+(y_1-y_3)\pdfFrac{}{y},\\
+                    \pdfFrac{}{\lambda_{2}}&=(x_{2}-x_3)\pdfFrac{}{x}+(y_2-y_3)\pdfFrac{}{y}.\\
+                \end{aligned}
+            \right.
+        \end{equation}
+        \item 重心坐标和直角坐标变换的Jacobi行列式为：
+        \begin{equation}
+            \det\left(\pdfFrac{(x,y)}{(\lambda_{1},\lambda_{2})}\right)=2m(\triangle_{e}).
+        \end{equation}
+        $m(\triangle_{e})$为三角形单元的面积。
+        \end{enumerate}
+\end{proposition}
+\begin{exercise}
+    证明重心坐标的上述性质。
+\end{exercise}
+重心坐标对简化单元上的积分计算具有重要的价值，由于重心坐标把一般的三角形映射到直角边长为1的等腰直角三角形，我们可以把一般积分区域上的求积分问题转化为三角形区域上求积分的问题。记$e$为三角单元，$\hat{e}$为变换后的等腰直角三角形，具体推导如下：
+\begin{equation}
+    \label{eq:changevariables}
+    \begin{aligned}
+        \int\int_{e}F(x,y)\dif x\dif y&=\int\int_{\hat{e}}F(\lambda_{1},\lambda_{2})\det\pdfFrac{(x,y)}{(\lambda_{1}\lambda_{2})}\dif\lambda_{1}\dif\lambda_{2}\\
+        &=2m(\triangle_{e})\int_{0}^{1}\dif\lambda_{1}\int_{0}^{1-\lambda_{1}}F(\lambda_{1},\lambda_{2},1-\lambda_{1}-\lambda_2)\dif\lambda_{2}.
+    \end{aligned}
+\end{equation}
+下面的积分等式在有限元计算中是重要的:
+\begin{proposition}
+    \begin{equation}
+        \label{eq:monomial}
+        \int\int_{e}\lambda_{1}^{m}\lambda_{2}^{n}\lambda_{3}^{k}\dif x\dif y=2m(\triangle_{e})\frac{m!n!k!}{(m+n+k+2)!}.
+    \end{equation}
+\end{proposition}
+\begin{exercise}
+    证明\eqref{eq:monomial}。
+\end{exercise}
+以分片线性多项式元为例，在实际计算中，插值基函数选取为:在其中一个顶点取值为1,其余顶点取值均为0的分片线性函数。其形式与一维情形的hat-function比较类似，示意图如下：
+\begin{figure}[H]
+    \caption{二维分片线性插值基函数}
+    \centering
+    \begin{tikzpicture}
+        \draw (0,0)--(0.5,0.5);
+        \draw (0,0)--(0.8,0);
+        \draw (0,0)--(0.3,-0.6);
+        \draw (0,0)--(-0.3,0.6);
+        \draw (0,0)--(-0.8,-0.2);
+        \draw (0.5,0.5)--(0.8,0);
+        \draw (0.8,0)--(0.3,-0.6);
+        \draw (0.3,-0.6)--(-0.8,-0.2);
+        \draw (-0.8,-0.2)--(-0.3,0.6);
+        \draw (-0.3,0.6)--(0.5,0.5);
+        \draw[color=red,thick] (0,0)--(0,2);
+        \draw[color=red,thick] (0,2)--(0.5,0.5);
+        \draw[color=red,thick] (0,2)--(0.8,0);
+        \draw[color=red,thick] (0,2)--(0.3,-0.6);
+        \draw[color=red,thick] (0,2)--(-0.3,0.6);
+        \draw[color=red,thick] (0,2)--(-0.8,-0.2);
+    \end{tikzpicture}
+\end{figure}
+\subsection{三角单元内分段多项式的形式}
+本节中，我们借助重心坐标，在有合适插值条件的前提下，写出每个三角单元内部分片多项式的表达式。
+
+如无特殊说明，本节中单元$e$指的是三角形$\triangle A_{1}A_{2}A_{3}$。
+\subsubsection{线性Lagrange元}
+二元线性多项式的自由度为3。要在单元$e$上确认一个线性二元多项式，需要三个插值条件，考虑在单元$e$的三个顶点处给出：
+\begin{equation}
+    \label{eq:LinearCond}
+    u(A_{i})=u_{i},i=1,2,3.
+\end{equation}
+由重心坐标的性质，即
+\begin{equation}
+    \lambda_{i}(A_{j})=\delta_{ij},
+\end{equation}
+可得:
+\begin{equation}
+    p(x,y)=\sum_{i=1}^{3}u_{i}\lambda_{i}(x,y).
+\end{equation}
+这就是重心坐标下\textbf{线性Lagrange元}的表达式。
+\subsubsection{完全二次Lagrange元}
+$e$上的完全二次多项式可以表示为：
+\begin{equation}
+    p(x,y)=a_{0,0}+a_{1,0}x+a_{2,0}x^2+a_{0,1}y+a_{1,1}xy+a_{0,2}y^{2}.
+\end{equation}
+由表达式知共有6个自由变量，需要6个插值条件。在实际计算中，我们取三角形三个顶点以及三条边的中点作为插值节点，问题转化为求一组基函数使得$u_{i}(A_{j})=\delta_{ij}$。
+
+插值节点如图所示:
+\begin{figure}[H]
+    \caption{插值节点示意，此处待完善，问题在于如何进行符号标注}
+    \centering
+\begin{tikzpicture}
+    \draw (0,0)--(2,0);
+    \draw (2,0)--(1,1);
+    \draw (1,1)--(0,0);
+\end{tikzpicture}
+\end{figure}
+首先考虑构造二次多项式$p(\lambda_{1},\lambda_{2},\lambda_{3})$，使得在顶点$A_{1}$上的取值为1，在其他顶点和线段中点处取值均为0。由于$\lambda_{1}(A_{1})=1,\lambda_{1}(A_{i})=0(i\neq 1)$，可以取$\lambda_{1}$为$p$的一个因子。由于$A_{5}A_{6}$平行于$A_{2}A_{3}$，且为中点连线，故该线段的表达式为$\lambda_{1}=\frac{1}{2}$。从而$(2\lambda_{1}-1)$也是$p$的因子。此时取基函数$p(\lambda_{1},\lambda_{2},\lambda_{3})=\lambda_{1}(2\lambda_{1}-1)$，经检验可知该多项式在$A_{1}$取1,在$A_{i}(i\neq 1)$均取0。
+
+下面考虑如何选取多项式使得中点处取值为1,其余为0。以$A_{1}A_{2}$的中点为例，在该点处，$\lambda_{1}=\lambda_{2}=\frac{1}{2},\lambda_{3}=0$。故一个比较合理的取法是$p(x,y)=4\lambda_{1}\lambda_{2}$。经验证知，该多项式满足基函数的要求。
+
+因此，完全二次Lagrange元的表达式可以写为：
+\begin{equation}
+    p_{2}(x,y)=u_{1}\lambda_{1}(2\lambda_{1}-1)+u_{2}\lambda_{2}(2\lambda_{2}-1)+u_{3}\lambda_{3}(2\lambda_{3}-1)+4u_{6}\lambda_{1}\lambda_{2}+4u_{4}\lambda_{2}\lambda_{3}+4u_{5}\lambda_{3}\lambda_{1}.
+\end{equation}
+\subsection{完全三次Lagrange元}
+完全三次Lagrange元需要10个插值节点，这里取三角形三个顶点，三条边上的三等分点以及三角形的重心。类似完全二次Lagrange元的讨论，完全三次Lagrange元的表达式可以写成:
+\begin{equation}
+    \label{eq:complete3order}
+    p(x,y)=\sum_{i=1}^{3}u_{i}\frac{\lambda_{i}(3\lambda_{i}-1)(3\lambda_{i}-2)}{2}+\sum_{i\neq j}\frac{9}{2}\lambda_{i}\lambda_{j}(3\lambda_{i}-1)u_{iij}+27\lambda_{1}\lambda_{2}\lambda_{3}u_{123}.
+\end{equation}
+\begin{exercise}
+    证明\eqref{eq:complete3order}中选取的函数确实构成一组插值基底。
+\end{exercise}
