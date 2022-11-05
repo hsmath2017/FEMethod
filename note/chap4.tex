@@ -345,3 +345,58 @@ $e$上的完全二次多项式可以表示为：
 \begin{exercise}
     证明\eqref{eq:complete3order}中选取的函数确实构成一组插值基底。
 \end{exercise}
+\subsubsection{不完全三次Lagrange元}
+在介绍不完全Lagrange元之前，先给出\textbf{升幂形式}的定义。 
+\begin{definition}{升幂形式}
+    对于定义在三角元上的三次多项式，按重心坐标我们可以写成如下形式:
+    \begin{equation}
+        \label{eq:overpower}
+        p_{3}(x,y)=\alpha_{1}\lambda_{1}^{3}+\alpha_{2}\lambda_{2}^{3}+\alpha_{3}\lambda_{3}^{3}+\alpha_{4}\lambda_{1}^{2}\lambda_{2}+\alpha_{5}\lambda_{1}^{2}\lambda_{3}+\alpha_{6}\lambda_{1}\lambda_{2}^{2}+\alpha_{7}\lambda_{3}\lambda_{2}^{2}+\alpha_{8}\lambda_{1}\lambda_{3}^{2}+\alpha_{9}\lambda_{2}\lambda_{3}^{2}+\alpha_{10}\lambda_{1}\lambda_{2}\lambda_{3}.
+    \end{equation}
+    这是一个\textbf{三次齐次多项式}。由于$\lambda_{1}+\lambda_{2}+\lambda_{3}=1$，将\eqref{eq:overpower}进行变形，可得下面的升幂形式:
+    \begin{equation}
+        \label{eq:overpowertrue}
+        p_{3}(x,y)=a_{1}\lambda_{1}+a_{2}\lambda_{2}+a_{3}\lambda_{3}+a_{4}\lambda_{1}\lambda_{2}+a_{5}\lambda_{2}\lambda_{3}+a_{6}\lambda_{3}\lambda_{1}+a_{7}\lambda_{1}^{2}\lambda_{2}+a_{8}\lambda_{2}^{2}\lambda_{3}+a_{9}\lambda_{3}^{2}\lambda_{1}+a_{10}\lambda_{1}\lambda_{2}\lambda_{3}.
+    \end{equation}
+\end{definition}
+对于\textbf{不完全三次Lagrange元}，我们给的明确插值条件只有三个顶点和三条边的三分点，一共9个方程，对于10个未知数的$p_{3}(x,y)$并不是poised lattice，所以需要一个额外的条件。事实上，我们列这9个方程时，对于\eqref{eq:overpowertrue}，$a_{10}$前的系数$\lambda_{1}\lambda_{2}\lambda_{3}$总是0。对于这个问题，额外的插值条件可以取为:
+\begin{definition}{不完全三次Lagrange元}
+    $p_{3}(x,y)$针对二次多项式的插值误差为0。
+\end{definition}
+也就是说，$a_{7}=a_{8}=a_{9}=0$时，$a_{10}$也应当为0。这种情况下我们可以取
+\begin{equation}
+    \label{eq:a10}
+    a_{10}=c_{1}a_{7}+c_{2}a_{8}+c_{3}a_{9}.
+\end{equation}
+这种取法满足前提条件。事实上，由于$c_{i}$可以是任意实数，不完全三次Lagrange元并不唯一。我们取$c_{1}=c_{2}=c_{3}=\frac{1}{2}$，就给出了线性系统的第十个方程，从而保证不完全三次Lagrange元的存在性。
+\subsubsection{完全三次Hermite元}
+TBD
+\subsection{矩形单元内分段多项式的形式}
+相比于三角单元，矩形单元上分段多项式的形式稍微好写一些，但在应用角度上并不是主流。究其原因，主要是对于一般区域，三角划分总是容易的，但矩形划分受限于特殊的几何结构并不容易进行。本节中我们主要讨论矩阵单元上的分片多项式形式。由于一般矩形$[a_{1},a_{2}]\times[b_{1},b_{2}]$总是能通过仿射变换变为标准区域$[-1,1]\times[-1,1]$，我们只需要考虑矩形区域$C:=[-1,1]\times[-1,1]$上的多项式。
+\subsubsection{双线性元}
+对于双线性元，我们选取插值节点为矩形的四个顶点，即:
+\begin{equation}
+    \label{eq:coordinateA}
+    A_{1}(1,1),A_{2}(-1,1),A_{3}(-1,-1),A_{4}(1,-1).
+\end{equation}
+若双线性多项式$p$满足$p(A_{i})=u_{i}$，我们可以写:
+\begin{equation}
+    p(x,y)=\sum_{i=1}^{4}u_{i}{\psi}_{i}(x,y).
+\end{equation}
+其中$\psi_{i}$为Lagrange插值基函数，满足:
+\begin{equation}
+    \label{eq:psivalue}
+    \psi_{i}(A_{j})=\delta_{ij}.
+\end{equation}
+根据\eqref{eq:psivalue}和\eqref{eq:coordinateA}，可以写出$\psi_{i}$的具体表达式如下：
+\begin{equation}
+    \label{eq:psiexpression}
+    \begin{aligned}
+        \psi_{1}(x,y)&=\frac{1}{4}(1+x)(1+y),\\
+        \psi_{2}(x,y)&=\frac{1}{4}(1-x)(1+y),\\
+        \psi_{3}(x,y)&=\frac{1}{4}(1-x)(1-y),\\
+        \psi_{4}(x,y)&=\frac{1}{4}(1+x)(1-y).\\
+    \end{aligned}
+\end{equation}
+据此，我们给出了矩形区域上的双线性插值。
+\subsubsection{双二次元}
