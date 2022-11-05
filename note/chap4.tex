@@ -400,3 +400,44 @@ TBD
 \end{equation}
 据此，我们给出了矩形区域上的双线性插值。
 \subsubsection{双二次元}
+对矩形区域$\hat{K}=[-1,1]\times[-1,1]$，要构造完全双二次型，需要9个插值节点。插值节点选取为4个顶点，4边中点以及正方形的中心节点，具体为:
+\begin{equation}
+    \begin{aligned}
+        &A_{1}(1,1),A_{2}(-1,1),A_{3}(-1,-1),A_{4}(1,-1)\\
+        &A_{5}(0,1),A_{6}(-1,0),A_{7}(0,-1),A_{8}(1,0),A_{9}(0,0).\\
+    \end{aligned}
+\end{equation}
+插值基函数依旧要求满足$\psi_{i}(A_{j})=\delta_{ij}$，形式为:
+\begin{equation}
+    \begin{aligned}
+        &\psi_{1}(x,y)=\frac{1}{4}x(1+x)y(1+y),\psi_{2}(x,y)=\frac{1}{4}x(1-x)y(1+y),\psi_{3}(x,y)=\frac{1}{4}x(1-x)y(1-y),\\
+        &\psi_{4}(x,y)=\frac{1}{4}x(1+x)y(1-y),\psi_{5}(x,y)=\frac{1}{2}(1-x^2)y(1+y),\psi_{6}(x,y)=-\frac{1}{2}x(1-x)(1-y^2),\\
+        &\psi_{7}(x,y)=-\frac{1}{2}(1-x^2)y(1-y),\psi_{8}(x,y)=\frac{1}{2}x(1+x)(1-y^2),\psi_{9}(x,y)=(1-x^2)(1-y^2).
+    \end{aligned}
+\end{equation}
+\subsubsection{奇妙八点元}
+这种插值节点取法为四个顶点+四条边的中点，与之相应的是，插值多项式也少了一项。奇妙八点元的插值多项式是:
+\begin{equation}
+    q_{8}(x,y)=\text{span}\{x^{i}y^{j}\}\setminus\{x^{2}y^{2}\},0\le i,j\le 2.
+\end{equation}
+相比于双二次元，奇妙八点元的特征是，其表达式为二元三次多项式，并没有包含四次项$x^{2}y^{2}$。
+
+插值节点为:
+\begin{equation}
+    \begin{aligned}
+        &A_{1}(1,1),A_{2}(-1,1),A_{3}(-1,-1),A_{4}(1,-1)\\
+        &A_{5}(0,1),A_{6}(-1,0),A_{7}(0,-1),A_{8}(1,0).\\
+    \end{aligned}
+\end{equation}
+插值基函数要求$\psi_{i}(A_{j})=\delta_{ij}$，形式为:
+\begin{equation}
+    \begin{aligned}
+        &\psi_{1}(x,y)=\frac{1}{4}(x+1)(y+1)(x+y-1),\psi_{2}(x,y)=\frac{1}{4}(1-x)(1+y)(y-x-1),\\
+        &\psi_{3}(x,y)=-\frac{1}{4}(x-1)(y-1)(x+y+1),\psi_{4}(x,y)=\frac{1}{4}(y-1)(x+1)(y-x+1),\\
+        &\psi_{5}(x,y)=\frac{1}{2}(1-x^2)(1+y),\psi_{6}(x,y)=\frac{1}{2}(1-y^2)(1-x),\\
+        &\psi_{7}(x,y)=\frac{1}{2}(1-x^2)(1-y),\psi_{8}(x,y)=\frac{1}{2}(1-y^2)(1+x).
+    \end{aligned}
+\end{equation}
+\begin{exercise}
+    推导奇妙八点元的表达式。
+\end{exercise}
