@@ -441,3 +441,20 @@ TBD
 \begin{exercise}
     推导奇妙八点元的表达式。
 \end{exercise}
+\section{有限元求解方程示例}
+本节中，通过一个例子展示有限元方法求解二维Poisson方程的过程。
+\begin{definition}{二维Poisson方程}
+    本节中考虑的2维Poisson方程形式为:
+    \begin{equation}
+        \label{eq:2Dpoisson}
+        \left\{
+        \begin{aligned}
+            &-\Delta u=f(x),x\in\Omega,\\
+            &u|_{\Gamma_{1}}=0,\\
+            &\pdfFrac{u}{\nu}|_{\Gamma_{2}}=0.\\
+        \end{aligned}
+        \right.
+    \end{equation}
+    其中$\Omega=(0,1)\times(0,1)$, $\Gamma_{1}:=\{(0,y):0\le y\le 1\}\cup\{(x,0):0\le x\le 1\}$, $\Gamma_{2}:=\{(1,y):0\le y\le 1\}\cup\{(x,1):0\le x\le 1\}$, $f\in L^{2}(\Omega)$.
+\end{definition}
+回忆一维有限元问题的步骤:变分形式--区域划分--建立有限元空间--刚度矩阵与负载向量--处理边界条件--有限元方程组求解。对于二维Poisson方程问题，我们依旧可以按照上面的步骤进行。
