@@ -274,6 +274,7 @@ $n_{i}$表示单位法向量在第$i$个维度下的投影。由\eqref{eq:GaussG
     \caption{二维分片线性插值基函数}
     \centering
     \begin{tikzpicture}
+        \label{pic:LinearInterpBasis}
         \draw (0,0)--(0.5,0.5);
         \draw (0,0)--(0.8,0);
         \draw (0,0)--(0.3,-0.6);
@@ -320,12 +321,18 @@ $e$上的完全二次多项式可以表示为：
 
 插值节点如图所示:
 \begin{figure}[H]
-    \caption{插值节点示意，此处待完善，问题在于如何进行符号标注}
+    \caption{插值节点示意}
     \centering
 \begin{tikzpicture}
     \draw (0,0)--(2,0);
+    \coordinate [label=below:$A_{1}$] (M) at (0,0);
     \draw (2,0)--(1,1);
     \draw (1,1)--(0,0);
+    \coordinate [label=below:$A_{2}$] (M) at (2,0);
+    \coordinate [label=above:$A_{3}$] (M) at (1,1);
+    \coordinate [label=above:$A_{4}$] (M) at (1.5,0.5);
+    \coordinate [label=above:$A_{5}$] (M) at (0.5,0.5);
+    \coordinate [label=below:$A_{6}$] (M) at (1,0);
 \end{tikzpicture}
 \end{figure}
 首先考虑构造二次多项式$p(\lambda_{1},\lambda_{2},\lambda_{3})$，使得在顶点$A_{1}$上的取值为1，在其他顶点和线段中点处取值均为0。由于$\lambda_{1}(A_{1})=1,\lambda_{1}(A_{i})=0(i\neq 1)$，可以取$\lambda_{1}$为$p$的一个因子。由于$A_{5}A_{6}$平行于$A_{2}A_{3}$，且为中点连线，故该线段的表达式为$\lambda_{1}=\frac{1}{2}$。从而$(2\lambda_{1}-1)$也是$p$的因子。此时取基函数$p(\lambda_{1},\lambda_{2},\lambda_{3})=\lambda_{1}(2\lambda_{1}-1)$，经检验可知该多项式在$A_{1}$取1,在$A_{i}(i\neq 1)$均取0。
@@ -458,3 +465,188 @@ TBD
     其中$\Omega=(0,1)\times(0,1)$, $\Gamma_{1}:=\{(0,y):0\le y\le 1\}\cup\{(x,0):0\le x\le 1\}$, $\Gamma_{2}:=\{(1,y):0\le y\le 1\}\cup\{(x,1):0\le x\le 1\}$, $f\in L^{2}(\Omega)$.
 \end{definition}
 回忆一维有限元问题的步骤:变分形式--区域划分--建立有限元空间--刚度矩阵与负载向量--处理边界条件--有限元方程组求解。对于二维Poisson方程问题，我们依旧可以按照上面的步骤进行。
+\subsection{构造变分形式}
+在\eqref{eq:2Dpoisson}第1式左右两边同乘辅助函数$v$，并在区域$\Omega$上求积分，可得:
+\begin{equation}
+    \label{eq:Weak-Form}
+    \int_{\Omega}-\Delta u v\dif x=\int_{\Omega}fv\dif x.
+\end{equation}
+对\eqref{eq:Weak-Form}的左端项使用格林公式，可得:
+\begin{equation}
+    -\int_{\Omega}\Delta uv\dif x=\int_{\Omega}\nabla u\cdot\nabla v\dif x-\int_{\partial\Omega}v\pdfFrac{u}{n}\dif s(x).
+\end{equation}
+由于$\pdfFrac{u}{n}|_{\Gamma_{2}}=0$，取函数空间$V=\{v:v|_{\Gamma_{1}}=0\}$，可知$\forall v\in V$，均有
+\begin{equation}
+    \int_{\Omega}\nabla u\cdot\nabla v=\int_{\Omega}fv\dif x.
+\end{equation}
+取$B(u,v)=\int_{\Omega}\nabla u\cdot\nabla v\dif x$, $\innerprod{f}{v}=\int_{\Omega}fv\dif x$, 可得变分问题的表示形式为:
+\begin{equation}
+    \label{eq:variation}
+    B(u,v)=\innerprod{f}{v},\forall v\in V.
+\end{equation}
+\subsection{进行区域剖分}
+本例中问题区域$\Omega$为矩形区域，因此三角剖分和矩形剖分均可实现有限元离散和求解。在本例中，我们采用三角剖分来分割矩形区域$\Omega$，具体的离散方案如下图所示:
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw (0,0)--(4,0);
+        \draw (0,0)--(0,4);
+        \draw (0,4)--(4,4);
+        \draw (4,4)--(4,0);
+        \draw (0,1)--(4,1);
+        \draw (0,2)--(4,2);
+        \draw (0,3)--(4,3);
+        \draw (1,0)--(1,4);
+        \draw (2,0)--(2,4);
+        \draw (3,0)--(3,4);
+        \draw (1,0)--(0,1);
+        \draw (2,0)--(0,2);
+        \draw (3,0)--(0,3);
+        \draw (4,0)--(0,4);
+        \draw (1,4)--(4,1);
+        \draw (2,4)--(4,2);
+        \draw (3,4)--(4,3);
+    \end{tikzpicture}
+    \caption{矩形区域三角剖分}
+\end{figure}
+在本例中，我们采用每个单元上的分段线性函数作有限元近似。根据分段线性函数的性质，我们只需要确定单元交点处的取值，即可给出分段线性函数的表达式。
+
+值得注意的是，并非所有节点处的值都是未知的。在本例中，由于我们在$\Gamma_{1}$处给出了Dirichlet边值条件，矩形区域左边界和下边界的取值都是确定的，从而这些点是已知取值的节点。我们关心的是取值未知的节点，在上图中一共有16个点，这意味着我们需要16个离散方程。
+
+在列方程前，我们需要对剖分后的区域和剖分节点进行编号。一个合理的编号方案可以大大降低最后一步矩阵求解的时间复杂度。下图为一种常用的标注方案:
+\begin{figure}[H]
+    \centering
+    \label{pic:labeledelement}
+    \begin{tikzpicture}
+        \draw (0,0)--(8,0);
+        \draw (0,0)--(0,8);
+        \draw (0,8)--(8,8);
+        \draw (8,8)--(8,0);
+        \draw (0,2)--(8,2);
+        \draw (0,4)--(8,4);
+        \draw (0,6)--(8,6);
+        \draw (2,0)--(2,8);
+        \draw (4,0)--(4,8);
+        \draw (6,0)--(6,8);
+        \draw (2,0)--(0,2);
+        \draw (4,0)--(0,4);
+        \draw (6,0)--(0,6);
+        \draw (8,0)--(0,8);
+        \draw (2,8)--(8,2);
+        \draw (4,8)--(8,4);
+        \draw (6,8)--(8,6);
+        \coordinate [label=above:$1$] (M) at (0.2,0); 
+        \coordinate [label=above:$2$] (M) at (2.2,0); 
+        \coordinate [label=above:$3$] (M) at (4.2,0);
+        \coordinate [label=above:$4$] (M) at (6.2,0);
+        \coordinate [label=above:$5$] (M) at (8.2,0); 
+        \coordinate [label=above:$6$] (M) at (0.2,2);
+        \coordinate [label=above:$7$] (M) at (2.2,2);      
+        \coordinate [label=above:$8$] (M) at (4.2,2);
+        \coordinate [label=above:$9$] (M) at (6.2,2);
+        \coordinate [label=above:$10$] (M) at (8.2,2);
+        \coordinate [label=above:$11$] (M) at (0.2,4);
+        \coordinate [label=above:$12$] (M) at (2.2,4);
+        \coordinate [label=above:$13$] (M) at (4.2,4);
+        \coordinate [label=above:$14$] (M) at (6.2,4);
+        \coordinate [label=above:$15$] (M) at (8.2,4);
+        \coordinate [label=above:$16$]
+        (M) at (0.2,6);    
+        \coordinate [label=above:$17$]
+        (M) at (2.2,6);   
+        \coordinate [label=above:$18$]
+        (M) at (4.2,6);   
+        \coordinate [label=above:$19$]
+        (M) at (6.2,6);   
+        \coordinate [label=above:$20$]
+        (M) at (8.2,6);
+        \coordinate [label=above:$21$] (M) at (0.2,8);   
+        \coordinate [label=above:$22$] (M) at (2.2,8);  
+        \coordinate [label=above:$23$] (M) at (4.2,8);  
+        \coordinate [label=above:$24$] (M) at (6.2,8);  
+        \coordinate [label=above:$25$] (M) at (8.2,8);  
+        \coordinate [label=below:$E_{1}$] (M) at (1,0.8);
+        \coordinate [label=below:$E_{2}$] (M) at (1,1.8);
+        \coordinate [label=below:$E_{3}$] (M) at (3,0.8);
+        \coordinate [label=below:$E_{4}$] (M) at (3,1.8);
+        \coordinate [label=below:$E_{5}$] (M) at (5,0.8);
+        \coordinate [label=below:$E_{6}$] (M) at (5,1.8);
+        \coordinate [label=below:$E_{7}$] (M) at (7,0.8);
+        \coordinate [label=below:$E_{8}$] (M) at (7,1.8);
+        \coordinate [label=below:$E_{9}$] (M) at (1,2.8);
+        \coordinate [label=below:$E_{10}$] (M) at (1,3.8);
+        \coordinate [label=below:$E_{11}$] (M) at (3,2.8);
+        \coordinate [label=below:$E_{12}$] (M) at (3,3.8);
+        \coordinate [label=below:$E_{13}$] (M) at (5,2.8);
+        \coordinate [label=below:$E_{14}$] (M) at (5,3.8);
+        \coordinate [label=below:$E_{15}$] (M) at (7,2.8);
+        \coordinate [label=below:$E_{16}$] (M) at (7,3.8);
+        \coordinate [label=below:$E_{17}$] (M) at (1,4.8);
+        \coordinate [label=below:$E_{18}$] (M) at (1,5.8);
+        \coordinate [label=below:$E_{19}$] (M) at (3,4.8);
+        \coordinate [label=below:$E_{20}$] (M) at (3,5.8);
+        \coordinate [label=below:$E_{21}$] (M) at (5,4.8);
+        \coordinate [label=below:$E_{22}$] (M) at (5,5.8);
+        \coordinate [label=below:$E_{23}$] (M) at (7,4.8);
+        \coordinate [label=below:$E_{24}$] (M) at (7,5.8);
+        \coordinate [label=below:$E_{25}$] (M) at (1,6.8);
+        \coordinate [label=below:$E_{26}$] (M) at (1,7.8);
+        \coordinate [label=below:$E_{27}$] (M) at (3,6.8);
+        \coordinate [label=below:$E_{28}$] (M) at (3,7.8);
+        \coordinate [label=below:$E_{29}$] (M) at (5,6.8);
+        \coordinate [label=below:$E_{30}$] (M) at (5,7.8);
+        \coordinate [label=below:$E_{31}$] (M) at (7,6.8);
+        \coordinate [label=below:$E_{32}$] (M) at (7,7.8);
+    \end{tikzpicture}
+    \caption{三角单元符号标注}
+\end{figure}
+事实上，在上图中，节点$1,2,3,4,5,6,11,16,21$处的值都是已知的，剩余的节点才是需要求解的部分。为后续列方程方便，我们可以记录一下与每个节点相邻的三角单元的编号。
+\subsection{建立有限元子空间$V_{h}$}
+一阶有限元子空间由\ref{pic:LinearInterpBasis}张成，记$\Psi_{i}(x)$为满足下列条件的基函数:
+\begin{enumerate}
+    \item $\Psi_{i}(P_{j})=\delta_{ij}$。
+    \item $\Psi_{i}$为线性函数。
+\end{enumerate}
+根据边界条件，最终的一阶有限元解是节点$7,8,9,10,12,13,14,15,17,18,19,20,22,23,24,25$上定义的$\Psi_{i}$的线性组合。
+\subsection{刚度矩阵与负载向量计算}
+根据\eqref{eq:variation}，在有限元子空间$V_{h}$上，我们需要寻找函数$v\in V_{h}$使得$B(v,\Psi_{i})=\innerprod{f}{\Psi_{i}}\forall i$。设
+\begin{equation}
+    v=\sum_{i=1}^{N}u_{i}\Psi_{i},
+\end{equation}
+可知
+\begin{equation}
+    \sum_{i=1}^{N}B(\Psi_{i},\Psi_{j})u_{i}=\innerprod{f}{\Psi_{j}},\forall j\in[1,N].
+\end{equation}
+要求解函数$v$，即求解系数$u_{i}$，需要计算刚度矩阵$B(\Psi_{i},\Psi_{j})$和负载向量$\innerprod{f}{\Psi_{j}}$。
+
+计算刚度矩阵时，我们采用的做法是\textbf{在每个单元上计算其对刚度矩阵的贡献}，最后\textbf{整体装配到刚度矩阵中}。对于一维有限元问题，装配过程的作用有限，因为整个矩阵的形式足够清晰。但在二维甚至更高维度的问题中，装配在写程序的时候就相当必要了。
+
+以图\ref{pic:labeledelement}的$E_{11}$为例，说明一下刚度矩阵装配的过程。
+\begin{enumerate}
+    \item 明确$E_{11}$落在哪些基函数的支集内。
+    
+    在图中，$E_{11}$落在其三个顶点对应的基函数的支集内部，即$\Psi_{7},\Psi_{8},\Psi_{12}$。
+    \item 设下标集$I=\{7,8,12\}$，通过双线性泛函$B$的定义计算$B(\Psi_{i},\Psi_{j}),i,j\in I$。
+    \item 将第二步计算所得子矩阵装配到刚度矩阵$M$内，所谓"装配"即为把计算结果与装配前的刚度矩阵作加法。
+\end{enumerate}
+
+第二步中对$B(\Psi_{i},\Psi_{j})$的计算需要使用重心坐标进行简化。
+
+对于负载向量$\innerprod{f}{\Psi_{j}}$的计算，则是在注意$\Psi_{j}$支集的前提下，设计三角形上的数值积分公式计算即可。
+
+最后一步，则是求解得到的线性方程，并给出近似解的表达式。
+
+\begin{exercise}
+    实现二维Poisson方程的一阶有限元算法。
+\end{exercise}
+\section{本章总结}
+在前三章基础上，本章开始了本课程的主题--有限元算法的原理与实践。实践中需要特别注意：
+\begin{itemize}
+    \item 变分问题的选取。
+    \item 区域的三角划分。
+    \item 插值多项式空间$V_{h}$的形式。
+    \item 刚度矩阵$B$的装配。
+    \item 负载向量的计算。
+    \item 计算完成后计算结果与原问题数值解的对应。
+\end{itemize}
+至于该方法的误差分析，详情请见下一个章节。
