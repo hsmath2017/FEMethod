@@ -93,3 +93,128 @@
         |v|_{m,p,\Omega}\le C\norm{B^{-1}}^{m}|\det B|^{\frac{1}{p}}|\hat{v}|_{m,p,\Omega}.
     \end{equation}
 \end{theorem}
+\begin{proof}
+    先考虑$v\in C^{m}$。设$1\le p<\infty$，对$v\in C^{m}(\bar{\Omega})$，根据$\hat{v}$的定义则有$\hat{v}\in C^{m}(\bar{\hat{\Omega}})$，且对任何满足$|\alpha|=m$的多重指标$\alpha=(\alpha_{1},\cdots,\alpha_{n})$，有:
+    \begin{equation}
+        D^{\alpha}\hat{v}(\hat{x})=\nabla^{m}\hat{v}(\hat{x})(\xi_{1},\cdots,\xi_{m}).
+    \end{equation}
+    这里$\nabla^{m}\hat{v}$是$m$阶张量，$\xi_{i}$表示$\mathbb{R}^{m}$内的基向量。因此我们有:
+    \begin{equation}
+        \label{eq:seminorm}
+        |\hat{v}|_{m,p,\hat{\Omega}}\le C_{1}(m,n)\left(\int_{\hat{\Omega}}\norm{\nabla^{m}\hat{v}(\hat{x})}^{p}\dif\hat{x}\right)^{\frac{1}{p}}
+    \end{equation}
+    下面讨论如何将\eqref{eq:seminorm}中的变量$\hat{x}$转化为$\Omega$内的变量$x$。利用复合函数的微分法则:
+    \begin{equation}
+        \nabla^{m}\hat{v}(\hat{x})(\xi_{1},\cdots,\xi_{m})=\nabla^{m}v(x)(B\xi_{1},\cdots,B\xi_{m}).
+    \end{equation}
+    我们有:
+    \begin{equation}
+        \norm{\nabla^{m}\hat{v}(\hat{x})}\le\norm{\nabla^{m}v(x)}\cdot\norm{B}^{m}=\norm{\nabla^{m}v(F(\hat{x}))}\cdot\norm{B}^{m}.
+    \end{equation}
+    将上式代入\eqref{eq:seminorm}右侧的表达式, 可知:
+    \begin{equation}
+        \int_{\hat{\Omega}}\norm{\nabla^{m}\hat{v}(\hat{x})}^{p}\dif\hat{x}\le\int_{\hat{\Omega}}\norm{\nabla^{m}v(F(\hat{x}))}\cdot \norm{B}^{mp}\dif\hat{x}=|\det(B^{-1})|\norm{B}^{mp}\int_{\Omega}\norm{\nabla^{m}v(x)}\dif x.
+    \end{equation}
+    又由于有界性，可得存在常数$C_{2}(m,n)$使得：
+    \begin{equation}
+        \norm{D^{m}v(x)}\le C_{2}(m,n)\max_{|\alpha|=m}|D^{\alpha}v(x)|.
+    \end{equation}
+    综合上述，可得:
+    \begin{equation}
+        |\hat{v}|_{m,p,\hat{\Omega}}\le C(m,n)\norm{B}^{m}|\det B|^{-\frac{1}{p}}|v|_{m,p,\Omega}.
+    \end{equation}
+    在$p<+\infty$的情况下，利用$C^{m}(\bar{\Omega})$在$H^{m,p}(\Omega)$中的稠密性可知，上述不等式对$v\in H^{m,p}(\Omega)$也成立。
+
+    如果$p=+\infty$，对于$\forall v\in H^{m,\infty}(\Omega)$，有$v\in H^{m,p}(\Omega)\forall p<\infty$。根据前面的结论，$|D^{\alpha}\hat{v}|_{0,p,\hat{\Omega}}$的上界与$p$无关，因此函数$D^{\alpha}\hat{v}\in L^{\infty}(\hat{\Omega})$。由$\alpha$任意性可得$\hat{v}\in H^{m,\infty}(\hat{\Omega})$。再利用嵌入定理即证。
+\end{proof}
+\begin{exercise}
+    用类似的方法证明等式\eqref{eq:semiNormApprox2}。
+\end{exercise}
+\begin{remark}
+    上面的定理说明了如果$\Omega$和$\hat{\Omega}$仿射等价，则半范数$|\cdot|_{m,p,\hat{\Omega}}$和半范数$|\cdot|_{m,p,\Omega}$为等价半范数。
+\end{remark}
+定理5.1给出了两个范数之间的等价关系。具体的倍率则需要由$\norm{B}$和$|\det(B)|$来进行控制。而由于矩阵$B$刻画了$\Omega$和$\hat{\Omega}$几何特征的差异。为了估计$\norm{B}$和$\det(B)$，引入下列记号来描述这两个区域的几何信息:
+\begin{itemize}
+    \item $h$:$\Omega$的直径。
+    \item $\hat{h}$:$\hat{\Omega}$的直径。
+    \item $\rho$:$\Omega$最大内接球的直径。
+    \item $\hat{\rho}$:$\hat{\Omega}$最大内接球的直径。
+\end{itemize}
+对于$\norm{B}$和$\det(B)$的控制，有下面这些结论成立:
+\begin{lemma}
+    \begin{equation}
+        \norm{B}\le\frac{h}{\hat{\rho}},\norm{B^{-1}}\le\frac{\hat{h}}{\rho}.
+    \end{equation}
+\end{lemma}
+\begin{lemma}
+    \begin{equation}
+    \det(B)=\frac{|\Omega|}{|\hat{\Omega}|}.
+    \end{equation}
+\end{lemma}
+\begin{lemma}
+    设$\sigma_{n}$是$\mathbb{R}^{n}$中单位球的体积，$\hat{\sigma}_{n}=C\frac{\sigma_{n}}{m(\hat{\Omega})}$，则:
+    \begin{equation}
+        C_{1}\hat{\sigma}_{n}\rho^{n}\le|\det(B)|\le C_{2}\hat{\sigma}_{n}h^{n}.
+    \end{equation}
+\end{lemma}
+\subsection{单元上的插值误差估计}
+下面的定理给出的是全空间$\Omega$上的插值误差估计。
+\begin{theorem}
+    设$W^{k+1,p}(\hat{\Omega})$和$W^{m,q}(\hat{\Omega})$是两个Sobolev空间，$0\le m\le k+1$，满足
+    \begin{equation}
+        W^{k+1,p}(\hat{\Omega})\hookrightarrow W^{m,q}(\hat{\Omega}).
+    \end{equation}
+    又设$\hat{\pi}_{h}$是定义在$W^{k+1,p}(\hat{\Omega})$上的有界线性算子，且保持$k$次多项式不变。又设$\Omega$和$\hat{\Omega}$仿射等价，且
+    \begin{equation}
+        \widehat{\pi_{h}v}=\hat{\pi}_{h}\hat{v}.
+    \end{equation}
+    则存在正常数$C$使得下面的不等式成立:
+    \begin{equation}
+        |v-\pi_{h}v|_{m,q,\Omega}\le C\left[m(\Omega)\right]^{\frac{1}{q}-\frac{1}{p}}\frac{h^{k+1}}{\rho^{m}}|v|_{k+1,p,\Omega},v\in W^{k+1,p}(\Omega).
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    根据定理5.1:
+    \begin{equation}
+        |v-\pi_{h}v|_{m,q,\Omega}\le C(m,n)\norm{B^{-1}}^{m}|\det(B)|^{\frac{1}{q}}|\hat{v}-\widehat{\pi_{h}v}|_{m,q,\hat{\Omega}}.
+    \end{equation}
+    由上式，我们只需要估计$|\hat{v}-\widehat{(\pi_{h}v)}|$。由题设条件，我们知道对任意的$\hat{p}_{k}\in P_{k}(\widehat{\Omega})$，有:
+    \begin{equation}
+        \hat{v}-\widehat{(\pi_{h}v)}=\hat{v}-\hat{\pi}_{h}\hat{v}=(I-\hat{\pi}_{h})(\hat{v}+\hat{p}_{k}).
+    \end{equation}
+    从而根据等价范数定理，
+    \begin{equation}
+        |\hat{v}-\widehat{(\pi_{h}v)}|_{m,q,\hat{\Omega}}\le C|\hat{v}|_{k+1,p,\hat{\Omega}}.
+    \end{equation}
+    再利用前述引理5.2和引理5.4，可得待证等式成立。
+\end{proof}
+\begin{remark}
+    该定理利用$v$在$W^{k+1,p}(\Omega)$上的范数，估计了插值在$W^{m,q}(\Omega)$上的误差。
+\end{remark}
+下面我们给出一般单元$e\in\mathcal{T}_{h}$上的插值误差估计。
+\begin{theorem}
+    如果下面几个条件成立:
+    \begin{itemize}
+        \item $\hat{v}\in H^{k+1,p}(\hat{e})$
+        \item $\hat{\pi}_{\hat{e}}:H^{k+1,p}(\hat{e})\rightarrow H^{m,q}(\hat{e})$, 满足
+        \begin{equation}
+            \hat{\pi}_{\hat{e}}\hat{p}_{k}=\hat{p}_{k},\forall\hat{p}_{k}\in\hat{P}_{k}(\hat{e}).
+        \end{equation}
+        \item 对整数$k\ge 0,m\ge 0$，有下列嵌入关系：
+        \begin{equation}
+            \begin{aligned}
+                H^{k+1,p}(\hat{e})&\hookrightarrow \bar{C}^{s}(\hat{e}),s=0,1,2\\
+                H^{k+1,p}(\hat{e})&\hookrightarrow H^{m,q}(\hat{e}).\\
+            \end{aligned}
+        \end{equation}
+        \item 对任意单元$e$，存在可逆变换$F_{e}$
+        \begin{equation}
+            x=F_{e}(\hat{x})=B_{e}\hat{x}+b.
+        \end{equation}
+        使$e=F(\hat{e})$.
+    \end{itemize}
+    则:
+    \begin{equation}
+        |v-\pi_{e}v|_{m,q,e}\le C\left[m(e)\right]^{\frac{1}{q}-\frac{1}{p}}\frac{h_{e}^{k+1}}{\rho_{e}^{m}}|v|_{k+1,p,e},v\in W^{k+1,p}(e).
+    \end{equation}
+\end{theorem}
