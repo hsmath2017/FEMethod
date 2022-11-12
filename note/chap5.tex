@@ -1,0 +1,95 @@
+\chapter{协调有限元的误差分析}
+本章中，我们将借助Sobolev空间以及其上的范数，对协调有限元的求解误差进行估计。
+\section{误差估计的整体流程}
+经过协调有限元离散后，原微分方程边值问题对应的变分问题为:
+\begin{definition}{微分方程弱形式}
+    \label{def:WeakForm}
+    求$u\in V$使得
+    \begin{equation}
+        a(u,v)=f(v),\forall v\in V.
+    \end{equation}
+    其中$V$是定义在$\Omega$上的函数的Hilbert空间，双线性型$a(\cdot,\cdot)$是连续且$V-$椭圆的，$f$是线性连续泛函。
+\end{definition}
+设$V_{h}\le V$是有限元子空间，则\textbf{有限元逼近问题}为
+\begin{definition}{有限元逼近问题}
+    \label{def:FEApprox}
+    求$u_{h}\in V_{h}$使得
+    \begin{equation}
+        a(u_{h},v_{h})=f(v_{h}).
+    \end{equation}
+\end{definition}
+直接讨论有限元逼近问题的解不太容易，讨论对应的插值问题相对容易一些。和一维有限元分析类似，高维情况下也有对应的\textbf{Cea引理}。
+\begin{lemma}{Cea引理}
+    \label{lem:Cea}
+    设双线性型$a(\cdot,\cdot)$是连续且$V-$椭圆的，则存在$C>0$使得：
+    \begin{equation}
+        \norm{u-u_{h}}_{V}\le C\inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{V},
+    \end{equation}
+    其中$u,u_{h}$分别为准确解和有限元解。
+\end{lemma}
+\begin{proof}
+    由于$a(\cdot,\cdot)$连续且$V-$椭圆，可知双线性型$a$可以在空间$V$上诱导一个内积。由问题\ref{def:WeakForm}和\ref{def:FEApprox}的描述可知：
+    $\forall v_{h}\in V_{h},u\in V$，有$a(u-u_{h},v_{h})=0$成立。即向量$u-u_{h}$与子空间$V_{h}$关于内积$a(\cdot,\cdot)$正交。由此，我们有：
+    \begin{equation}
+        \norm{u-u_{h}}_{V}^{2}\le\frac{1}{\alpha}|a(u-u_{h},u-u_{h})|=\frac{1}{\alpha}|a(u-u_{h},u-v_{h})|\le\frac{M}{\alpha}\norm{u-u_{h}}_{V}\norm{u-v_{h}}_{V}.
+    \end{equation}
+    上式中，第一个不等号由V-椭圆性导出，第二个等号源于$u-u_{h}$与子空间$V_{h}$的正交性，第三个不等号源于双线性型的有界性。
+
+    由此可得:
+    \begin{equation}
+        \norm{u-u_{h}}_{V}\le\frac{M}{\alpha}\norm{u-v_{h}}_{V}.
+    \end{equation}
+\end{proof}
+\begin{exercise}
+    试证明在\textbf{Cea引理}中常数$C$可以优化为$\sqrt{\frac{M}{\alpha}}$。
+\end{exercise}
+\begin{remark}
+    \textbf{Cea引理}的重要意义在于将有限元的误差估计问题归结于插值误差估计问题。事实上，假定$\mathscr{T}_{h}$为空间$\Omega$的有限元划分，$\pi_{h}u$代表对函数$u$的样条插值，$\pi_{T}u$代表对函数$u$在单元$T$上的插值，那么我们有:
+    \begin{equation}
+        \label{eq:errorapprox}
+        \inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{V}\le\norm{u-\pi_{h}u}_{V}=\left(\sum_{T\in\mathscr{T}_{h}}\norm{u-\pi_{T}u}_{V}^{2}\right)^{\frac{1}{2}}.
+    \end{equation}
+    由此，问题归结于估计(三角)单元$T$上的插值误差$\norm{u-\pi_{T}u}_{1,T}$。
+\end{remark}
+单元$T$的任意性可能会使得插值误差不好计算，所以我们需要考虑一个仿射变换$F_{T}:\hat{T}\rightarrow T$，把标准参考单元$\hat{T}:\{(x,y):x\ge 0,y\ge 0,x+y\le 1\}$变换为我们需要讨论的三角单元$T$，而后把$T$上的误差估计转化到$\hat{T}$上完成。
+
+根据$F_{T}$，我们可以定义下面两个映射:
+\begin{equation}
+    \hat{v}(\hat{x}):=v(F(\hat{x}))=v(F_{T}(\hat{x}))=v(x).
+\end{equation}
+\begin{equation}
+    \hat{\pi}_{\hat{T}}\hat{u}(\hat{x}):=\pi_{T}u(F(\hat{x}))=\pi_{T}u(x).
+\end{equation}
+据此我们可以写出误差估计的全流程:
+\begin{enumerate}
+    \item 把有限元解的误差根据Cea引理转化为插值误差。
+    \item 把整体的插值误差估计转化为每个三角单元$T$上的插值误差估计。
+    \item 将三角单元$T$上的插值误差转化为标准单元$\hat{T}$上的插值误差。
+    \item 利用等价范数定理建立$\hat{T}$上的插值误差估计。
+    \item 将标准单元$\hat{T}$上的范数$|\hat{u}|_{k+1,\hat{T}}$转化到一般单元上的范数$|u|_{k+1,T}$。
+\end{enumerate}
+\section{Sobolev空间上的插值误差估计}
+\subsection{仿射等价元之间的范数关系}
+\begin{definition}{仿射等价}
+    称$\mathbb{R}^{n}$中的两个开子集$\Omega,\hat{\Omega}$是\textbf{仿射等价}的，如果存在可逆的仿射变换
+    \begin{equation}
+        F:F(\hat{x})=B\hat{x}+b=x\in\Omega,\forall\hat{x}\in\hat{\Omega}.
+    \end{equation}
+    使得$\Omega=F(\hat{\Omega})$。
+\end{definition}
+\begin{theorem}
+    设$\Omega$和$\hat{\Omega}$仿射等价，若$v\in W^{m,p}(\Omega)$，令
+    \begin{equation}
+        \hat{v}(\hat{x}):=v(F(\hat{x}))=v(x),
+    \end{equation}
+    则$\hat{v}\in W^{m,p}(\Omega)$且:
+    \begin{equation}
+        \label{eq:semiNormApprox1}
+        |\hat{v}|_{m,p,\hat{\Omega}}\le C\norm{B}^{m}|\det B|^{-\frac{1}{p}}|v|_{m,p,\Omega}.
+    \end{equation}
+    其中$C$为仅与$m,n$有关的正常数，$\norm{B}$为矩阵$B$的Euclid范数。类似地，下面这个等式也成立:
+    \begin{equation}
+        \label{eq:semiNormApprox2}
+        |v|_{m,p,\Omega}\le C\norm{B^{-1}}^{m}|\det B|^{\frac{1}{p}}|\hat{v}|_{m,p,\Omega}.
+    \end{equation}
+\end{theorem}
