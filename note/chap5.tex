@@ -251,4 +251,38 @@
 \begin{remark}
     第一个条件保证了区域划分不会出现一些"过于尖锐的"三角形。第二个条件则是我们利用参考元族研究有限元族的依据。第三个条件则是利用插值估计有限元误差的基本依据。
 \end{remark}
-\subsection{解的$L^{1}$模误差估计}
+\subsection{解的$H^{1}$模误差估计}
+对于$H^{1}$模的误差估计，我们可以使用Cea引理，把有限元解的误差分析转化为插值的误差分析。在前提条件满足的情况下，有下面的定理成立:
+\begin{theorem}
+    如果$P_{k}(\hat{e})\subset\hat{P}_{\hat{e}}\subset H^{l}(\hat{e}), H^{k+1}(\hat{e})\hookrightarrow C^{s}(\hat{e}),$，其中$0\le l\le k$，$s$是$\hat{\Sigma}_{\hat{e}}$中出现的最高阶导数，则对任意$v\in H^{k+1}(\Omega)\cap V$，有：
+    \begin{equation}
+        \label{eq:H1approx}
+        \begin{aligned}
+            &\norm{v-\Pi_{h}v}_{m,\Omega}\le Ch^{k+1-m}|v|_{k+1,\Omega},0\le m\le \min\{1,l\},\\
+            &\left(\sum_{e\in\mathcal{T}_{h}}\norm{v-\Pi_{e}v}_{m,e}^{2}\right)^{\frac{1}{2}}\le Ch^{k+1-m}|v|_{k+1,\Omega},0\le m\le l.
+        \end{aligned}
+    \end{equation}
+    其中$\Pi_{h}v$表示$v$在$V_{h}$中的分片插值。
+\end{theorem}
+\begin{proof}
+    在表达式\eqref{eq:errorofeachcell}中，取$p=q=2$可得:
+    \begin{equation}
+        \norm{v-\Pi_{e}v}_{m,e}\le Ch_{e}^{k+1-m}|v|_{k+1,e}.
+    \end{equation}
+    由于$h$是单元直径的最大值，我们有$h_{e}\le h$，由上式求和可得:
+    \begin{equation}
+        \left(\sum_{e\in\mathcal{T}_{h}}\norm{v-\Pi_{e}v}_{m,e}^{2}\right)^{\frac{1}{2}}\le Ch^{k+1-m}\left(\sum_{e\in\mathcal{T}_{h}}|v|_{k+1,e}^{2}\right)^{\frac{1}{2}}=Ch^{k+1-m}|v|_{k+1,\Omega}.
+    \end{equation}
+    而当$0\le m\le\min\{1,l\}$时，\eqref{eq:H1approx}的第二式左边可以写成$\norm{v-\Pi_{h}v}_{m,\Omega}$，从而第一式也可得证。
+\end{proof}
+在定理5.4中取$l=1$，再借助Cea引理，可以得到$H^{1}$范数的估计式:
+\begin{theorem}
+    如果$v\in H^{k+1}(\Omega)\cap V$且定理5.4的条件成立，那么我们有下面的估计式成立:
+    \begin{equation}
+        \label{eq:approx}
+        \norm{u-u_{h}}_{1,\Omega}\le Ch^{k}|u|_{k+1,\Omega}.
+    \end{equation}
+\end{theorem}
+\begin{remark}
+    定理5.5说明了子空间$V$选取$p$次元确实意味着有限元解的$H^{1}$误差能达到$p$阶精度。但$p$也并非越大越好。一方面高次元的计算复杂度也会大幅度上升，另一方面，定理5.5的估计式需要真实解$u$也满足$u\in H^{k+1}(\Omega)$。
+\end{remark}
