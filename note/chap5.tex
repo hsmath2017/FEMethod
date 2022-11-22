@@ -218,3 +218,37 @@
         |v-\pi_{e}v|_{m,q,e}\le C\left[m(e)\right]^{\frac{1}{q}-\frac{1}{p}}\frac{h_{e}^{k+1}}{\rho_{e}^{m}}|v|_{k+1,p,e},v\in W^{k+1,p}(e).
     \end{equation}
 \end{theorem}
+\begin{proof}
+    和定理5.2同理。
+\end{proof}
+如果剖分$\mathcal{T}_{h}$是\textbf{拟正则}的，即存在常数$\sigma>0$使得
+\begin{equation}
+    \frac{h_{e}}{\rho_{e}}\le\sigma,\forall e\in\mathcal{T}_{h},h_{e}>0,h_{e}\rightarrow 0.
+\end{equation}
+那么根据定理5.3，存在正常数$C$使得下面的插值误差估计成立：
+\begin{equation}
+    \label{eq:errorofeachcell}
+    |v-\Pi_{e}v|_{m,q,e}\le Ch_{e}^{k+1-m+n(\frac{1}{q}-\frac{1}{p})}|v|_{k+1,p,e}.
+\end{equation}
+根据\eqref{eq:errorofeachcell}中的局部误差估计，推广到整体，可以得到以下推论:
+\begin{corollary}
+    假设定理5.3的条件满足，且剖分是拟正则的，$h$为所有单元的最大直径，则:
+    \begin{equation}
+        \label{eq:globalanalysis}
+        |v-\Pi_{h}v|_{m,p,\Omega}\le Ch^{k+1-m}|v|_{k+1,p,\Omega},\forall v\in W^{k+1,p}(\Omega).
+    \end{equation}
+\end{corollary}
+\begin{remark}
+    可以把上面的推论5.1和一维样条插值的误差估计结果进行一些比对。
+\end{remark}
+\section{多边形区域上二阶问题的分析}
+下面我们具体讨论二阶问题的误差估计，即区域$\Omega\in\mathbb{R}^{2}$上的变分问题。设这个二阶问题的解空间$V$满足:$H_{0}^{1}(\Omega)\subset V\subset H^{1}(\Omega)$。以下是下面的误差分析成立需要满足的一系列前提条件:
+\begin{itemize}
+    \item 区域划分$\mathcal{T}_{h}$是拟正则的。
+    \item 有限元族$\{e,P_{e},\Sigma_{e}\}_{e\in\mathcal{T}_{h},h>0}$与一个参考元$(\hat{e},\hat{P}_{\hat{e}},\hat{\Sigma}_{\hat{e}})$仿射等价。
+    \item $\{(e,P_{e},\Sigma_{e})\}$属于$C^{0}$类，即为协调元。 
+\end{itemize}
+\begin{remark}
+    第一个条件保证了区域划分不会出现一些"过于尖锐的"三角形。第二个条件则是我们利用参考元族研究有限元族的依据。第三个条件则是利用插值估计有限元误差的基本依据。
+\end{remark}
+\subsection{解的$L^{1}$模误差估计}
