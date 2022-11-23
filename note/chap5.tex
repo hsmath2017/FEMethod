@@ -286,3 +286,11 @@
 \begin{remark}
     定理5.5说明了子空间$V$选取$p$次元确实意味着有限元解的$H^{1}$误差能达到$p$阶精度。但$p$也并非越大越好。一方面高次元的计算复杂度也会大幅度上升，另一方面，定理5.5的估计式需要真实解$u$也满足$u\in H^{k+1}(\Omega)$。
 \end{remark}
+\section{$L^{2}$模与负模的估计}
+上面我们利用插值误差和Cea引理，估计了在$H^{1}(\Omega)$空间范数意义下的相对误差阶数。有时候我们需要对有限元解在其他范数意义下的误差进行估计，比较常用的范数是$L^{2}(\Omega)$。这时\textbf{我们不能直接用插值误差导出$L^{2}$误差，因为没有对应的Cea引理}，这时我们必须要建立$u-u_{h}$的$L^{2}$误差与$H^{1}$误差的关系。下面是对应的结论，这是一维情形下Aubin-Nitsche技巧的推广。
+\begin{theorem}{Aubin-Nitsche}
+    设$a(\cdot,\cdot)$是连续且V-椭圆的双线性型，变分问题:求$u\in V$使得$a(u,v)=\innerprod{f}{v}\forall v$在空间$V_{h}\le V$上的有限元解为$u_{h}$，那么存在一个正常数$C$使得下列不等式成立:
+    \begin{equation}
+        \norm{u-u_{h}}_{0,\Omega}\le C\norm{u-u_{h}}_{1,\Omega}\sup_{g\in L^{2}(\Omega)}\left\{\frac{1}{\norm{g}_{0,\Omega}}\inf_{v_{h}\in V_{h}}\norm{\Phi-v_{h}}_{1,\Omega}\right\}.
+    \end{equation}
+\end{theorem}
