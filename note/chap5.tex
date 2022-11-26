@@ -78,6 +78,7 @@
     使得$\Omega=F(\hat{\Omega})$。
 \end{definition}
 \begin{theorem}
+    \label{thm:MAIN}
     设$\Omega$和$\hat{\Omega}$仿射等价，若$v\in W^{m,p}(\Omega)$，令
     \begin{equation}
         \hat{v}(\hat{x}):=v(F(\hat{x}))=v(x),
@@ -287,6 +288,7 @@
     定理5.5说明了子空间$V$选取$p$次元确实意味着有限元解的$H^{1}$误差能达到$p$阶精度。但$p$也并非越大越好。一方面高次元的计算复杂度也会大幅度上升，另一方面，定理5.5的估计式需要真实解$u$也满足$u\in H^{k+1}(\Omega)$。
 \end{remark}
 \section{$L^{2}$模与负模的估计}
+\subsection{$L^{2}$模估计}
 上面我们利用插值误差和Cea引理，估计了在$H^{1}(\Omega)$空间范数意义下的相对误差阶数。有时候我们需要对有限元解在其他范数意义下的误差进行估计，比较常用的范数是$L^{2}(\Omega)$。这时\textbf{我们不能直接用插值误差导出$L^{2}$误差，因为没有对应的Cea引理}，这时我们必须要建立$u-u_{h}$的$L^{2}$误差与$H^{1}$误差的关系。下面是对应的结论，这是一维情形下Aubin-Nitsche技巧的推广。
 \begin{theorem}{Aubin-Nitsche}
     设$a(\cdot,\cdot)$是连续且V-椭圆的双线性型，变分问题:求$u\in V$使得$a(u,v)=\innerprod{f}{v}\forall v$在空间$V_{h}\le V$上的有限元解为$u_{h}$，那么存在一个正常数$C$使得下列不等式成立:
@@ -352,4 +354,102 @@
         \norm{\Phi-\Phi_{h}}_{0,\Omega}\le Ch\norm{\Phi}_{2,\Omega}\le Ch\norm{g}_{0,\Omega}.
     \end{equation}
     结合Aubin-Nitsche定理即可得证。
+\end{proof}
+\subsection{负模估计}
+对于负模，类似于Aubin-Nitsche定理，我们有如下结论成立:
+\begin{theorem}
+    设$u$和$u_{h}$分别为$\Omega$上椭圆方程的广义解和有限元离散解，那么存在一个正常数$C$，使得下列不等式成立:
+    \begin{equation}
+        \label{eq:52}
+        \norm{u-u_{h}}_{-l,\Omega}\le C\norm{u-u_{h}}_{1,\Omega}\sup_{\psi\in H_{0}^{l}(\Omega)}\left\{\frac{1}{\norm{\psi}_{l,\Omega}}\inf_{v_{h}\in V_{h}}\norm{\Psi-v_{h}}_{1,\Omega}\right\}.
+    \end{equation}
+    其中$\Psi$为共轭问题
+    \begin{equation}
+        \label{eq:conjugateprob}
+        a(v,\Psi)=\innerprod{\psi}{v},\forall v\in V
+    \end{equation}
+    的解。
+\end{theorem}
+\begin{proof}
+    根据定义，我们有:
+    \begin{equation}
+        \label{eq:54}
+        \norm{u-u_{h}}_{-l,\Omega}=\sup_{\psi\in H_{0}^{l}(\Omega)}\frac{|\innerprod{u-u_{h}}{\psi}|}{\norm{\psi}_{l,\Omega}}.
+    \end{equation}
+    令$\Psi_{h}$为\eqref{eq:conjugateprob}的有限元解，根据方程\eqref{eq:conjugateprob}和$u-u_{h}$对空间$V_{h}$的正交性，我们可以推知:
+    \begin{equation}
+        \label{eq:55}
+        \begin{aligned}
+            \innerprod{u-u_{h}}{\psi}&=a(u-u_{h},\Psi)\\
+            &=a(u-u_{h},\Psi-\Psi_{h})\\
+            &\le M\norm{u-u_{h}}_{1}\norm{\Psi-\Psi_{h}}_{1}\\
+            &\le C\norm{u-u_{h}}_{1}\inf_{v_{h}\in V_{h}}\norm{\Psi-v_{h}}_{1}.
+        \end{aligned}
+    \end{equation}
+    将\eqref{eq:55}代入\eqref{eq:54}，即可得\eqref{eq:52}成立。
+\end{proof}
+对于\eqref{eq:conjugateprob}，有下面的正则性估计成立:
+\begin{equation}
+    \norm{\Psi}_{l+2,\Omega}\le C\norm{\psi}_{l,\Omega}.
+\end{equation}
+\begin{exercise}
+    利用定理5.9和正则性估计证明
+    下面的误差估计式:
+    \begin{equation}
+        \norm{u-u_{h}}_{-l,\Omega}\le Ch^{l+1}\norm{u-u_{h}}_{1,\Omega}.
+    \end{equation}
+\end{exercise}
+\section{逆不等式}
+下面我们把关注点转向有限元空间$V_{h}$本身。我们知道，对于$H_{0}^{1}(\Omega)$上的函数，我们可以用高阶模来估计低阶模，即Poincare-Friedrichs不等式:
+\begin{equation}
+    \norm{u}_{0,\Omega}\le C|u|_{1,\Omega},\forall u\in H_{0}^{1}(\Omega).
+\end{equation}
+但对于一般的函数，我们不能用低阶模来估计高阶模，例如一致有界的函数列，其导数却完全可以无界。
+
+然而，有限元空间作为一个特殊的函数空间，我们可以在其上用低阶模来估计高阶模。这就是本节中需要讨论的\textbf{逆不等式}。
+
+\subsection{单元上的逆不等式}
+\begin{theorem}
+    设$\mathcal{T}_{h}$是$\Omega$的拟正则剖分，$P(e)$是定义在单元$e\in\mathcal{T}_{h}$上的多项式空间，那么下面的逆不等式成立:
+    \begin{equation}
+        \begin{aligned}
+            |p|_{1,e}&\le Ch_{e}^{-1}\norm{p}_{0,e},\forall p\in P(e),e\in\mathcal{T}_{h},\\
+            \norm{p}_{0,\infty,e}&\le Ch_{e}^{-\frac{n}{2}}\norm{p}_{0,e},\forall p\in P(e),e\in\mathcal{T}_{h}.
+        \end{aligned}
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    令$\hat{e}$是标准三角单元，并存在可逆仿射变换
+    \begin{equation}
+        F:\hat{e}\rightarrow e, F(\hat{x})=B\hat{x}+b=x\in e,\forall\hat{x}\in\hat{e}.
+    \end{equation}
+    那么:根据定理\ref{thm:MAIN}，有:
+    \begin{equation}
+        |p|_{1,e}\le C\norm{B^{-1}}|\det(B)|^{\frac{1}{2}}|\hat{p}|_{1,\hat{e}}.
+    \end{equation}
+    又，由于$\norm{\hat{p}}_{0,\hat{e}}$和$\norm{\hat{p}}_{1,\hat{e}}$均为$P(\hat{e})$上的范数，且在有限元空间上，因此这两个范数等价，即:
+    \begin{equation}
+        \norm{\hat{p}}_{1,\hat{e}}\le \hat{C}\norm{\hat{p}}_{0,\hat{e}}.
+    \end{equation}
+    于是:
+    \begin{equation}
+        \begin{aligned}
+            \norm{p}_{1,e}&\le C\norm{B^{-1}}|\det(B)|^{\frac{1}{2}}\norm{\hat{p}}_{0,\hat{e}}\\
+            &\le C\norm{B^{-1}}|\det(B)|^{\frac{1}{2}}|\det(B)|^{-\frac{1}{2}}\norm{p}_{0,e}\\
+            &\le C\rho_{e}^{-1}\norm{p}_{0,e}\\
+            &\le Ch_{e}^{-1}\norm{p}_{0,e}.
+        \end{aligned}
+    \end{equation}
+    对于第二式，由定理\ref{thm:MAIN}可得
+    \begin{equation}
+        \norm{p}_{0,\infty,e}\le C\norm{\hat{p}}_{0,\infty,\hat{e}},
+    \end{equation}
+    而在$P(\hat{e})$上，$\norm{\hat{p}}_{0,\infty,\hat{e}}$与$\norm{\hat{p}}_{0,\hat{e}}$等价，从而:
+    \begin{equation}
+        \norm{\hat{p}}_{0,\infty,\hat{e}}\le\hat{C}\norm{\hat{p}}_{0,\hat{e}}.
+    \end{equation}
+    于是:
+    \begin{equation}
+        \norm{p}_{0,\infty,e}\le C\norm{\hat{p}}_{0,\hat{e}}\le C|\det(B)|^{-\frac{1}{2}}\norm{p}_{0,e}\le Ch_{e}^{-\frac{n}{2}}\norm{p}_{0,e}.
+    \end{equation}
 \end{proof}
