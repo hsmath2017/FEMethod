@@ -293,4 +293,63 @@
     \begin{equation}
         \norm{u-u_{h}}_{0,\Omega}\le C\norm{u-u_{h}}_{1,\Omega}\sup_{g\in L^{2}(\Omega)}\left\{\frac{1}{\norm{g}_{0,\Omega}}\inf_{v_{h}\in V_{h}}\norm{\Phi-v_{h}}_{1,\Omega}\right\}.
     \end{equation}
+    其中$\Phi$为共轭问题
+    \begin{equation}
+        a(\Phi,v)=\innerprod{g}{v}\forall v\in V_{h}
+    \end{equation}
+    的解。
 \end{theorem}
+\begin{proof}
+    由$L^{2}(\Omega)$范数的定义，我们有
+    \begin{equation}
+        \label{eq:DefOfNorm}
+        \norm{u-u_{h}}_{0,\Omega}=\sup_{g\in L^{2}(\Omega)}\frac{|\innerprod{u-u_{h}}{g}|}{\norm{g}_{0,\Omega}}.
+    \end{equation}
+    下面我们需要估计$|\innerprod{u-u_{h}}{g}|$。根据Lax-Milgram引理，设$V=L^{2}(\Omega)$，存在唯一的$\Phi\in V$使得:
+    \begin{equation}
+        \label{eq:LM}
+        a(\Phi,u-u_{h})=\innerprod{g}{u-u_{h}}.
+    \end{equation}
+    由投影定理，$\forall v_{h}\in V_{h}$，$a(v_{h},u-u_{h})=0$。从而:
+    \begin{equation}
+        \innerprod{g}{u-u_{h}}=a(\Phi-v_{h},u-u_{h}).
+    \end{equation}
+    综合上述等式，可得:
+    \begin{equation}
+        \label{eq:InnerProdApprox}
+        |\innerprod{u-u_{h}}{g}|=|a(u-u_{h},\Phi-v_{h})|\le C\norm{u-u_{h}}_{1}\norm{\Phi-v_{h}}_{1}\le C\norm{u-u_{h}}_{1}\inf_{v_{h}\in V_{h}}\norm{\Phi-v_{h}}_{1}.
+    \end{equation}
+    根据\eqref{eq:DefOfNorm}和\eqref{eq:InnerProdApprox}，Aubin-Nitsche不等式成立。
+\end{proof}
+如果我们讨论的偏微分方程为一个二阶椭圆问题，那么其变分形式的解满足下面的正则性估计：
+\begin{theorem}
+    设椭圆方程
+    \begin{equation}
+        \mathcal{L}u:=-\sum_{i,j=1}^{2}\partial_{i}(a_{ij}(\mathbf{x})\partial_{j}u)+a_{0}(\mathbf{x})u=f(\mathbf{x}),\mathbf{x}\in\Omega.
+    \end{equation}
+    其中$\Omega$是凸多边形区域，其系数满足一致椭圆性条件。在赋予一定的边值条件后，该问题的变分形式为:
+    \begin{equation}
+        a(u,v)=\innerprod{f}{v}\forall v\in V.
+    \end{equation}
+    其有限元变分形式为:
+    \begin{equation}
+        a(u_{h},v)=\innerprod{f}{v},\forall v\in V_{h}.
+    \end{equation}
+    那么，变分问题的解$u$和共轭问题的解$\Phi$满足:
+    \begin{equation}
+        \norm{u}_{2,\Omega}\le C\norm{f}_{0,\Omega},\norm{\Phi}_{2,\Omega}\le C\norm{g}_{0,\Omega}.
+    \end{equation}
+\end{theorem}
+    根据定理5.4,5.6和5.7，我们有下面的结论成立:
+\begin{theorem}
+    \begin{equation}
+        \norm{u-u_{h}}_{0,\Omega}\le Ch\norm{u-u_{h}}_{1,\Omega}.
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    利用不等式
+    \begin{equation}
+        \norm{\Phi-\Phi_{h}}_{0,\Omega}\le Ch\norm{\Phi}_{2,\Omega}\le Ch\norm{g}_{0,\Omega}.
+    \end{equation}
+    结合Aubin-Nitsche定理即可得证。
+\end{proof}
