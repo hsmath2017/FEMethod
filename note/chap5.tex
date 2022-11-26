@@ -453,3 +453,42 @@
         \norm{p}_{0,\infty,e}\le C\norm{\hat{p}}_{0,\hat{e}}\le C|\det(B)|^{-\frac{1}{2}}\norm{p}_{0,e}\le Ch_{e}^{-\frac{n}{2}}\norm{p}_{0,e}.
     \end{equation}
 \end{proof}
+\subsection{逆不等式}
+\begin{definition}{拟一致条件}
+    存在正常数$\nu$，使得:
+    \begin{equation}
+        \frac{h}{h_{e}}\le\nu,\forall e\in\mathcal{T}_{h},h\rightarrow 0.
+    \end{equation}
+    其中$h_{e}=\text{diam}(e)$, $h=\max_{e\in\mathcal{T}_{h}}\{h_{e}\}$.
+\end{definition}
+下面叙述整体区域下的逆不等式。
+\begin{theorem}{逆不等式}
+    设$\Omega\subset\mathbb{R}^{n}$为有界凸多边形开区域，设剖分$\mathcal{T}_{h}$满足正则性条件，仿射等价条件和拟一致条件，且:
+    \begin{equation}
+        \hat{P}_{\hat{e}}\subset H^{l,r}(\hat{e})\cap H^{m,q}(\hat{e}), 0\le l\le m, 1\le r,q\le \infty.
+    \end{equation}
+    则存在常数使得对任意$v_{h}\in V_{h}$，有:
+    \begin{equation}
+        \left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{m,q,e}^{q}\right)^{\frac{1}{q}}\le\frac{C}{(h^{n})^{\max\{0,\frac{1}{r}-\frac{1}{q}\}h^{m-l}}}\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{l,r,e}^{r}\right)^{\frac{1}{r}}.
+    \end{equation}
+    其中分片多项式空间:
+    \begin{equation}
+        V_{h}:=\left\{v_{h}:v_{h}|_{e}\in P_{e}\leftrightarrow \hat{P}_{\hat{e}}\subset H^{l,r}(\hat{e})\cap H^{m,q}(\hat{e})\right\}.
+    \end{equation}
+    特别地，取$\hat{P}_{\hat{e}}\subset H^{1}(\hat{e})$，且$V_{h}\subset C(\bar{\Omega})\cap H^{1}(\Omega)$，则:
+    \begin{equation}
+        \begin{aligned}
+        |v_{h}|_{0,\infty,\Omega}&\le Ch^{-\frac{n}{2}}|v_{h}|_{0,\Omega},\forall v_{h}\in V_{h}\\
+        |v_{h}|_{1,\Omega}&\le Ch^{-1}|v_{h}|_{0,\Omega},\forall v_{h}\in V_{h}.
+        \end{aligned}
+    \end{equation}
+\end{theorem}
+证明在本笔记中按下不表。
+
+最后，作为本节的结束，我们利用逆不等式证明两个模估计定理。
+\begin{theorem}{$H^{s}$模估计}
+    设$u\in H^{m}\cap H_{0}^{1}(\Omega)$为变分问题的解，$u_{h}\in V_{h}$为有限元逼近问题的解，那么有下面的最佳误差估计:
+    \begin{equation}
+        \norm{u-u_{h}}_{s,\Omega}\le Ch^{m-s}\norm{u}_{m,\Omega},0\le s\le m-1.
+    \end{equation}
+\end{theorem}
