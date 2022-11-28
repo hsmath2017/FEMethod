@@ -469,7 +469,7 @@
     \end{equation}
     则存在常数使得对任意$v_{h}\in V_{h}$，有:
     \begin{equation}
-        \left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{m,q,e}^{q}\right)^{\frac{1}{q}}\le\frac{C}{(h^{n})^{\max\{0,\frac{1}{r}-\frac{1}{q}\}h^{m-l}}}\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{l,r,e}^{r}\right)^{\frac{1}{r}}.
+        \left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{m,q,e}^{q}\right)^{\frac{1}{q}}\le\frac{C}{(h^{n})^{\max\{0,\frac{1}{r}-\frac{1}{q}\}}h^{m-l}}\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{l,r,e}^{r}\right)^{\frac{1}{r}}.
     \end{equation}
     其中分片多项式空间:
     \begin{equation}
@@ -492,3 +492,57 @@
         \norm{u-u_{h}}_{s,\Omega}\le Ch^{m-s}\norm{u}_{m,\Omega},0\le s\le m-1.
     \end{equation}
 \end{theorem}
+\begin{proof}
+    我们只证明$1\le s\le m-1$的情形。根据定理5.11，取$m=s$，$r=q=2$，$l=1$，对任意$v_{h}\in V_{h}$，有:
+    \begin{equation}
+        |v_{h}|_{s,\Omega}=\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{s,e}^{2}\right)^{\frac{1}{2}}\le Ch^{1-s}\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{1,e}^{2}\right)^{\frac{1}{2}}\le Ch^{1-s}|v_{h}|_{1,\Omega},s\ge 1.
+    \end{equation}
+    于是:
+    \begin{equation}
+        \begin{aligned}
+            \norm{u-u_{h}}_{s,\Omega}&\le\norm{u-\Pi_{h}u}_{s,\Omega}+\norm{u_{h}-\Pi_{h}u}_{s,\Omega}\\
+            &\le\norm{u-\Pi_{h}u}_{s,\Omega}+Ch^{1-s}\norm{u_{h}-\Pi_{h}u}_{1,\Omega}\\
+            &\le\norm{u-\Pi_{h}u}_{s,\Omega}+Ch^{1-s}(\norm{u-\Pi_{h}u}_{1,\Omega}+\norm{u-u_{h}}_{1,\Omega}).
+        \end{aligned}
+    \end{equation}
+    利用插值逼近定理，可知
+    \begin{equation}
+        \begin{aligned}
+            \norm{u-\Pi_{h}u}_{s,\Omega}&\le C_{1}h^{m-s}\norm{u}_{m,\Omega},\\
+            \norm{u-\Pi_{h}u}_{1,\Omega}&\le C_{2}h^{m-1}\norm{u}_{m,\Omega}.
+        \end{aligned}
+    \end{equation}
+    由$H^{1}$模估计可知:
+    \begin{equation}
+        \norm{u-u_{h}}_{1,\Omega}\le C_{3}h^{m-1}\norm{u}_{m,\Omega}.
+    \end{equation}
+    综上所述，
+    \begin{equation}
+        \norm{u-u_{h}}_{s,\Omega}\le Ch^{m-s}\norm{u}_{m,\Omega}.
+    \end{equation}
+\end{proof}
+\begin{theorem}{最大模估计}
+    设$\Omega$的剖分是拟正则的，$|\alpha|=s<m-1$，有限元解$u_{h}$具有如定理5.12所述的估计，则$u_{h}$有下面的最大模估计:
+    \begin{equation}
+        \max_{\Omega}|D^{\alpha}(u-u_{h})|\le Ch^{m-1-s}\norm{u}_{m,\Omega}.
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    设$\Pi_{h}u$是$u$的$m-1$次插值函数，在单元$e_{0}$上达到$\max_{\Omega}|D^{\alpha}(u-u_{h})|$，则:
+    \begin{equation}
+        \max_{\Omega}|D^{\alpha}(u-u_{h})|\le\max_{\Omega}|D^{\alpha}(u-\Pi_{h}u)|+\max_{\Omega}|D^{\alpha}(\Pi_{h}u-u_{h})|.
+    \end{equation}
+    由插值误差分析公式可知:
+    \begin{equation}
+        \max_{\Omega}|D^{\alpha}(u-\Pi_{h}u)|=\max_{e_{0}}|D^{\alpha}(u-\Pi_{h}u)|\le Ch^{m-1-s}\norm{u}_{m,e_{0}}\le Ch^{m-1-s}\norm{u}_{m,\Omega}.
+    \end{equation}
+    令$v_{h}=\Pi_{h}u-u_{h}$，则由逆不等式，有:
+    \begin{equation}
+        |v_{h}|_{s,\Omega}=\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{s,e}^{2}\right)^{\frac{1}{2}}\le Ch^{-s}\left(\sum_{e\in\mathcal{T}_{h}}|v_{h}|_{0,e}^{2}\right)^{\frac{1}{2}}\le Ch^{-s}|v_{h}|_{0,\Omega}.
+    \end{equation}
+    再由逆不等式，有
+    \begin{equation}
+        \max_{\Omega}|D^{\alpha}v_{h}|\le Ch^{m-1-s}\norm{u}_{m,\Omega}.
+    \end{equation}
+    综上，最大模估计式得证。
+\end{proof}
