@@ -1,0 +1,28 @@
+\chapter{抛物型方程的有限元求解与分析}
+前面的章节中我们主要讨论的是椭圆方程的有限元解法以及其求解误差的分析。在本章中，我们转而关注抛物型方程的有限元求解与分析。在抛物型方程的有限差分算法(MOL)中，我们的思路是先对空间进行离散形成一个常微分方程组，再对生成的常微分方程组进行时间积分求解。有限元求解抛物型方程的过程中也可以借鉴这一思路，即先固定时间参数$t$，在空间上给出变分问题的形式，然后转化为一个常微分方程组，最后通过时间积分解决问题。
+
+本章中，如无特殊说明，讨论的微分方程均为如下二维热传导方程:
+\begin{equation}
+    \label{eq:heat_eq}
+    \left\{
+        \begin{aligned}
+            &u_{t}-\Delta u=f(\mathbf{x},t),(\mathbf{x},t)\in\Omega\times[0,+\infty),\\
+            &u(\mathbf{x},t)=0,(\mathbf{x},t)\in\partial\Omega\times[0,+\infty),\\
+            &u(\mathbf{x},0)=u_{0}(\mathbf{x}),\mathbf{x}\in\Omega.\\
+        \end{aligned}
+    \right.
+\end{equation}
+在方程\eqref{eq:heat_eq}中，要求$\Omega\subset\mathbb{R}^{2}$为有界区域，而$\Gamma:=\partial\Omega$为$\Omega$的光滑边界。
+
+\section{空间离散(半离散)}
+本节着重介绍有限元求解抛物型方程的半离散算法，以及半离散解的$L^{2}(\Omega)$范数估计。
+
+\subsection{离散过程}
+第四章里我们讨论了有限元求解微分方程的一般流程：
+\begin{enumerate}
+    \item 寻求原问题的变分形式。
+    \item 对区域$\Omega$进行剖分。
+    \item 构造有限元子空间$V_{h}$。
+    \item 利用问题的变分形式建立有限元方程组。
+    \item 对离散后的有限元方程组(本质上是一个线性方程组)进行求解。
+\end{enumerate}
