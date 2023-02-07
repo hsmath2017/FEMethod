@@ -26,3 +26,98 @@
     \item 利用问题的变分形式建立有限元方程组。
     \item 对离散后的有限元方程组(本质上是一个线性方程组)进行求解。
 \end{enumerate}
+本节中，我们用同样的流程来分析热传导方程\eqref{eq:heat_eq}。
+
+设$v\in H_{0}^{1}(\Omega)$为测试函数，$t$看作一个给定的常数，在\eqref{eq:heat_eq}的第(1)式两边同乘$v$，在$\Omega$上积分得：
+\begin{equation}
+    \label{eq:int_test}
+    \int_{\Omega}(u_{t}v-v\Delta u)\dif\mathbf{x}=\int_{\Omega}f(\mathbf{x},t)v(\mathbf{x})\dif\mathbf{x}.
+\end{equation}
+由于$v|_{\partial\Omega}\equiv 0$，利用格林公式可得:
+\begin{equation}
+    \int_{\Omega}u_{t}v\dif\mathbf{x}+\int_{\Omega}\nabla u\cdot\nabla v\dif\mathbf{x}=\int_{\Omega}fv\dif\mathbf{x}.
+\end{equation}
+我们定义以下符号:
+\begin{equation}
+    B(u,v):=\int_{\Omega}\nabla u\cdot\nabla v\dif\mathbf{x},\innerprod{f}{v}:=\int_{\Omega}f(\mathbf{x},t)v(\mathbf{x})\dif\mathbf{x}.
+\end{equation}
+由此可得热传导方程的\textbf{变分形式}:
+\begin{definition}
+    \label{def:variate_heat}
+    热传导方程的变分形式为：对每个固定的$t\in[0,+\infty)$，求$u(t)\in H_{0}^{1}(\Omega)$使得：
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                &\innerprod{u_{t}}{v}+B(u,v)=\innerprod{f}{v},\forall v\in H_{0}^{1}(\Omega)\\
+                &u(\mathbf{x},0)=u_{0}(\mathbf{x})\\
+            \end{aligned}
+        \right.
+    \end{equation}
+\end{definition}
+对$\Omega$的剖分可以参考椭圆方程求解时的剖分方式，即三角剖分$\mathcal{T}_{h}$。记$\Omega_{h}=\cup_{e\in\mathcal{T}_{h}}e$，其中$h$为三角剖分的最大直径。我们可以假定$\mathcal{T}_{h}$是拟一致的划分，此时每个单元$e$的面积有下界$Ch^{2}$。
+
+由剖分$\Omega_{h}$，我们可以构造$H_{0}^{1}(\Omega)$的有限元子空间$V_{h}$如下:
+\begin{equation}
+    V_{h}:=\left\{v_{h}|v_{h}\in C(\bar\Omega),v_{h}|_{e}=p_{k}(\mathbf{x}),v_{h}(\mathbf{x})=0\text{ if }\mathbf{x}\notin\Omega_{h}\right\}.
+\end{equation}
+根据如上所述的区间划分和有限元子空间$V_{h}$定义，可得\eqref{eq:heat_eq}的半离散变分问题:
+\begin{definition}
+    \label{def:half-discretize_variate}
+    对每个固定的$t\in [0,+\infty)$，求$u_{h}(t)\in V_{h}$使得:
+    \begin{equation}
+        \label{eq:half-discretize}
+        \left\{
+            \begin{aligned}
+                &\innerprod{u_{h}(t)}{v}+B(u_{h},v)=\innerprod{f}{v},\forall v\in H_{0}^{1}(\Omega)\\
+                &u_{h}(\mathbf{x},0)=u_{0h}(\mathbf{x})\\
+            \end{aligned}
+        \right.        
+    \end{equation}
+\end{definition}
+\eqref{eq:half-discretize}的解称为变分形式\ref{def:variate_heat}的\textbf{半离散解}。 
+
+下面讨论如何给出$u_{h}(t)$满足的常微分方程。设空间$V_{h}$有一组基函数为$\{\varphi_{i}(\mathbf{x})\}$，对任意$u_{h}(t)\in V_{h}$进行Fourier展开，得:
+\begin{equation}
+    \label{eq:FourierExpension}
+    u_{h}(t)=\sum_{i=1}^{N}\alpha_{i}(t)\varphi_{i}(\mathbf{x}).
+\end{equation}
+此时半离散问题\eqref{eq:half-discretize}可以转化为以下常微分方程组:
+\begin{equation}
+    \label{eq:discretized_ode}
+    \left\{
+        \begin{aligned}
+            &\sum_{i=1}^{N}\innerprod{\varphi_{i}}{\varphi_{j}}\alpha_{i}'(t)+\sum_{i=1}^{N}B(\varphi_{i},\varphi_{j})\alpha_{i}(t)=\innerprod{f}{\varphi_{j}}.\\
+            &\alpha_{i}(0)=\gamma_{i}.
+        \end{aligned}
+    \right.
+\end{equation}
+其中$\gamma_{i}$为初值$u_{0h}(\mathbf{x})$关于基底$\{\varphi_{i}(\mathbf{x})\}$展开的Fourier系数。如果引入下列矩阵记号:
+\begin{equation}
+    \begin{aligned}
+        &\mathbf{A}:=(\innerprod{\varphi_{i}}{\varphi_{j}})\\
+        &\mathbf{B}:=(B(\varphi_{i},\varphi_{j})),\mathbf{\alpha}(t):=(\alpha_{1}(t),\cdots,\alpha_{N}(t))^{T}\\
+        &F(t):=(\innerprod{f}{\varphi_{1}},\cdots,\innerprod{f}{\varphi_{N}})^{T}, \mathbf{\gamma}:=(\gamma_{1},\cdots,\gamma_{N})^{T},
+        \end{aligned}
+\end{equation}
+那么方程组\eqref{eq:discretized_ode}可以改写为:
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &\mathbf{A}\mathbf{\alpha}'(t)+\mathbf{B}\mathbf{\alpha}(t)=\mathbf{F},\\
+            &\mathbf{\alpha}(0)=\mathbf{\gamma}.
+        \end{aligned}
+    \right.
+\end{equation}
+其中$\mathbf{A}$被称为\textbf{质量矩阵}，$\mathbf{B}$被称为\textbf{刚度矩阵}。由ode理论可知，该微分方程存在唯一解。
+\subsection{半离散解的误差}
+本节中我们估计上述半离散解的求解误差。在分析时，我们假定求解常微分方程的过程不引入任何误差，即\eqref{eq:discretized_ode}的解是精确的。
+
+在分析之前，我们假定有限元空间$V_{h}$有下面的逼近性质:
+\begin{proposition}
+    \begin{equation}
+        \begin{aligned}
+            &\inf_{\chi\in V_{h}}\left\{\norm{v-\chi}_{0,\Omega}+h\norm{\nabla(v-\chi)}_{0,\Omega}\right\}\le Ch^{s}\norm{v}_{s,\Omega},\\
+            &1\le s\le k+1, k\ge 1, \forall v \in H^{s}(\Omega)\cap H_{0}^{1}(\Omega).
+        \end{aligned}
+    \end{equation}
+\end{proposition}
