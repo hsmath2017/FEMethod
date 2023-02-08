@@ -68,7 +68,7 @@
         \label{eq:half-discretize}
         \left\{
             \begin{aligned}
-                &\innerprod{u_{h}(t)}{v}+B(u_{h},v)=\innerprod{f}{v},\forall v\in H_{0}^{1}(\Omega)\\
+                &\innerprod{u_{h,t}}{v}+B(u_{h},v)=\innerprod{f}{v},\forall v\in H_{0}^{1}(\Omega)\\
                 &u_{h}(\mathbf{x},0)=u_{0h}(\mathbf{x})\\
             \end{aligned}
         \right.        
@@ -121,3 +121,183 @@
         \end{aligned}
     \end{equation}
 \end{proposition}
+\begin{remark}
+    上面的性质体现了有限元空间$V_{h}$确实可以较好地逼近函数空间$H^{s}(\Omega)\cap H_{0}^{1}(\Omega)$。
+\end{remark}
+在讨论半离散问题有限元解的$L^{2}(\Omega)$-模估计前，我们先引入一个\textbf{椭圆投影算子}。
+\begin{definition}{椭圆投影算子}
+    椭圆投影算子$P_{h}:H_{0}^{1}(\Omega)\rightarrow V_{h}$对任意$u\in H_{0}^{1}(\Omega)$，满足:
+    \begin{equation}
+        B(P_{h}u,\chi)=B(u,\chi),\forall \chi\in V_{h}.
+    \end{equation}
+\end{definition}
+\begin{remark}
+    椭圆投影算子可以看作在以$B(\cdot,\cdot)$为内积的Hilbert空间下，函数空间$H_{0}^{1}(\Omega)$到空间$V_{h}$的投影。
+\end{remark}
+下面讨论椭圆投影算子的性质。对于一个满足逼近性质的有限元空间$V_{h}$，有下面的引理成立:
+\begin{lemma}
+    \label{lem:proj}
+    设$v\in H^{s}(\Omega)\cap H_{0}^{1}(\Omega)$，$1\le s\le k+1$，则：
+    \begin{equation}
+        \norm{P_{h}v-v}_{0,\Omega}+h\norm{\nabla(P_{h}v-v)}_{0,\Omega}\le Ch^{s}\norm{v}_{s,\Omega}.
+    \end{equation}
+\end{lemma}
+\begin{remark}
+    上面引理保证了当$V_{h}$满足逼近性质时，$P_{h}v$是对$v$的一个好的逼近。
+\end{remark}
+\begin{proof}
+    证明分两步，先估计$\norm{\nabla(P_{h}v-v)}_{0,\Omega}$，再估计$\norm{P_{h}v-v}_{0,\Omega}$。根据投影算子的性质，我们有如下不等式成立:
+    \begin{equation}
+        \label{eq:ineq_proj}
+        \begin{aligned}
+            \norm{\nabla(P_{h}v-v)}_{0,\Omega}^{2}&=\innerprod{\nabla(P_{h}v-v)}{\nabla(P_{h}v-v)}\\
+            &=\innerprod{\nabla(P_{h}v-v)}{\nabla(\chi-v)}\forall\chi\in V_{h}\\
+            &\le\norm{\nabla(P_{h}v-v)}_{0,\Omega}\norm{\nabla(\chi-v)}_{0,\Omega}\\
+        \end{aligned}
+    \end{equation}
+    从而我们有$\norm{\nabla(P_{h}v-v)}_{0,\Omega}\le\norm{\nabla(\chi-v)}_{0,\Omega}$。又由逼近性质，有:
+    \begin{equation}
+        \label{eq:estimate_2}
+        \norm{\nabla(P_{h}v-v)}_{0,\Omega}\le \inf_{\chi\in V_{h}}\norm{\nabla(v-\chi)}_{0,\Omega}\le Ch^{s-1}\norm{v}_{s,\Omega}.
+    \end{equation}
+    对于$\norm{P_{h}v-v}$的估计，我们没法直接使用投影的性质，因此我们需要利用一些技巧来提升$(P_{h}v-v)$的导数阶数。根据第二格林公式，我们可以试着讨论$P_{h}v-v$与一个标量场$\Delta w$的内积，来得到$\norm{P_{h}v-v}$的估计。而要使得$-\Delta w=P_{h}v-v$，这就导出了一个椭圆方程。
+
+    因此我们需要讨论如下辅助问题。设$g\in L^{2}(\Omega)$，考虑下面的椭圆方程:
+    \begin{equation}
+        \label{eq:elliptic_aux}
+        \left\{
+            \begin{aligned}
+                -\Delta w&=g,\\
+                w|_{\partial\Omega}&=0.\\
+            \end{aligned}
+        \right.
+    \end{equation}
+    根据椭圆方程的适定性和Poincare-Friedriches不等式，该椭圆方程存在唯一解$w$，且满足不等式
+    \begin{equation}
+        \norm{w}_{2,\Omega}\le C\norm{\Delta w}_{0,\Omega}=C\norm{g}_{0,\Omega}.
+    \end{equation}
+    于是:
+    \begin{equation}
+        \begin{aligned}
+            \innerprod{P_{h}v-v}{g}&=-\innerprod{P_{h}v-v}{\Delta w}\\
+            &=\innerprod{\nabla(P_{h}v-v)}{\nabla w}\\
+            &=\innerprod{\nabla(P_{h}v-v)}{\nabla (w-P_{h}w)}\\
+            &\le\norm{P_{h}v-v}_{0,\Omega}\norm{\nabla(w-P_{h}w)}_{0,\Omega}\\
+            &\le Ch^{s}\norm{v}_{s,\Omega}\norm{w}_{2,\Omega}\le Ch^{s}\norm{v}_{s,\Omega}\norm{g}_{0,\Omega}.
+        \end{aligned}
+    \end{equation}
+    特别地，取$g=P_{h}v-v$，可得$\norm{P_{h}v-v}_{0,\Omega}\le Ch^{s}\norm{v}_{s,\Omega}$。
+
+    综上，引理成立。
+\end{proof}
+下面的定理利用投影算子，讨论了有限元解$u_{h}$与真实解$u$的误差的$L^{2}$-模估计。
+\begin{theorem}{$L^{2}$-模估计}
+    设$u(\mathbf{x},t)$为\eqref{eq:heat_eq}的解，$u_{h}(t)$为其在$V_{h}$上的有限元近似解，且$u(\mathbf{x},t)\in H^{k+1}(\Omega)\cap H_{0}^{1}(\Omega)$，则有:
+    \begin{equation}
+        \norm{u_{h}(t)-u(\mathbf{x},t)}_{0,\Omega}\le \norm{u_{0h}-u_{0}}_{0,\Omega}+Ch^{k+1}\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t}\norm{u_{t}}_{k+1,\Omega}\dif s\}.
+    \end{equation}
+\end{theorem}
+\begin{remark}
+    抛物方程有限元半离散解的误差由两部分组成，第一部分是估计初值时产生的误差，第二部分是演化过程中的误差。由上面的定理可以看出，如果需要让抛物方程的有限元半离散解达到四阶精度，则至少需要三次多项式单元。
+\end{remark}
+\begin{proof}
+    证明分三步完成。
+
+    第一步：利用投影算子将误差分割为两部分。
+    \begin{equation}
+        u_{h}(t)-u(\mathbf{x},t)=(u_{h}(t)-P_{h}u)+(P_{h}u-u):=\theta(t)+\rho(t).
+    \end{equation}
+    $\rho(t)$表示将真实解投影到解空间$V_{h}$上产生的误差，而$\theta(t)$则表示在解空间上近似$P_{h}u$产生的误差。
+
+    第二步：估计$\rho(t)$。
+
+    利用引理\ref{lem:proj}，取$s=k+1$，我们有:
+    \begin{equation}
+        \begin{aligned}
+            \norm{\rho(t)}_{0,\Omega}&=\norm{P_{h}u-u}_{0,\Omega}\\
+            &\le Ch^{k+1}\norm{u}_{k+1,\Omega}\\
+            &\le Ch^{k+1}\norm{u_{0}+\int_{0}^{t}u_{t}\dif t}_{k+1,\Omega}\\
+            &\le Ch^{k+1}\left\{
+                \norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t}\norm{u_{t}}_{k+1,\Omega}\dif t
+            \right\}.
+        \end{aligned}
+    \end{equation}
+
+    第三步：估计$\theta(t)$。首先我们需要推导$\theta$满足的方程。 
+
+    $\forall \chi\in V_{h}$，我们有:
+    \begin{equation}
+        \begin{aligned}
+            \innerprod{\theta_{t}}{\chi}+\innerprod{\nabla\theta}{\nabla\chi}&=\innerprod{u_{h,t}}{\chi}-\innerprod{P_{h}u_{t}}{\chi}+\innerprod{\nabla u_{h}}{\nabla\chi}-\innerprod{\nabla P_{h}u}{\nabla\chi}\\
+            &=\innerprod{f}{\chi}-\innerprod{P_{h}u_{t}}{\chi}-\innerprod{\nabla u}{\nabla \chi}\\
+            &=\innerprod{u_{t}-P_{h}u_{t}}{\chi}=\innerprod{-\rho_{t}}{\chi}.
+        \end{aligned}
+    \end{equation}
+    根据投影算子的性质，$\theta(t)\in V_{h}$，那么我们可以取$\chi=\theta$，得：
+    \begin{equation}
+        \innerprod{\theta_{t}}{\theta}+\norm{\nabla\theta}_{0,\Omega}^{2}=-\innerprod{\rho_{t}}{\theta}.
+    \end{equation}
+    根据上式，可知:
+    \begin{equation}
+        \frac{1}{2}\difFrac{}{t}\norm{\theta}_{0,\Omega}^{2}\le\norm{\rho_{t}}_{0,\Omega}\norm{\theta}_{0,\Omega}.
+    \end{equation}
+    从而:
+    \begin{equation}
+        \difFrac{}{t}\norm{\theta}_{0,\Omega}\le\norm{\rho_{t}}_{0,\Omega}
+    \end{equation}
+    上式两边同时从$0$到$t$积分，可得:
+    \begin{equation}
+        \norm{\theta(t)}_{0,\Omega}\le \norm{\theta(0)}_{0,\Omega}+\int_{0}^{t}\norm{\rho_{t}}_{0,\Omega}\dif s.
+    \end{equation}
+    又:
+    \begin{equation}
+        \begin{aligned}
+            \norm{\theta(0)}_{0,\Omega}&=\norm{u_{h}(0)-u(\mathbf{x},0)+u(\mathbf{x},0)-P_{h}u(\mathbf{x},0)}_{0,\Omega}\\
+            &\le\norm{u_{0h}-u_{0}}_{0,\Omega}+\norm{u_{0}-P_{h}u_{0}}_{0,\Omega}\\
+            &\le\norm{u_{0h}-u_{0}}_{0,\Omega}+Ch^{k+1}\norm{u_{0}}_{k+1,\Omega}.
+        \end{aligned}
+    \end{equation}
+    并且
+    \begin{equation}
+        \norm{\rho_{t}}_{0,\Omega}\le Ch^{k+1}\norm{u_{t}}_{k+1,\Omega}.
+    \end{equation}
+    综合上述，结论得证。
+\end{proof}
+如果初值近似也为$k+1$阶的，那么$L^{2}$-模估计可以简化为:
+\begin{equation}
+    \norm{u_{h}(t)-u(\mathbf{x},t)}_{0,\Omega}\le Ch^{k+1}\left\{
+        \norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t}\norm{u_{t}}_{k+1,\Omega}\dif s
+    \right\}.
+\end{equation}
+我们可以用类似的技巧证明下面的梯度估计定理:
+\begin{theorem}{梯度估计}
+    设$u$为\eqref{eq:heat_eq}的解，$u_{h}$为其有限元解，且$u\in H^{k+1}(\Omega)\cap H_{0}^{1}(\Omega)$，则:
+    \begin{equation}
+        \norm{\nabla u_{h}-\nabla u}_{0,\Omega}\le\norm{\nabla u_{0h}-\nabla u_{0}}_{0,\Omega}+Ch^{k}\left\{\norm{u_{0}}_{k+1,\Omega}+\norm{u(t)}_{k+1,\Omega}+\left(\int_{0}^{t}\norm{u_{t}}_{k,\Omega}^{2}\dif s\right)^{\frac{1}{2}}\right\}.
+    \end{equation}
+\end{theorem}
+\begin{exercise}
+    完成定理6.2的证明。
+\end{exercise}
+\subsection{全离散与误差估计}
+上面一节中我们讨论了针对热方程进行半离散的思路，并分析了半离散解的$L^{2}$误差。然而，半离散后导出的常微分方程\eqref{eq:discretized_ode}往往无法直接求得解析解，而是需要对应的ode数值算法求解。这意味着我们同样需要针对时间参数$t$对系统进行离散化处理。在本节中，我们将讨论两种不同的时间积分格式，对应的是Euler-Galerkin全离散方法和Crank-Nicolson-Galerkin全离散方法，并分析这两种算法的误差阶数。
+\subsection{Euler-Galerkin方法}
+和数值求解常微分方程初值问题的隐式Euler方法类似，在Euler-Galerkin算法中，我们利用向后差商来近似一阶导数，即:
+\begin{equation}
+    \bar{\partial}_{t}U^{m}\approx\frac{U^{m}-U^{m-1}}{\Delta t}.
+\end{equation}
+将向后差商的表达式代入半离散方程\eqref{eq:half-discretize}，可得Euler-Galerkin全离散格式如下:
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &\innerprod{U^{m}}{\chi}+\tau B(U^{m},\chi)=\innerprod{U^{m-1}+\tau f(t_{m})}{\chi},\forall \chi\in V_{h}\\
+            &U^{0}=u_{0h}\\
+        \end{aligned}
+    \right.
+\end{equation}
+\begin{remark}
+    此处的$U^{m}$指$t=t_{m}$时刻解$u$的近似，其中$U^{i}\in V_{h}$，$\tau$指时间间隔，即$t_{i+1}-t_{i}=\tau$。实际计算中，利用全离散格式，一定能求解出数值近似解，因为如果$U^{m-1}$已知，等式的右端项可以计算，只需要利用待定系数法求解左端分片多项式的系数即可给出$u(t_{m})$的估计。
+\end{remark}
+\begin{remark}
+    一个疑问:为什么时间积分方法都采用隐式格式？
+\end{remark}
