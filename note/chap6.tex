@@ -279,7 +279,7 @@
 \begin{exercise}
     完成定理6.2的证明。
 \end{exercise}
-\subsection{全离散与误差估计}
+\section{全离散与误差估计}
 上面一节中我们讨论了针对热方程进行半离散的思路，并分析了半离散解的$L^{2}$误差。然而，半离散后导出的常微分方程\eqref{eq:discretized_ode}往往无法直接求得解析解，而是需要对应的ode数值算法求解。这意味着我们同样需要针对时间参数$t$对系统进行离散化处理。在本节中，我们将讨论两种不同的时间积分格式，对应的是Euler-Galerkin全离散方法和Crank-Nicolson-Galerkin全离散方法，并分析这两种算法的误差阶数。
 \subsection{Euler-Galerkin方法}
 和数值求解常微分方程初值问题的隐式Euler方法类似，在Euler-Galerkin算法中，我们利用向后差商来近似一阶导数，即:
@@ -288,6 +288,7 @@
 \end{equation}
 将向后差商的表达式代入半离散方程\eqref{eq:half-discretize}，可得Euler-Galerkin全离散格式如下:
 \begin{equation}
+    \label{eq:discretized_eq}
     \left\{
         \begin{aligned}
             &\innerprod{U^{m}}{\chi}+\tau B(U^{m},\chi)=\innerprod{U^{m-1}+\tau f(t_{m})}{\chi},\forall \chi\in V_{h}\\
@@ -299,5 +300,81 @@
     此处的$U^{m}$指$t=t_{m}$时刻解$u$的近似，其中$U^{i}\in V_{h}$，$\tau$指时间间隔，即$t_{i+1}-t_{i}=\tau$。实际计算中，利用全离散格式，一定能求解出数值近似解，因为如果$U^{m-1}$已知，等式的右端项可以计算，只需要利用待定系数法求解左端分片多项式的系数即可给出$u(t_{m})$的估计。
 \end{remark}
 \begin{remark}
-    一个疑问:为什么时间积分方法都采用隐式格式？
+    一个疑问:为什么课本上介绍的时间积分方法都采用隐式格式？
+\end{remark}
+下面讨论该算法的$L^{2}$误差估计。
+\begin{theorem}
+    设$u(\mathbf{x},t)$为\eqref{eq:heat_eq}的解，而$U^{m}$为全离散方程\eqref{eq:discretized_eq}的解，那么求解误差有如下上界估计:
+    \begin{equation}
+        \norm{U^{m}-u(t_{m})}_{0,\Omega}\le\norm{u_{0h}-u_{0}}+Ch^{k+1}\left\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t_{m}}\norm{u_{t}}_{k+1,\Omega}\dif s\right\}+\tau\int_{0}^{t_{m}}\norm{u_{tt}}_{0,\Omega}\dif s.
+    \end{equation}
+\end{theorem}
+\begin{remark}
+    上面的估计式中，可以分为三个部分:初值误差，空间离散误差与时间积分误差。我们可以看到在误差分析过程中空间离散和时间积分是解耦的。
+\end{remark}
+\begin{proof}
+    首先改写$U^{m}-u(t_{m})$为:
+    \begin{equation}
+        U^{m}-u(t_{m})=(U^{m}-P_{h}u(t_{m}))+(P_{h}u(t_{m})-u(t_{m}):=\theta^{m}+\rho^{m}.
+    \end{equation}
+    关于$\rho^{m}$的分析和前面半离散问题完全相同，下面主要讨论$\theta^{m}$的分析。
+
+    首先我们需要给出$\theta^{m}$满足的方程:
+    \begin{equation}
+        \label{eq:aux_theta}
+        \begin{aligned}
+            &\innerprod{\bar{\partial}_{t}\theta^{m}}{\chi}+\innerprod{\nabla\theta^{m}}{\nabla\chi}\\
+            =&\innerprod{\bar{\partial}_{t}U^{m}}{\chi}-\innerprod{\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}+\innerprod{\nabla U^{m}}{\nabla\chi}-\innerprod{\nabla P_{h}u(t_{m})}{\nabla\chi}\\
+            =&\innerprod{f(t_{m})}{\chi}-\innerprod{\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}-\innerprod{\nabla P_{h}u(t_{m})}{\nabla \chi}\\
+            =&\innerprod{u_{t}(t_{m})}{\chi}+\innerprod{\nabla u(t_{m})}{\nabla\chi}-\innerprod{\nabla P_{h}u(t_{m})}{\nabla\chi}-\innerprod{\bar{\partial}_{t}P_{h}u(t_{n})}{\chi}\\
+            =&\innerprod{u_{t}-\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}:=-\innerprod{\omega^{m}}{\chi},\forall\chi\in V_{h}.
+        \end{aligned}
+    \end{equation}
+    其中
+    \begin{equation}
+        \begin{aligned}
+            \omega^{m}&=\bar{\partial}_{t}P_{h}u(t_{m})-u_{t}^{m}\\
+            &=\bar{\partial}_{t}P_{h}u(t_{m})-\bar{\partial}_{t}u(t_{m})+\bar{\partial}_{t}u(t_{m})-u_{t}^{m}\\
+            &=(P_{h}-I)\bar{\partial}_{t}u(t_{m})+\bar{\partial}_{t}u(t_{m})-u_{t}^{m}\\
+            &=\omega_{1}^{m}+\omega_{2}^{m}.
+        \end{aligned}
+    \end{equation}
+    这里$\omega_{1}^{m}$可以看作将$\bar{\partial}_{t}u(t_{m})$投影到$V_{h}$产生的误差，而$\omega_{2}^{m}$即为关于时间进行参数离散产生的截断误差。
+    
+    在\eqref{eq:aux_theta}中取$\chi=\theta^{m}$，可得:
+    \begin{equation}
+        \innerprod{\bar{\partial}_{t}\theta^{m}}{\theta^{m}}\le-\innerprod{\omega^{m}}{\theta^{m}}\le\norm{\omega^{m}}_{0,\Omega}\norm{\theta^{m}}_{0,\Omega}.
+    \end{equation}
+    代入$\bar{\partial}_{t}\theta^{m}$的表达式，可得:
+    \begin{equation}
+        \norm{\theta^{m}}_{0,\Omega}^{2}-\innerprod{\theta^{m-1}}{\theta^{m}}\le\tau\norm{\omega^{m}}_{0,\Omega}\norm{\theta^{m}}_{0,\Omega}.
+    \end{equation}
+    不断使用Cauchy-Schwarz不等式，可得:
+    \begin{equation}
+        \norm{\theta^{m}}_{0,\Omega}\le\norm{\theta^{0}}_{0,\Omega}+\tau\left(\sum_{j=1}^{m}\norm{\omega^{j}}_{0,m}\right)\le\norm{\theta^{0}}_{0,\Omega}+\tau\sum_{j=1}^{m}\norm{\omega_{1}^{j}}_{0,\Omega}+\tau\sum_{j=1}^{m}\norm{\omega_{2}^{j}}_{0,\Omega}.
+    \end{equation}
+    首先估计$\norm{\theta^{0}}_{0,\Omega}$:
+    \begin{equation}
+        \norm{\theta^{0}}_{0,\Omega}\le\norm{u_{0h}-P_{h}u_{0}}_{0,\Omega}\le\norm{u_{0h}-u_{0}}+Ch^{k+1}\norm{u_{0}}_{k+1,\Omega}.
+    \end{equation}
+    由于
+    \begin{equation}
+        \omega_{1}^{j}=\tau^{-1}(P_{h}-I)\int_{t_{j-1}}^{t_{j}}u_{t}(s)\dif s.
+    \end{equation}
+    我们有:
+    \begin{equation}
+        \tau\sum_{j=1}^{m}\norm{\omega_{1}^{j}}_{0,\Omega}\le\sum_{j=1}^{m}\int_{t_{j-1}}^{t_{j}}\norm{(P_{h}-I)u_{t}(s)}_{0,\Omega}\dif s\le Ch^{k+1}\sum_{j=1}^{m}\int_{t_{j-1}}^{t_{j}}\norm{u_{t}}_{k+1,\Omega}\dif s.
+    \end{equation}
+    同样的，由于
+    \begin{equation}
+        \omega_{2}^{j}=-\tau^{-1}\int_{t_{j-1}}^{t_{j}}(s-t_{j-1})u_{tt}(s)\dif s.
+    \end{equation}
+    可得:
+    \begin{equation}
+        \tau\sum_{j=1}^{m}\norm{\omega_{2}^{j}}_{0,\Omega}\le\tau\sum_{j=1}^{m}\int_{t_{j-1}}^{t_{j}}\norm{u_{tt}}_{0,\Omega}\dif s.
+    \end{equation}
+    综合上述，结论得证。
+\end{proof}
+\begin{remark}
+    上面的推导说明了Euler-Galerkin方法是收敛的，但不够理想，因为这个算法关于时间仅一阶收敛。要提升关于时间的精度，我们需要使用更高阶数的时间积分方法。
 \end{remark}
