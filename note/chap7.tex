@@ -1,0 +1,119 @@
+\chapter{有限元与数值积分}
+有限元求解中，对于抽象出来的有限元变分问题:
+\begin{equation}
+    B(u,v)=\innerprod{f}{v}\forall v\in V_{h},
+\end{equation}
+通常情况下，我们无法精确计算出$B(u,v)$和$\innerprod{f}{v}$的积分值，此时我们不得不在有限元空间上使用数值积分公式。本章中，我们将会描述有限元空间上的数值积分公式，以及数值积分对有限元解误差的影响。
+\section{有限元空间上的数值积分}
+\begin{remark}
+    本节中考虑的区域$\Omega$为二维空间$\mathbb{R}^{2}$中的多边形区域，$\mathcal{T}_{h}$为多边形区域$\Omega$的有限元划分，$e\in\mathcal{T}_{h}$表示一个单元，一般为三角形或是矩形。
+\end{remark}
+回忆有限元离散化问题:
+\begin{equation*}
+    \text{求}u_{h}\in V_{h}\text{使得}B(u_{h},v_{h})=\innerprod{f}{v_{h}},\forall v_{h}\in V_{h}.
+\end{equation*}
+虽然$u_{h}$和$v_{h}$都是分片多项式，但由于实际计算中，双线性形式$B$和泛函$\innerprod{f}{v}$都可能有较为复杂的形式，我们往往无法精确求得对应的积分值。为此，我们需要研究单元$e$上的数值积分公式。
+
+第一个困难在于，单元$e$的形式可能比较多样。为此我们可以参考第四章的做法，利用仿射变换建立起标准元$\hat{e}$与一般元$e$的线性关系。
+
+假设存在可逆仿射变换
+\begin{equation}
+    F_{e}(\hat{x}):=B_{e}\hat{x}+b_{e},
+\end{equation}
+建立$\hat{e}$到$e$之间的双射，
+则对于$\varphi\in C(e)$，根据换元积分法，有:
+\begin{equation}
+    \int_{e}\varphi\dif x=|\det(B_{e})|\int_{\hat{e}}\varphi(F_{e}(\hat{x}))\dif\hat{x}.
+\end{equation}
+根据上式，我们可以通过计算$\int_{\hat{e}}\hat{\varphi}(\hat{x})\dif\hat{x}$的近似值来计算$\int_{e}\varphi \dif x$。如果$\hat{e}$上的数值积分公式写为:
+\begin{equation}
+    \int_{\hat{e}}\hat{\varphi}(\hat{x})\dif\hat{x}\approx\sum_{i=1}^{L}\hat{\omega}_{i}\hat{\varphi}(\hat{b}_{i}).
+\end{equation}
+其中$\hat{\omega}_{i}$为积分权重，$\hat{b}_{i}$为积分节点，那么对于$\hat{e}$上的数值积分公式，其积分节点为$b_{i,e}=F_{e}(\hat{b}_{i})$，对应的积分权重为$\omega_{i,e}=|\det(B_{e})|\hat{\omega}_{i}$。求积公式写为:
+\begin{equation}
+    \int_{e}\varphi\dif x\approx\sum_{i=1}^{L}\omega_{i,e}\varphi(b_{i,e}).
+\end{equation}
+\begin{exercise}
+    如果记积分误差
+    \begin{equation}
+        E_{e}(\varphi):=\int_{e}\varphi(x)\dif x-\sum_{i=1}^{L}\omega_{i,e}\varphi(b_{i,e}),
+    \end{equation}
+    \begin{equation}
+        \hat{E}_{\hat{e}}(\hat{\varphi}):=\int_{\hat{e}}\hat{\varphi}(\hat{x})\dif\hat{x}-\sum_{i=1}^{L}\hat{\omega}_{i}\hat{\varphi}(\hat{b}_{i}),
+    \end{equation}
+    那么$e$上和$\hat{e}$上求解误差的关系为:
+    \begin{equation}
+        E_{e}(\varphi)=|\det(B_{e})|\hat{E}_{\hat{e}}(\hat{\varphi}).
+    \end{equation}
+\end{exercise}
+本节中将给出单元$e$上的一些常见数值积分公式。在介绍之前，先回顾以下数值分析课程中数值积分公式代数精度的定义。
+\begin{definition}
+    如果
+    \begin{equation}
+    \int_{e}p\dif x=\sum_{i=1}^{L}\omega_{i,e}p(b_{i,e})
+    \end{equation}
+    对任何次数不超过$k$的多项式均成立，那么我们称该求积公式具有$k$阶代数精度。
+\end{definition}
+特别地，如果$e$是三角形区域，那么第四章中定义的\textbf{重心坐标}是非常有用的工具。本章中我们会多次用到积分性质，摘录如下:
+\begin{proposition}
+    \label{eq:integral_prop}
+    设$(\lambda_{1},\lambda_{2},\lambda_{3})$是$e$上点的重心坐标，则:
+    \begin{equation}
+        \int_{e}\lambda_{1}^{m}\lambda_{2}^{n}\lambda_{3}^{k}\dif x\dif y=2m(e)\frac{m!n!k!}{(m+n+k+2)!}.
+    \end{equation}
+    $m(e)$表示$e$的测度，此处意为面积，下同。
+\end{proposition}
+\subsection{三角单元上的求积公式}
+这一部分将介绍$e$为三角形单元时可以使用的一些求积公式。值得注意的是，对于一个给定的代数精度$p$，对应的数值积分公式不一定唯一。
+\subsubsection{一次代数精度}
+\begin{proposition}
+    设$e$是一个三角形，$a_{i}$为这个三角形的三个顶点，$a=\frac{a_{1}+a_{2}+a_{3}}{3}$为这个三角形的重心，那么求积公式
+    \begin{equation}
+        \int_{e}\varphi(x)\dif x\approx m(e)\varphi(a)
+    \end{equation}
+    具有一次代数精度。
+\end{proposition}
+\begin{proof}
+    对于$e$上任何一个一次多项式$p(x)$，可以用重心坐标表示为:
+    \begin{equation}
+        p(x)=\sum_{i=1}^{3}p(a_{i})\lambda_{i}(x).
+    \end{equation}
+    由命题\ref{eq:integral_prop}，有:
+    \begin{equation}
+        \int_{e}p(x)\dif x=\frac{m(e)}{3}\sum_{i=1}^{3}p(a_{i})=m(e)p(a).
+    \end{equation}
+    因此这个求积公式具有一次代数精度。
+\end{proof}
+\subsubsection{二次代数精度}
+\begin{proposition}
+    设$e$是一个三角形，$a_{i}$是按逆时针方向排列的三个顶点，$a_{ij}$为边$a_{i}a_{j}$的中点，那么求积公式
+    \begin{equation}
+        \int_{\hat{e}}\varphi(x)\dif x\approx\frac{m(e)}{3}\sum_{1\le i<j\le 3}\varphi(a_{ij})
+    \end{equation}
+    具有二次代数精度。
+\end{proposition}
+\begin{proof}
+    设$p$为$e$上的一个二次多项式，用面积坐标表示该多项式如下:
+    \begin{equation}
+        p(x)=\alpha_{1}\lambda_{1}^{2}(x)+\alpha_{2}\lambda_{2}^{2}(x)+\alpha_{3}\lambda_{3}^{2}(x)+\alpha_{4}\lambda_{1}(x)\lambda_{2}(x)+\alpha_{5}\lambda_{2}(x)\lambda_{3}(x)+\alpha_{6}\lambda_{3}(x)\lambda_{1}(x).
+    \end{equation}
+    根据命题\ref{eq:integral_prop}可知:
+    \begin{equation}
+        \int_{e}p(x)\dif x=\frac{m(e)}{6}\left[\alpha_{1}+\alpha_{2}+\alpha_{3}+\frac{1}{2}\left(\alpha_{4}+\alpha_{5}+\alpha_{6}\right)\right].
+    \end{equation}
+    又:
+    \begin{equation}
+        \begin{aligned}
+            p(a_{12})&=\frac{1}{4}(\alpha_{1}+\alpha_{2}+\alpha_{4})\\
+            p(a_{23})&=\frac{1}{4}(\alpha_{2}+\alpha_{3}+\alpha_{5})\\
+            p(a_{31})&=\frac{1}{4}(\alpha_{3}+\alpha_{1}+\alpha_{6}).\\
+        \end{aligned}
+    \end{equation}
+    从而:
+    \begin{equation}
+        \int_{e}p(x)\dif x=\frac{m(e)}{3}\sum_{1\le i<j\le 3}\varphi(a_{ij}).
+    \end{equation}
+\end{proof}
+\begin{exercise}
+    使用类似的思路，用$a_{1},a_{2},a_{3}$和三角形重心$g$处的函数值构造一个二次代数精度的求积公式。
+\end{exercise}
