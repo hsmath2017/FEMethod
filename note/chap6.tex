@@ -399,6 +399,52 @@
 \begin{theorem}
     设$u(\mathbf{x},t)$为\eqref{eq:heat_eq}的解，$U^{m}$为\eqref{eq:C-N-G}的解，那么有下面的误差估计成立:
     \begin{equation}
-        \norm{U^{m}-u(t_{m})}_{0,\Omega}\le \norm{u_{0h}-u_{0}}_{0,\Omega}+Ch^{k+1}\left\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t_{m}}\norm{u_{t}}_{k+1,\Omega}\dif s\right\}+C\tau^{2}\int_{0}^{t_{m}}(\norm{u_{tt}}_{0,\Omega}+\norm{\Delta u_{tt}}_{0,\Omega})\dif s.
+        \norm{U^{m}-u(t_{m})}_{0,\Omega}\le \norm{u_{0h}-u_{0}}_{0,\Omega}+Ch^{k+1}\left\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t_{m}}\norm{u_{t}}_{k+1,\Omega}\dif s\right\}+C\tau^{2}\int_{0}^{t_{m}}(\norm{u_{ttt}}_{0,\Omega}+\norm{\Delta u_{tt}}_{0,\Omega})\dif s.
     \end{equation}
 \end{theorem}
+\begin{proof}
+    证明思路和定理6.3非常类似，只是推导方程以及不等式估计变得麻烦了许多。
+
+    首先，改写
+    \begin{equation}
+        U^{m}-u(t_{m})=U^{m}-P_{h}u(t_{m})+P_{h}u(t_{m})-u(t_{m}):=\theta^{m}+\rho^{m}.
+    \end{equation}
+
+    与定理6.3完全一致，可得:
+    \begin{equation}
+        \norm{\rho^{m}}_{0,\Omega}\le Ch^{k+1}\left\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t_{m}}\norm{u_{t}}_{k+1,\Omega}\dif s\right\}.
+    \end{equation}
+    
+    为估计$\theta^{m}$，我们还是先推导该函数满足的方程:
+    \begin{equation}
+        \begin{aligned}
+            &\innerprod{\bar{\partial}_{t}\theta^{m}}{\chi}+\innerprod{\nabla\left(\frac{\theta^{m-1}+\theta^{m}}{2}\right)}{\nabla\chi}\\
+            =&\innerprod{f(t_{m-\frac{1}{2}})}{\chi}-\innerprod{\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}-\innerprod{\frac{\nabla P_{h}u(t_{m})+\nabla P_{h}u(t_{m-1})}{2}}{\nabla\chi}\\
+            =&\innerprod{u_{t}(t_{m-\frac{1}{2}})}{\chi}+\innerprod{\nabla u(t_{m-\frac{1}{2}})}{\nabla\chi}-\innerprod{\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}-\innerprod{\frac{\nabla P_{h}u(t_{m})+\nabla P_{h}u(t_{m-1})}{2}}{\nabla\chi}\\
+            =&\innerprod{u_{t}(t_{m-\frac{1}{2}})-\bar{\partial}_{t}P_{h}u(t_{m})}{\chi}+\innerprod{\nabla\left(u(t_{m-\frac{1}{2}})-\frac{u(t_{m})+u(t_{m-1})}{2}\right)}{\nabla\chi}\\
+            =&\innerprod{u_{t}(t_{m-\frac{1}{2}})-\bar{\partial}_{t}P_{h}u(t_{m})-\Delta\left(u(t_{m-\frac{1}{2}})-\frac{u(t_{m})+u(t_{m-1})}{2}\right)}{\chi}:=-\innerprod{\tilde{\omega}^{m}}{\chi}.\\
+        \end{aligned}
+    \end{equation}
+    取$\chi:=\frac{\theta^{m-1}+\theta^{m}}{2}$，化简上式，可推得:
+    \begin{equation}
+        \label{eq:midstep}
+        \norm{\theta^{m}}_{0,\Omega}\le\norm{\theta^{0}}_{0,\Omega}+\tau\sum_{j=1}^{m}\norm{\tilde{\omega}^{j}}_{0,\Omega}.
+    \end{equation}
+    通过估计\eqref{eq:midstep}，可以得到定理6.4的证明。具体过程留作习题。
+\end{proof}
+\begin{exercise}
+    利用带积分余项的Taylor展开，完成定理6.4的证明。
+\end{exercise}
+\begin{remark}
+    上面的定理保证了Crank-Nicolson-Galerkin方法在时间上是二阶精度的。
+\end{remark}
+\section{本章总结}
+本章主要讲了有限元离散求解热方程的算法以及误差估计。求解热方程时，空间离散思路和求解椭圆方程没有区别，但和椭圆方程不同的是，椭圆方程进行空间离散后给出的是一个线性方程，而热方程空间离散后给出的则是一个ode初值问题，需要进一步进行全离散求解。
+
+类比有限差分框架下的MOL算法，有限元框架下也有对应的Euler法和Crank-Nicolson算法，我们对这两种离散算法进行了收敛阶分析。阅读分析过程会发现，基本流程没有本质区别，都是利用椭圆投影算子$P_{h}$，把问题投影到$V_{h}$上进行讨论。
+
+有两个问题值得思考:
+\begin{itemize}
+    \item 如果选择显式的时间积分算法，会如何?
+    \item 如果时间积分算法更复杂，如经典四阶RK算法，又如何对全离散方法进行分析?
+\end{itemize}
