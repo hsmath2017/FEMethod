@@ -378,3 +378,27 @@
 \begin{remark}
     上面的推导说明了Euler-Galerkin方法是收敛的，但不够理想，因为这个算法关于时间仅一阶收敛。要提升关于时间的精度，我们需要使用更高阶数的时间积分方法。
 \end{remark}
+\subsection{Crank-Nicolson-Galerkin方法}
+记$t_{m-\frac{1}{2}}:=(m-\frac{1}{2})\tau$，在该点附近离散化方程\eqref{eq:discretized_ode}，可得:
+\begin{equation}
+    \label{eq:C-N-G}
+    \left\{
+        \begin{aligned}
+        &\innerprod{\bar{\partial}_{t}U^{m}}{\chi}+B\left(\frac{U^{m}+U^{m-1}}{2},\chi\right)=\innerprod{f(t_{m-\frac{1}{2}})}{\chi},\forall \chi\in V_{h},\\
+        &U^{0}=u_{0h},m=1,2,\cdots.\\
+        \end{aligned}
+    \right.
+\end{equation}
+这就是\textbf{Crank-Nicolson-Galerkin}方法。
+
+\begin{remark}
+    这个算法的思路和有限差分法求解抛物方程的Crank-Nicolson算法思路一致。对于时间点$t_{m-\frac{1}{2}}$，算子$\bar{\partial}_{t}$为二阶近似。
+\end{remark}
+
+下面给出Crank-Nicolson-Galerkin算法的$L^{2}$误差估计。
+\begin{theorem}
+    设$u(\mathbf{x},t)$为\eqref{eq:heat_eq}的解，$U^{m}$为\eqref{eq:C-N-G}的解，那么有下面的误差估计成立:
+    \begin{equation}
+        \norm{U^{m}-u(t_{m})}_{0,\Omega}\le \norm{u_{0h}-u_{0}}_{0,\Omega}+Ch^{k+1}\left\{\norm{u_{0}}_{k+1,\Omega}+\int_{0}^{t_{m}}\norm{u_{t}}_{k+1,\Omega}\dif s\right\}+C\tau^{2}\int_{0}^{t_{m}}(\norm{u_{tt}}_{0,\Omega}+\norm{\Delta u_{tt}}_{0,\Omega})\dif s.
+    \end{equation}
+\end{theorem}
