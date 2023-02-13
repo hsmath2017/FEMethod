@@ -67,6 +67,7 @@
 这一部分将介绍$e$为三角形单元时可以使用的一些求积公式。值得注意的是，对于一个给定的代数精度$p$，对应的数值积分公式不一定唯一。
 \subsubsection{一次代数精度}
 \begin{proposition}
+    \label{prop:1order}
     设$e$是一个三角形，$a_{i}$为这个三角形的三个顶点，$a=\frac{a_{1}+a_{2}+a_{3}}{3}$为这个三角形的重心，那么求积公式
     \begin{equation}
         \int_{e}\varphi(x)\dif x\approx m(e)\varphi(a)
@@ -86,6 +87,7 @@
 \end{proof}
 \subsubsection{二次代数精度}
 \begin{proposition}
+    \label{prop:2order}
     设$e$是一个三角形，$a_{i}$是按逆时针方向排列的三个顶点，$a_{ij}$为边$a_{i}a_{j}$的中点，那么求积公式
     \begin{equation}
         \int_{\hat{e}}\varphi(x)\dif x\approx\frac{m(e)}{3}\sum_{1\le i<j\le 3}\varphi(a_{ij})
@@ -115,5 +117,191 @@
     \end{equation}
 \end{proof}
 \begin{exercise}
-    使用类似的思路，用$a_{1},a_{2},a_{3}$和三角形重心$g$处的函数值构造一个二次代数精度的求积公式。
+    使用类似的思路，用$a_{1},a_{2},a_{3}$和三角形重心$a$处的函数值构造一个二次代数精度的求积公式。
+\end{exercise}
+\subsubsection{三次代数精度}
+\begin{proposition}
+    \label{prop:3order}
+    设$e$是一个三角形，$a_{i}$是按逆时针方向排列的三个顶点，$a_{ij}$为边$a_{i}a_{j}$的中点，$a$为三角形$e$的重心，可得如下具有三次代数精度的求积公式:
+    \begin{equation}
+        \int_{e}\varphi(x)\dif x\approx\frac{m(e)}{60}\left[3\sum_{i=1}^{3}\varphi(a_{i})+8\sum_{1\le i<j\le 3}\varphi(a_{ij})+27\varphi(a)\right].
+    \end{equation}
+\end{proposition}
+\begin{proof}
+    取$p\in P_{3}(e)$，用重心坐标表示该三次多项式，可得:
+    \begin{equation}
+        \label{eq:order-3-complete}
+        \begin{aligned}
+            p_{3}(x)=&\alpha_{1}\lambda_{1}^{3}(x)+\alpha_{2}\lambda_{2}^{3}(x)+\alpha_{3}\lambda_{3}^{3}(x)+\alpha_{4}\lambda_{1}^{2}\lambda_{2}+\alpha_{5}\lambda_{1}\lambda_{2}^{2}\\
+            &+\alpha_{6}\lambda_{2}^{2}\lambda_{3}+\alpha_{7}\lambda_{2}\lambda_{3}^{2}+\alpha_{8}\lambda_{3}^{2}\lambda_{1}+\alpha_{9}\lambda_{3}\lambda_{1}^{2}+\alpha_{10}\lambda_{1}\lambda_{2}\lambda_{3}.
+        \end{aligned}
+    \end{equation}
+    结合命题\ref{eq:integral_prop}，可得:
+    \begin{equation}
+        \int_{e}p_{3}(x)\dif x=\frac{m(e)}{10}\left[\sum_{i=1}^{3}\alpha_{i}+\frac{1}{3}\sum_{i=4}^{9}\alpha_{i}+\frac{1}{6}\alpha_{10}\right].
+    \end{equation}
+    另一方面，根据重心坐标的定义可知:
+    \begin{equation}
+        \left\{
+        \begin{aligned}
+            &p_{3}(a_{i})=\alpha_{i},\\
+            &p_{3}(a)=\frac{1}{27}\sum_{i=1}^{10}\alpha_{i},\\
+            &p_{3}(a_{12})=\frac{1}{8}(\alpha_{1}+\alpha_{2}+\alpha_{4}+\alpha_{5}),\\
+            &p_{3}(a_{23})=\frac{1}{8}(\alpha_{2}+\alpha_{3}+\alpha_{6}+\alpha_{7}),\\
+            &p_{3}(a_{13})=\frac{1}{8}(\alpha_{3}+\alpha_{1}+\alpha_{8}+\alpha_{9}).\\
+            \end{aligned}
+        \right.
+    \end{equation}
+    比较上面两式，即知\eqref{eq:order-3-complete}具有三次代数精度。
+\end{proof}
+\subsection{矩形单元上的求积公式}
+矩形单元上的求积公式相对比较简单，因为我们把重积分转换为累次积分之后，可以直接用$[0,1]$上的Gauss-Legendre求积公式导出对应的积分节点和积分权重。
+
+设标准参考元$\hat{e}:=[0,1]\times[0,1]$，首先回忆Gauss-Legendre求积公式:
+\begin{definition}
+    对整数$k\ge 0$，存在$k+1$个节点$\hat{b}_{i}\in [0,1]$和对应的权重$\hat{\omega}_{i}>0$，使得求积公式
+    \begin{equation}
+        \int_{0}^{1}\varphi(x)\dif x\approx\sum_{i=1}^{k+1}\hat{\omega}_{i}\varphi(\hat{b}_{i})
+    \end{equation}
+    具有$2k+1$次代数精度。这里节点$\hat{b}_{i}$为$[0,1]$上的$k$次正交多项式的零点。
+\end{definition}
+利用重积分与累次积分的转换，我们可以给出标准单元上具有$2k+1$次代数精度的求积公式如下:
+\begin{equation}
+    \int_{0}^{1}\int_{0}^{1}\varphi(\mathbf{x})\dif\mathbf{x}\approx\sum_{i=1}^{k+1}\sum_{j=1}^{k+1}\hat{\omega}_{i}\hat{\omega}_{j}\varphi(\hat{b}_{i},\hat{b}_{j}).
+\end{equation}
+\section{抽象误差估计}
+数值积分毕竟是对真实积分值的一种估算，对求解误差势必会产生一些影响。本节中，我们暂时不讨论具体的数值积分误差，而是先建立求解误差和数值积分误差的关系，这就是标题所叙"抽象"误差估计的含义。
+
+首先给出具有数值积分的有限元逼近问题的描述。
+
+设$V$是一个Hilbert空间，原变分问题为:
+\begin{equation}
+    \text{求}u\in V,\text{ 使得 }B(u,v)=\innerprod{f}{v},\forall v\in V.
+\end{equation}
+且假设这个问题满足Lax-Milgram定理的条件。那么具有数值积分的有限元逼近问题描述如下:
+\begin{equation}
+    \text{求}u_{h}\in V_{h}\subset V,\text{ 使得 }B_{h}(u_{h},v_{h})=\innerprod{f}{v_{h}}_{h},\forall v_{h}\in V_{h}.
+\end{equation}
+其中
+\begin{equation}
+    \begin{aligned}
+    B_{h}(u_{h},v_{h})&:=\sum_{e}\left[\sum_{k=1}^{L}\omega_{k,e}\left(\sum_{i,j=1}^{2}a_{ij}\partial_{i}u_{h}\partial_{j}v_{h}\right)(b_{k,e})\right],\\
+    \innerprod{f}{v_{h}}&:=\sum_{e}\left[\sum_{k=1}^{L}\omega_{i,e}(fv_{h})(b_{k,e})\right].\\
+    \end{aligned}
+\end{equation}
+类似第二章对$B$提的一致椭圆性条件，我们也可以对数值积分公式$B_{h}$提对应的一致椭圆性条件，具体如下:
+\begin{definition}{一致$V_{h}$椭圆性}
+  如果数值积分公式$B_{h}(\cdot,\cdot)$满足:存在正常数$\bar{\alpha}$使得
+  \begin{equation}
+    B_{h}(v_{h},v_{h})\ge\bar{\alpha}\norm{v_{h}}_{V}^{2},\forall v_{h}\in V_{h},h>0.
+  \end{equation}
+则称$B_{h}(\cdot,\cdot)$是\textbf{一致$V_{h}$-椭圆的}。  
+\end{definition}
+对一个满足一致$V_{h}$-椭圆性的数值积分公式$B_{h}$，我们有下面的抽象误差估计:
+\begin{theorem}{Strang第一引理}
+    若$B_{h}$是一致$V_{h}$-椭圆的，那么下面的不等式成立:
+    \begin{equation}
+        \norm{u-u_{h}}_{V}\le C\left\{\inf_{v_{h}\in V_{h}}\left[\norm{u-v_{h}}_{V}+\sup_{\omega_{h}\in V_{h}}\frac{|B(v_{h},\omega_{h})-B_{h}(v_{h},\omega_{h})|}{\norm{\omega_{h}}_{V}}\right]+\sup_{\omega_{h}\in V_{h}}\frac{|\innerprod{f}{\omega_{h}}-\innerprod{f}{\omega_{h}}_{h}|}{\norm{\omega_{h}}_{V}}\right\}.
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    我们先来估计$\norm{u_{h}-v_{h}}_{V}$。由$B_{h}$的一致$V_{h}$-椭圆性，可得:
+    \begin{equation}
+        \begin{aligned}
+            \bar{\alpha}\norm{u_{h}-v_{h}}_{V}^{2}&\le B_{h}(u_{h}-v_{h},u_{h}-v_{h})\\
+            &=B(u-v_{h},u_{h}-v_{h})+[B_{h}(u_{h}-v_{h},u_{h}-v_{h})-B(u-v_{h},u_{h}-v_{h})]\\
+            &\le M\norm{u-v_{h}}_{V}\norm{u_{h}-v_{h}}_{V}+[\innerprod{f}{u_{h}-v_{h}}_{h}-\innerprod{f}{u_{h}-v_{h}}+B(v_{h},u_{h}-v_{h})-B_{h}(v_{h},u_{h}-v_{h})]\\
+        \end{aligned}
+    \end{equation}
+    上式中两边同除$\norm{u_{h}-v_{h}}_{V}$，可得:
+    \begin{equation}
+        \label{eq:uhminusvh}
+        \bar{\alpha}\norm{u_{h}-v_{h}}_{V}\le M\norm{u-v_{h}}_{V}+\sup_{\omega_{h}\in V_{h}}\frac{|\innerprod{f}{\omega_{h}}-\innerprod{f}{\omega_{h}}_{h}|}{\norm{\omega_{h}}_{V}}+\sup_{\omega_{h}\in V_{h}}\frac{|B(v_{h},\omega_{h})-B_{h}(v_{h},\omega_{h})|}{\norm{\omega_{h}}_{V}}.
+    \end{equation}
+    由\eqref{eq:uhminusvh}结合三角不等式
+    \begin{equation}
+        \norm{u-u_{h}}_{V}\le\norm{u_{h}-v_{h}}_{V}+\norm{u-v_{h}}_{V},
+    \end{equation}
+    两边同取下确界，即可证明上述的Strang第一引理。
+\end{proof}
+\begin{remark}
+    这个定理在数值积分公式满足一致椭圆性的前提下，给出了数值积分误差与有限元求解误差之间的关系。如果$B(\cdot,\cdot)$和$\innerprod{\cdot}{\cdot}$是完全精确的，这个引理事实上就是之前介绍过的Cea引理。
+\end{remark}
+上面的误差估计中，我们需要用到数值积分公式$B_{h}$一致椭圆这一假定，但这个性质并不是泛函$B$椭圆性的直接推论。下面我们需要给出保证$B_{h}(\cdot,\cdot)$一致$V_{h}$-椭圆的充分条件。
+
+\begin{theorem}
+    假定存在正常数$\beta$，使得
+    \begin{equation}
+        \sum_{i,j=1}^{2}a_{ij}(x)\xi_{i}\xi_{j}\ge\beta\sum_{i=1}^{2}\xi_{i}^{2},\forall x\in\Omega,\xi=(\xi_{1},\xi_{2})^{t}\in \mathbb{R}^{2},
+    \end{equation}
+    其中双线性型$B(u,v)=\int_{\Omega}\left(\sum_{i,j=1}^{2}a_{ij}(x)\partial_{i}u(x)\partial_{j}v(x)\right)\dif x$，$B_{h}$为$B$对应的数值积分公式。又设在参考元$(\hat{e},\hat{P}_{\hat{e}},\hat{\Sigma}_{\hat{e}})_{\hat{e}\in \mathcal{T}_{h}}$上，给出一个求积公式:
+    \begin{equation}
+        \label{eq:ref_elem_quad}
+        \int_{\hat{e}}\hat{\varphi}(x)\dif x\approx\sum_{i=1}^{L}\hat{\omega}_{i}\varphi(\hat{b}_{i}),
+    \end{equation}
+    如果存在整数$k'\ge 1$使得:
+    \begin{enumerate}
+        \item $\hat{P}_{\hat{e}}\subset P_{k'}(\hat{e})$,
+        \item $\{\hat{b}_{i}\}_{i=1}^{L}$可以唯一确定一个$k'-1$次多项式，或者求积公式的代数精度至少为$2k'-2$,
+    \end{enumerate}
+    那么双线性型$B$的数值积分近似$B_{h}$满足:存在$\bar{\alpha}>0$使得
+    \begin{equation}
+        B_{h}(v_{h},v_{h})\ge\bar{\alpha}|v_{h}|_{1,\Omega}^{2}.
+    \end{equation}
+\end{theorem}
+\begin{remark}
+    由于在算一般元$e$上的积分时，往往先转换到参考元$\hat{e}$上进行计算，因此证明本定理时，我们先在参考元$\hat{e}$上证明，再转换到一般元$e$的情形。
+\end{remark}
+\begin{proof}
+    证明分三步完成。
+
+    第一步:在参考元$\hat{e}$上，证明存在正常数$C$，使得不等式
+    \begin{equation}
+        \label{eq:aux1}
+        \sum_{i=1}^{L}\hat{\omega}_{i}\sum_{j=1}^{2}(\partial_{j}\hat{p}(\hat{b}_{i}))^{2}\ge C|\hat{p}|_{1,\hat{e}}^{2},\forall\hat{p}\in \hat{P}_{k',\hat{e}}
+    \end{equation}
+    成立。事实上，如果数值积分公式\eqref{eq:ref_elem_quad}有$2k'-2$次代数精度，则左侧对$|\hat{p}|_{1,\hat{e}}^{2}$的数值积分公式是完全精确的，即$C=1$，\eqref{eq:aux1}中取等号。如果$\left\{\hat{b}_{i}\right\}$唯一确定$k'-1$次多项式，考查商空间$W:=\hat{P}_{\hat{e}}/P_{0}(\hat{e})$，可以证明:
+    \begin{equation}
+        \hat{p}\mapsto\left[\sum_{i=1}^{L}\hat{\omega}_{i}\sum_{j=1}^{2}\left(\partial_{j}\hat{p}(\hat{b}_{i})\right)^{2}\right]^{\frac{1}{2}}
+    \end{equation}
+    是该商空间上的范数(留作习题)，而$|\hat{p}|_{1,\hat{e}}$也是这一空间中的范数。由于商空间$W$是有限维的，根据范数的等价性，不等式\eqref{eq:aux1}成立。
+
+    第二步:考虑一般单元$e$上的数值积分公式。根据$a_{ij}(x)$的椭圆性条件，我们有:
+    \begin{equation}
+        \begin{aligned}
+            \label{eq:normal_integral}
+            &\int_{e}\sum_{i,j=1}^{2}a_{ij}(x)\partial_{i}v_{h}(x)\partial_{j}v_{h}(x)\dif x\\
+            \approx&\sum_{k=1}^{L}\omega_{k,e}\sum_{i,j=1}^{2}(a_{ij}\partial_{i}v_{h}\partial_{j}v_{h})(b_{k,e})\\
+            \ge&\beta\sum_{k=1}^{L}\omega_{k,e}\sum_{i=1}^{2}(\partial_{i}p_{e}(b_{k,e}))^{2}.
+        \end{aligned}
+    \end{equation}
+    其中$v_{h}|_{e}=p_{e}$。设$\hat{e}$到$e$的仿射变换为$F_{e}(x)=B_{e}x+b_{e}$，由于
+    \begin{equation}
+        \omega_{i,e}=|\det(B_{e})|\hat{\omega}_{i},b_{i,e}=F_{e}(\hat{b}_{i}),
+    \end{equation}
+    有
+    \begin{equation}
+        \sum_{i=1}^{2}(\partial_{i}p_{e}(b_{k,e}))^{2}\ge\norm{B_{e}}^{-2}\norm{\nabla \hat{p}(\hat{b}_{k})}^{2},
+    \end{equation}
+    从而
+    \begin{equation}
+        \label{eq:element_integral}
+        \begin{aligned}
+            \sum_{k=1}^{L}\omega_{k,e}\sum_{i=1}^{2}(\partial_{i}p_{e}(b_{k,e}))^{2}&\ge|\det(B_{e})|\norm{B_{e}}^{-2}\sum_{k=1}^{L}\hat{\omega}_{k}\sum_{i=1}^{2}(\partial_{i}\hat{p}(\hat{b}_{k}))^{2}\\
+            &\ge\hat{C}|\det(B_{e})|\norm{B_{e}}^{-2}|\hat{p}|_{1,\hat{e}}^{2}\\
+            &\ge\bar{\alpha}|p_{e}|_{1,e}^{2}=\bar{\alpha}|v_{h}|_{1,e}^{2}.
+        \end{aligned}
+    \end{equation}
+    最后一个不等式利用了分割的拟正则性假定。
+
+    第三步:对\eqref{eq:normal_integral}两端关于$e$进行求和，结合\eqref{eq:element_integral}，得到定理的结论。
+\end{proof}
+下面给出一些例子:
+\begin{enumerate}
+    \item 如果$(\hat{e},\hat{P}_{\hat{e}},\hat{\Sigma}_{\hat{e}})$为一次元，那么命题\ref{prop:1order}所述的公式是一致$V_{h}$-椭圆的。
+    \item 如果$(\hat{e},\hat{P}_{\hat{e}},\hat{\Sigma}_{\hat{e}})$为二次元，那么命题\ref{prop:2order}所述的数值积分公式是一致$V_{h}$-椭圆的。
+   \item 如果$(\hat{e},\hat{P}_{\hat{e}},\hat{\Sigma}_{\hat{e}})$为Lagrange完全三次元，那么命题\ref{prop:3order}所述的数值积分公式是一致$V_{h}$-椭圆的。
+\end{enumerate}
+\begin{exercise}
+    证明以上三个结论。
 \end{exercise}
