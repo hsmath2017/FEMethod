@@ -354,3 +354,65 @@
 \begin{exercise}
     证明引理7.1。(Hint:直接用定义展开，把积分式中的$\omega$的导数放大为$|\omega|_{j,\infty,\Omega}$)。
 \end{exercise}
+下面我们给出相容误差的估计
+\begin{theorem}
+    设参考元上的多项式空间$\hat{P}_{\hat{e}}=P_{k}(\hat{e}),(k\ge 1),$
+    \begin{equation}
+        \hat{E}_{\hat{e}}(\hat{\varphi})=0,\forall\hat{\varphi}\in P_{2k-2}(\hat{e}),
+    \end{equation}
+    且$a\in W^{k,\infty}(e)$，那么
+    \begin{equation}
+        \begin{aligned}
+            E_{e}(a\partial_{i}p\partial_{j}q)&\le Ch_{e}^{k}\norm{a}_{k,\infty,e}\norm{\partial_{i}p}_{k-1,e}|\partial_{j}q|_{0,e}\\
+            &\le Ch_{e}^{k}\norm{a}_{k,\infty,e}\norm{p}_{k,e}|q|_{1,e},\forall p,q\in P_{k}(e).
+        \end{aligned}
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    设$a\in W^{k,\infty}(e),v\in P_{k-1}(e),\omega\in P_{k-1}(e)$，下面估计$E_{e}(avw)$。首先根据$e$和$\hat{e}$上数值积分的关系，可知:
+    \begin{equation}
+        E_{e}(avw)=\hat{E}_{\hat{e}}(\hat{a}\hat{v}\hat{\omega}).
+    \end{equation}
+    其中$\hat{v},\hat{\omega}\in P_{k-1}(\hat{e})$, $\hat{a}\in W^{k,\infty}(\hat{e})$。令$\hat{\varphi}=\hat{a}\hat{v}\in W^{k,\infty}(\Omega)$，可得:
+    \begin{equation}
+        \begin{aligned}
+            |\hat{E}_{\hat{e}}(\hat{a}\hat{v}\hat{\omega})&=|\hat{E}_{\hat{e}}(\hat{\varphi}\hat{\omega})|=\left|\int_{\hat{e}}(\hat{\varphi}\hat{\omega})(x)\dif x-\sum_{i=1}^{L}\hat{\omega}_{i}\cdot(\hat{\varphi}\hat{\omega})(\hat{b}_{i})\right|\\
+            &\le m(\hat{e})\norm{\hat{\varphi}\hat{\omega}}_{0,\infty,\hat{e}}+\norm{\hat{\omega}\hat{\varphi}}_{0,\infty,\hat{e}}\left|\sum_{i=1}^{L}\hat{\omega}_{i}\right|\\
+            &\le \hat{C}\norm{\hat{\varphi}\hat{\omega}}_{0,\infty,\hat{e}}\le\hat{C}\norm{\hat{\varphi}}_{0,\infty,\hat{e}}\norm{\hat{\omega}}_{0,\infty,\hat{e}}\\
+            &\le\hat{C}\norm{\varphi}_{k,\infty,\hat{e}}\norm{\hat{\omega}}_{0,\hat{e}}.
+        \end{aligned}
+    \end{equation}
+    根据上式,如果定义泛函
+    \begin{equation}
+        f(\hat{\varphi}):=E_{e}(\hat{\varphi}\hat{\omega}),
+    \end{equation}
+    则$f$是有界线性泛函，且
+    \begin{equation}
+        \norm{f}_{*}\le\hat{C}\norm{\hat{\omega}}_{0,\hat{e}}.
+    \end{equation}
+    又因为积分公式具有$2k-2$次代数精度，则对任意$\hat{p}\in P_{k-1}(\Omega)$，有$f(\hat{p})=0$。根据引理\ref{thm:B-H Lem}，可得:
+    \begin{equation}
+        |f(\hat{\varphi})|\le\hat{C}\norm{f}_{*}|\hat{\varphi}_{k,\infty,\hat{e}}\le\hat{C}|\hat{\varphi}|_{k,\infty,\hat{e}}\norm{\hat{\omega}}_{0,\hat{e}}.
+    \end{equation}
+    即得:
+    \begin{equation}
+        \label{eq:Eeavw}
+        \begin{aligned}
+            |\hat{E}_{\hat{e}}(\hat{a}\hat{v}\hat{\omega})|&\le\hat{C}|\hat{a}\hat{v}|_{k,\infty,\hat{e}}\norm{\hat{\omega}}_{0,\hat{e}}\\
+            &\le\hat{C}\left[\sum_{j=0}^{k-1}|\hat{a}|_{k-j,\infty,\hat{e}}|\hat{v}|_{j,\hat{e}}\right]\norm{\hat{\omega}}_{0,\hat{e}}.
+        \end{aligned}
+    \end{equation}
+    注意到:
+    \begin{equation}
+        \begin{aligned}
+            |\hat{a}|_{k-j,\infty,\hat{e}}&\le Ch_{e}^{k-j}|a|_{k-,\infty,e},\\
+            |\hat{v}|_{j,\hat{e}}&\le Ch_{e}^{j}|\det(B_{e})|^{-\frac{1}{2}}|v|_{j,e},\\
+            \norm{\hat{\omega}}_{0,\hat{e}}&\le C|\det(B_{e})|^{-\frac{1}{2}}\norm{\omega}_{0,e}.
+        \end{aligned}
+    \end{equation}
+    代入\eqref{eq:Eeavw}，即可得:
+    \begin{equation}
+        |E_{e}(avw)|\le Ch_{e}^{k}\norm{a}_{k,\infty,e}\norm{v}_{k-1,e}\norm{\omega}_{0,e}.
+    \end{equation}
+    令$v=\partial_{i}p,\omega=\partial_{j}q$，即可得证。
+\end{proof}
