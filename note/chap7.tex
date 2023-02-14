@@ -199,8 +199,10 @@
 \end{definition}
 对一个满足一致$V_{h}$-椭圆性的数值积分公式$B_{h}$，我们有下面的抽象误差估计:
 \begin{theorem}{Strang第一引理}
+    \label{thm:strang1}
     若$B_{h}$是一致$V_{h}$-椭圆的，那么下面的不等式成立:
     \begin{equation}
+        \label{eq:abstract_error}
         \norm{u-u_{h}}_{V}\le C\left\{\inf_{v_{h}\in V_{h}}\left[\norm{u-v_{h}}_{V}+\sup_{\omega_{h}\in V_{h}}\frac{|B(v_{h},\omega_{h})-B_{h}(v_{h},\omega_{h})|}{\norm{\omega_{h}}_{V}}\right]+\sup_{\omega_{h}\in V_{h}}\frac{|\innerprod{f}{\omega_{h}}-\innerprod{f}{\omega_{h}}_{h}|}{\norm{\omega_{h}}_{V}}\right\}.
     \end{equation}
 \end{theorem}
@@ -304,4 +306,51 @@
 \end{enumerate}
 \begin{exercise}
     证明以上三个结论。
+\end{exercise}
+\section{相容误差估计}
+本节中，始终假定数值积分公式$B_{h}(\cdot,\cdot)$是$V_{h}$-椭圆的。上一节中，我们给出了整体误差与数值积分误差的关系，而本节将给出选取$k$次元时，为保证$k$阶收敛性，数值积分公式需要满足的条件。
+
+分析引理\ref{thm:strang1}，对于\eqref{eq:abstract_error}的第一项，我们可以直接利用第五章中对插值误差的相应结论来进行估计。具体如下:
+\begin{equation}
+    \inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{1,\Omega}\le\norm{u-\Pi_{h}u}_{1,\Omega}\le Ch^{k}|u|_{k+1,\Omega}.
+\end{equation}
+接下来我们需要估计\eqref{eq:abstract_error}的另外两项误差，即:
+\begin{equation}
+    E_{1}:=\sup_{\omega_{h}\in V_{h}}\frac{|B(\Pi_{h}u,\omega_{h})-B_{h}(\Pi_{h}u,\omega_{h})|}{\norm{\omega_{h}}_{V}},E_{2}:=\sup_{\omega_{h}\in V_{h}}\frac{|\innerprod{f}{\omega_{h}}-\innerprod{f}{\omega_{h}}_{h}|}{\norm{\omega_{h}}_{V}}.
+\end{equation}
+这两项误差被称为\textbf{相容误差}。在分析相容误差之前，我们先给出下面两个引理:
+\begin{theorem}{Bramble-Hilbert引理}
+    \label{thm:B-H Lem}
+   设$\Omega\subset\mathbb{R}^{n}$具有Lipschitz连续边界，$f\in (W^{k+1,p}(\Omega))^{*}$，且
+   \begin{equation}
+        f(\bar{p})=0,\forall \bar{p}\in P_{k}(\Omega),
+   \end{equation} 
+   则:
+   \begin{equation}
+    |f(v)|\le C(\Omega)\norm{f}_{*}|v|_{k+1,p,\Omega},\forall v\in W^{k+1,p}(\Omega).
+   \end{equation}
+\end{theorem}
+\begin{proof}
+    考虑商空间$Q:=W^{k+1,p}(\Omega)/P_{k}(\Omega)$。设$v\in W^{k+1,p}(\Omega),q\in P_{k}(\Omega)$，则:
+    \begin{equation}
+        |f(v)|=|f(v+q)|\le\norm{f}_{*}\norm{v+q}_{k+1,\Omega}.
+    \end{equation}
+    对$q$取下确界，有
+    \begin{equation}
+        |f(v)|\le\norm{f}_{*}\inf_{q\in P_{k}(\Omega)}\norm{v+q}_{k+1,\Omega}=\norm{f}_{*}\norm{v}_{Q}\le C(\Omega)\norm{f}_{*}|v|_{k+1,\Omega}.
+    \end{equation}
+    最后一个不等号依据的是商空间中的等价范数定理。
+\end{proof}
+\begin{lemma}
+    设$\varphi\in W^{m,q}(\Omega)$，$\omega\in W^{m,\infty}(\Omega)$，则:
+    \begin{equation}
+        \varphi\omega\in W^{m,q}(\Omega),
+    \end{equation}
+    且
+    \begin{equation}
+        |\varphi\omega|_{m,q,\Omega}\le C(m,n)\sum_{j=0}^{m}|\varphi|_{m-j,q,\Omega}|\omega|_{j,\infty,\Omega}.
+    \end{equation}
+\end{lemma}
+\begin{exercise}
+    证明引理7.1。(Hint:直接用定义展开，把积分式中的$\omega$的导数放大为$|\omega|_{j,\infty,\Omega}$)。
 \end{exercise}
