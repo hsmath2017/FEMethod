@@ -356,6 +356,7 @@
 \end{exercise}
 下面我们给出相容误差的估计
 \begin{theorem}
+    \label{thm:approx_err_1}
     设参考元上的多项式空间$\hat{P}_{\hat{e}}=P_{k}(\hat{e}),(k\ge 1),$
     \begin{equation}
         \hat{E}_{\hat{e}}(\hat{\varphi})=0,\forall\hat{\varphi}\in P_{2k-2}(\hat{e}),
@@ -416,3 +417,70 @@
     \end{equation}
     令$v=\partial_{i}p,\omega=\partial_{j}q$，即可得证。
 \end{proof}
+接下来我们给出\eqref{eq:abstract_error}最后一项的误差估计。此时积分的估计更为困难些，因为在定理\ref{thm:approx_err_1}中，我们可以假定$a\in W^{k,\infty}(e)$，但在下面的估计中，对右端项$f$不能做这个假定，只能保证$f\in W^{k,q}(e),k-\frac{n}{q}>0$。
+\begin{theorem}
+    \label{thm:approx_err_2}
+    设$\hat{P}_{\hat{e}}=P_{k}(\hat{e})$，数值积分公式至少$2k-2$阶代数精度，且$q\in [1,\infty)$使得$k-\frac{n}{q}>0$，则:
+    \begin{equation}
+        |E_{e}(fp)|\le Ch_{e}^{k}(m(e))^{\frac{1}{2}-\frac{1}{q}}\norm{f}_{k,q,e}\norm{p}_{1,e}.
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    见杜其奎，陈金如《有限元方法的数学理论》P167-169。
+\end{proof}
+\begin{remark}
+    实在是没法把我自己都没完全看明白的证明写到笔记上，十分抱歉。
+\end{remark}
+最后，综合上面所有的误差估计定理，给出带有数值积分的椭圆方程有限元解的误差估计定理:
+\begin{theorem}
+    设有限元离散满足拟正则性，与标准元仿射等价以及$C^{0}$，且对于参考元$\hat{e}$:
+    \begin{equation}
+        \hat{P}_{\hat{e}}=P_{k}(\hat{e}), H^{k+1}(\hat{e})\hookrightarrow C^{s}(\hat{e}), k\ge 1.
+    \end{equation}
+    原问题的解
+    \begin{equation}
+        u\in H_{0}^{1}(\Omega)\cap H^{k+1}(\Omega),a_{ij}\in W^{k,\infty}(\Omega),f\in W^{k,q}(\Omega),q\ge 2, k-\frac{n}{q}>0.
+    \end{equation}
+    且数值积分公式具有$2k-2$次代数精度，则下列估计式成立:
+    \begin{equation}
+        \norm{u-u_{h}}_{1,\Omega}\le Ch^{k}(|u|_{k+1,\Omega}+\sum_{i,j}\norm{a_{ij}}_{k,\infty}\norm{u}_{k+1,\Omega}+\norm{f}_{k,q,\Omega}).
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    由于求积公式具有$2k-2$次代数精度，故$B_{h}(\cdot,\cdot)$是一致$V_{h}$-椭圆的。由于抽象误差估计，其第一项为插值误差:
+    \begin{equation}
+        \norm{u-\Pi_{h}u}_{1,\Omega}\le Ch^{k}|u|_{k+1,\Omega}.
+    \end{equation}
+    由于
+    \begin{equation}
+        \norm{\Pi_{h}u}_{k,\Omega}\le\norm{\Pi_{h}u-u}_{k,\Omega}+\norm{u}_{k,\Omega}\le Ch|u|_{k+1,\Omega}+\norm{u}_{k,\Omega}\le C\norm{u}_{k+1,\Omega},
+    \end{equation}
+    然后设$p'=\Pi_{e}u,p=\omega_{h}|_{e}$,由定理\ref{thm:approx_err_1}可知:
+    \begin{equation}
+        \begin{aligned}
+            &|B(\Pi_{h}u,\omega_{h})-B_{h}(\Pi_{h}u,\omega_{h})|\\
+            \le&\sum_{e}\left|E_{e}\left(\sum_{i,j}a_{ij}\partial_{i}(\Pi_{h}u)\partial_{j}\omega_{h}\right)\right|\\
+            \le&C\sum_{e}h_{e}^{k}\sum_{i,j}\norm{a_{ij}}_{k,\infty,e}\norm{\Pi_{h}u}_{k,e}|\omega_{h}|_{1,e}\\
+            \le& Ch^{k}\left(\sum_{i,j}\norm{a_{ij}}_{k,\infty,e}\right)\norm{u}_{k+1,\Omega}|\omega_{h}|_{1,e}.
+        \end{aligned}
+    \end{equation}
+    所以
+    \begin{equation}
+        \sup_{\omega_{h}\in V_{h}}\frac{|B(v_{h},\omega_{h})-B_{h}(v_{h},\omega_{h})|}{\norm{\omega_{h}}_{1,\Omega}}\le Ch^{k}\left(\sum_{i,j}\norm{a_{ij}}_{k,\infty,e}\right)\norm{u}_{k+1,\Omega}.
+    \end{equation}
+    类似地，由\ref{thm:approx_err_2}可证，
+    \begin{equation}
+        |\innerprod{f}{\omega_{h}}-\innerprod{f}{\omega_{h}}_{h}|\le Ch^{k}(m(e))^{\frac{1}{2}-\frac{1}{q}}\norm{f}_{k,q,\Omega}\norm{\omega_{h}}_{1,\Omega}.
+    \end{equation}
+    由上面的推导知，原定理成立。
+\end{proof}
+\begin{remark}
+    如果需要保证不掉阶:
+    \begin{itemize}
+        \item 对于一次元，需要采用一次代数精度的求积公式。
+        \item 对于二次元，需要采用二次代数精度的求积公式。
+        \item 对于三次元，需要采用四次代数精度的求积公式。
+    \end{itemize}
+\end{remark}
+\section{本章总结}
+本章主要描述了二维有限元下数值积分公式的设计，以及数值积分对有限元求解误差的影响。误差估计时，本章的一般思路是先构造一个有界线性泛函，再利用Bramble-Hilbert引理给出更优的估计。
