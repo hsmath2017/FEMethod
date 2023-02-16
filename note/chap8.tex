@@ -1,0 +1,88 @@
+\chapter{非协调有限元方法}
+此前我们讨论的都是协调有限元方法。协调有限元离散不会在建立模型时引入模型误差，因为$V_{h}$是$V$的子空间，$V$上定义的泛函可以自然地限制在子空间$V_{h}$上。但随着问题逐渐变得复杂(如四阶PDE)，协调有限元方法对应的离散子空间也会越来越复杂，这意味着子空间$V_{h}$的维数大幅度上升，从而大幅度增加了数值算法的时间复杂性。为降低问题规模，我们需要考虑\textbf{非协调有限元}，即此时$V_{h}$将不一定是$V$的子空间。这可以大大降低计算量，但这样做同时会引入一个新的误差--非协调误差。本章中将对非协调有限元算法进行一系列的描述和分析。
+\section{抽象误差估计}
+对于变分问题
+\begin{equation}
+    \label{eq:prob_variation}
+    \text{求}u\in V,\text{使得}B(u,v)=\innerprod{f}{v},\forall v\in V.
+\end{equation}
+考虑有限元空间$V_{h}\nsubseteq V$, 则有下面的逼近问题:
+\begin{equation}
+    \label{eq:not_harmonic}
+    \text{求}v_{h}\in V_{h},\text{使得}B_{h}(u_{h},v_{h})=\innerprod{f}{v_{h}},\forall v_{h}\in V_{h}.
+\end{equation}
+这里$B_{h}$不能等同于$B$，而是$B$的一个估计。表达式为:
+\begin{equation}
+    \label{eq:approx_B}
+    B_{h}(u_{h},v_{h})=\sum_{e}B(u_{h}|_{e},v_{h}|_{e}).
+\end{equation}
+与协调元不同，对于非协调元空间$V_{h}$，双线性函数$B$在$V$上的椭圆性并不能直接导出$B_{h}$在$V_{h}$上的椭圆性。因此，在分析之前，要特别给出$B_{h}$的下面两条性质。
+\begin{equation}
+    \label{eq:Bounded}
+    |B_{h}(u_{h},v_{h})|\le M\norm{u_{h}}_{h}\norm{v_{h}}_{h},
+\end{equation}
+\begin{equation}
+    \label{eq:Elliptic}
+    B_{h}(v_{h},v_{h})\ge\alpha\norm{v_{h}}_{h}^{2}.
+\end{equation}
+在上面两条性质成立的前提下，我们给出非协调元逼近的抽象误差估计，这就是\textbf{Strang第二引理}。
+\begin{theorem}{Strang第二引理}
+    若$B_{h}$是定义在$V_{h}$上连续双线性型，且\eqref{eq:Bounded}，\eqref{eq:Elliptic}成立，$u$是原问题的解，$u_{h}$是\eqref{eq:not_harmonic}的解，$V_{h}$中的范数定义为
+    \begin{equation}
+        \norm{v_{h}}_{h}:=\left[\sum_{e}\norm{v_{h}}_{l,e}^{2}\right]^{\frac{1}{2}},
+    \end{equation}
+    那么下面的误差估计成立:
+    \begin{equation}
+        \label{eq:error}
+        C_{1}\left(\inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{h}+\sup_{\omega_{h}\in V_{h}}\frac{E_{h}(u,\omega_{h})}{\norm{\omega_{h}}_{h}}\right)\le\norm{u-u_{h}}_{h}\le C_{2}\left(\inf_{v_{h}\in V_{h}}\norm{u-v_{h}}_{h}+\sup_{\omega_{h}\in V_{h}}\frac{E_{h}(u,\omega_{h})}{\norm{\omega_{h}}_{h}}\right).
+    \end{equation}
+    其中
+    \begin{equation}
+        E_{h}(u,\omega_{h})=B_{h}(u,\omega_{h})-\innerprod{f}{\omega_{h}},
+    \end{equation}
+    表示了非协调有限元中用$B_{h}$估计$B$时引入的误差。
+\end{theorem}
+\begin{proof}
+    首先估计$\norm{u_{h}-v_{h}}_{h}$。由于$B_{h}$的$V_{h}-$椭圆性和连续性，可知:
+    \begin{equation}
+        \begin{aligned}
+            \alpha\norm{u_{h}-v_{h}}_{h}^{2}&\le B_{h}(u_{h}-v_{h},u_{h}-v_{h})\\
+            &=B_{h}(u-u_{h},v_{h}-u_{h})+B_{h}(v_{h}-u,v_{h}-u_{h})\\
+            &\le B_{h}(u,v_{h}-u_{h})-\innerprod{f}{v_{h}-u_{h}}+M\norm{u-v_{h}}_{h}\norm{u_{h}-v_{h}}_{h}.
+        \end{aligned}
+    \end{equation}
+    若$u_{h}\neq v_{h}$，有:
+    \begin{equation}
+        \norm{u_{h}-v_{h}}_{h}\le C\left(\norm{u-v_{h}}_{h}+\sup_{\omega_{h}\in V_{h}}\frac{B_{h}(u,\omega_{h})-\innerprod{f}{\omega_{h}}}{\norm{\omega_{h}}_{h}}.\right)
+    \end{equation}
+    再利用三角不等式
+    \begin{equation}
+        \norm{u-u_{h}}_{h}\le\norm{u-v_{h}}_{h}+\norm{v_{h}-u_{h}}_{h},
+    \end{equation}
+    立即得到\eqref{eq:error}右侧不等式的估计。
+
+    左侧不等式利用$B_{h}$的有界性可以证明，即
+    \begin{equation}
+        B_{h}(u-u_{h},\omega_{h})\le M\norm{u-u_{h}}_{h}\norm{\omega_{h}}_{h},
+    \end{equation}
+    具体证明留作习题。
+\end{proof}
+\begin{exercise}
+    证明\eqref{eq:error}左侧的不等式。
+\end{exercise}
+\begin{remark}
+    \begin{equation}
+        \sum_{\omega_{h}\in V_{h}}\frac{E_{h}(u,\omega_{h})}{\norm{\omega_{h}}_{h}}
+    \end{equation}
+    称为\textbf{非协调误差}。如果是协调元，该项为0。也就是说Strang第二引理是Cea引理的推广。
+\end{remark}
+\begin{corollary}
+    在Strang第二引理的假定下，如果
+    \begin{equation}
+        \text{dist}(V,V_{h})\rightarrow 0,h\rightarrow 0,
+    \end{equation}
+    则非协调元收敛当且仅当
+    \begin{equation}
+        E_{h}(u,\omega_{h})=o(1)\norm{\omega_{h}}_{h}.
+    \end{equation}
+\end{corollary}
